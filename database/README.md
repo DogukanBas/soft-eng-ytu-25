@@ -32,7 +32,7 @@ Holds detailed information about users who are employees.
 ## Departments
 
 ```sql
-depts(deptId, deptname, remainingBudget, initialBudget)
+deptartments(deptId, deptname, remainingBudget, initialBudget, deptManager)
 ```
 
 Represents organizational departments and their budgets.
@@ -40,14 +40,7 @@ Represents organizational departments and their budgets.
 - `deptname`: Name of the department
 - `remainingBudget`: Current remaining budget  
 - `initialBudget`: Budget at the beginning of the cycle
-
-## Relations
-
-```sql
-relations(employeepersonalNo, managerpersonalNo)
-```
-
-Defines which employee reports to which manager by referencing their personal ID's.
+- `deptManager`: DepartmentManagerPersonalNo
 
 ## Tickets
 
