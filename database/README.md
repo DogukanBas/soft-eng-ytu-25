@@ -12,8 +12,9 @@ Stores all system users' basic authentication data.
 
 - `userId`: Unique user identifier  
 - `personalNo`: Internal employee ID  
-- `passwordHash`: Hashed user password  
-- `userType`: User role (`employee`, `manager`, `accountant`)
+- `passwordHash`: Hashed user password
+- `email`: E-mail 
+- `userType`: User role (`team-member`, `manager`, `accountant`, `admin`)
 
 ## Employees
 
@@ -106,7 +107,7 @@ Stores uploaded invoice documents linked to tickets.
 
 ## Workflow Overview
 
-1. An **employee** creates an expense ticket.  
+1. An **team-member** creates an expense ticket.  
 2. The ticket is sent to the manager as `sent to manager`.  
 3. The **manager** can:
    - Approve it → `approved by manager - waiting for invoice`  
