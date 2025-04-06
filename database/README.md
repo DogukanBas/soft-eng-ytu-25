@@ -51,7 +51,7 @@ Defines which employee reports to which manager by referencing their personal ID
 ## Tickets
 
 ```sql
-tickets(ticketid, employeeid, managerid, status, date, costType, amount)
+tickets(ticketid, employeeid, managerid, status, date, costType, amount, desc)
 ```
 
 Stores all expense requests created by employees.
@@ -62,10 +62,11 @@ Stores all expense requests created by employees.
 - `date`: Ticket creation date  
 - `costType`: Type of expense (e.g., travel, meal)  
 - `amount`: Requested amount
+- `desc`: Ticket description
 ## Approve History
 
 ```sql
-approveHistory(ticketid, date, status)
+approveHistory(ticketid, date, status, desc)
 ```
 
 Logs each status change of a ticket over time.
