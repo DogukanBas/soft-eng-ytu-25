@@ -50,13 +50,10 @@ tickets(ticketid, employeeid, managerid, costType, amount)
 
 Stores all expense requests created by employees.
 
-- `employerid`: ID of the employee who created the ticket  
+- `employeeid`: ID of the employee who created the ticket  
 - `managerid`: Manager responsible for approval  
-- `status`: Current status of the ticket  
-- `date`: Ticket creation date  
 - `costType`: Type of expense (e.g., travel, meal)  
 - `amount`: Requested amount
-- `desc`: Ticket description
 ## Approve History
 
 ```sql
