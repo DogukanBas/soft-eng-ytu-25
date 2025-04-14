@@ -32,7 +32,7 @@ Holds detailed information about users who are employees.
 ## Departments
 
 ```sql
-deptartments(deptId, deptname, remainingBudget, initialBudget, deptManager)
+departments(deptId, deptname, remainingBudget, initialBudget, deptManager)
 ```
 
 Represents organizational departments and their budgets.
@@ -45,7 +45,7 @@ Represents organizational departments and their budgets.
 ## Tickets
 
 ```sql
-tickets(ticketid, employeeid, managerid, status, date, costType, amount, desc)
+tickets(ticketid, employeeid, managerid, costType, amount)
 ```
 
 Stores all expense requests created by employees.
@@ -60,7 +60,7 @@ Stores all expense requests created by employees.
 ## Approve History
 
 ```sql
-approveHistory(ticketid, date, status, desc)
+approveHistory(approveId, ticketid, actorId, date, status, desc)
 ```
 
 Logs each status change of a ticket over time.
