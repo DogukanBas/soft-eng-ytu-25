@@ -4,8 +4,9 @@ CREATE TABLE users (
     personalNo VARCHAR(20) UNIQUE NOT NULL,
     passwordHash TEXT NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    userType VARCHAR(20) CHECK (userType IN ('team-member', 'manager', 'accountant', 'admin')) NOT NULL
+    userType VARCHAR(20) CHECK (userType IN ('team_member', 'manager', 'accountant', 'admin')) NOT NULL
 );
+
 
 -- EMPLOYEES
 CREATE TABLE employee (
@@ -70,3 +71,6 @@ CREATE TABLE attachments (
     ticketId INTEGER NOT NULL REFERENCES tickets(ticketId) ON DELETE CASCADE,
     invoice BYTEA NOT NULL
 );
+
+
+INSERT INTO users (personalNo,passwordHash,email,userType) VALUES('25200402','$2a$10$yhfUwYUG1ustinefmnVCA.vD.yCMdahFEIXe52Dj2r5yzkiYi1oGm','admin@costms.com','admin');
