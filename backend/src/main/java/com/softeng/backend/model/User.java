@@ -1,5 +1,6 @@
 package com.softeng.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import lombok.Data;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "personalNo", unique = true, nullable = false)
     private String personalNo;
@@ -25,10 +26,14 @@ public class User {
     private UserType userType;
 
     public enum UserType {
-        TEAM_MEMBER("team-member"),
-        MANAGER("manager"),
-        ACCOUNTANT("accountant"),
-        ADMIN("admin");
+        @JsonProperty("team-member")
+        team_member("team-member"),
+        @JsonProperty("employee")
+        manager("manager"),
+        @JsonProperty("accountant")
+        accountant("accountant"),
+        @JsonProperty("admin")
+        admin("admin");
 
         private final String value;
 
