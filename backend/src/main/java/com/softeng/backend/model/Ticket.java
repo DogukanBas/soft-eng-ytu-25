@@ -12,14 +12,14 @@ import java.util.List;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ticketId;
+    private Integer ticketId;
 
     @ManyToOne
-    @JoinColumn(name = "employeeId", nullable = false)
+    @JoinColumn(name = "employeeId", nullable = false, referencedColumnName = "personalNo")
     private User employee;
 
     @ManyToOne
-    @JoinColumn(name = "managerId", nullable = false)
+    @JoinColumn(name = "managerId", nullable = false, referencedColumnName = "personalNo")
     private User manager;
 
     @Column(nullable = false)

@@ -9,7 +9,7 @@ import lombok.Data;
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "ticketId", nullable = false)

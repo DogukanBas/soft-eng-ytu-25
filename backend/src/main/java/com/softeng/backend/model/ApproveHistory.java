@@ -6,15 +6,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "approveHistory")
+@Table(name = "approvehistory")
 @Data
 public class ApproveHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "ticketId", nullable = false)
+    @JoinColumn(name = "ticketId", nullable = false, referencedColumnName = "ticketId")
     private Ticket ticket;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
@@ -27,7 +27,7 @@ public class ApproveHistory {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "actorId")
+    @JoinColumn(name = "actorId", nullable = false, referencedColumnName = "personalNo")
     private User actor;
 
     public enum Status {

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long deptId;
+    private Integer deptId;
 
     @Column(nullable = false)
     private String deptname;
@@ -23,6 +23,6 @@ public class Department {
     private BigDecimal initialBudget;
 
     @OneToOne
-    @JoinColumn(name = "deptManager")
+    @JoinColumn(name="deptManager", referencedColumnName = "personalNo")
     private User deptManager;
 }
