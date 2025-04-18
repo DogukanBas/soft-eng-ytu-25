@@ -14,23 +14,13 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     String secretKey;
 
-    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 15; // 15 minutes
-    private final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7; // 7 days
+    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 24 hours
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getPersonalNo())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
-                .signWith(io.jsonwebtoken.SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
-
-    public String generateRefreshToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getPersonalNo())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY))
                 .signWith(io.jsonwebtoken.SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

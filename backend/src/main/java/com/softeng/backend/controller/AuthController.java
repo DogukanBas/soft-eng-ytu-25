@@ -69,15 +69,6 @@ public class AuthController {
             User user = userService.getUserByPersonalNoOrEmail(request.getPersonalNoOrEmail());
 
             String accessToken = jwtUtil.generateAccessToken(user);
-            String refreshToken = jwtUtil.generateRefreshToken(user);
-
-            ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                    .httpOnly(true)
-                    .path("/")
-                    .maxAge(7 * 24 * 60 * 60) // 7 days
-                    .secure(false)
-                    .build();
-            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             AuthDTOs.LoginResponse loginResponse = new AuthDTOs.LoginResponse(
                     user.getPersonalNo(),
@@ -89,24 +80,6 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        if (refreshToken.isEmpty() || !jwtUtil.validateToken(refreshToken) || jwtUtil.isExpired(refreshToken) ) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired");
-        }
-
-        String personalNo = jwtUtil.extractSubject(refreshToken);
-        User user = userService.getUserByPersonalNo(personalNo);
-
-        String newAccessToken = jwtUtil.generateAccessToken(user);
-        return ResponseEntity.ok(new AuthDTOs.LoginResponse(
-                user.getPersonalNo(),
-                user.getEmail(),
-                user.getUserType(),
-                newAccessToken
-        ));
     }
 }
 

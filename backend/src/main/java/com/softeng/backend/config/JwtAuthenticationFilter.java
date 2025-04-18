@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             if (jwtUtil.validateToken(token)) {
-                String personalNo = jwtUtil.extractSubject(token); // sub alanı
+                String personalNo = jwtUtil.extractSubject(token);
 
                 User user = userService.getUserByPersonalNo(personalNo);
 
