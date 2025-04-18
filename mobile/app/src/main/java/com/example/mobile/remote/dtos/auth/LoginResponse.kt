@@ -1,13 +1,10 @@
 package com.example.mobile.remote.dtos.auth
 
-data class LoginResponse (
-    val user: User,
-    val token: String,
 
-    )
-
-data class User(
-    val id: String,
+//todo add surname and name
+data class LoginResponse(
     val personalNo: String,
-    val email: String
+    val email: String,
+    val userType: String,
+    val accessToken: String,
 )
