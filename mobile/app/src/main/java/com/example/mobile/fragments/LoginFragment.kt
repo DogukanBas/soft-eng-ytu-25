@@ -13,9 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.mobile.R
+import com.example.mobile.model.User.User
+import com.example.mobile.model.User.UserType
 import com.example.mobile.viewmodels.LoginViewModel
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -44,12 +47,14 @@ class LoginFragment : Fragment() {
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 viewModel.login(email, password)
+
             } else {
                 Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
         }
-        // State'i observe et
+
         lifecycleScope.launchWhenStarted {
+
             viewModel.loginState.collect { state ->
                 when (state) {
                     is LoginViewModel.LoginState.Idle -> {}
@@ -58,8 +63,34 @@ class LoginFragment : Fragment() {
                     }
                     is LoginViewModel.LoginState.Success -> {
                         // Token'i kaydet ve ana sayfaya yönlendir
-                        saveToken(state.loginResponse.token)
-                        Log.i("LoginFragment", "Token: ${state.loginResponse.token}")
+                        Log.i("LoginFragment", "Token: ${state.loginResponse.accessToken}")
+                        User.setUser(
+                            personalNo = state.loginResponse.personalNo,
+                            email = state.loginResponse.email,
+                            userType = UserType.fromString(state.loginResponse.userType),
+                            accessToken = state.loginResponse.accessToken,
+
+                        )
+                        launch {
+
+                            //viewModel.register("dogukan@gmail.com", "123", "21011001",UserType.TEAM_MEMBER)
+                        }
+                        viewModel.registerState.collect(){
+                            when(it){
+                                is LoginViewModel.RegisterState.Idle -> {
+                                }
+                                is LoginViewModel.RegisterState.Loading -> {
+                                    Log.i("Sucess","register load")
+                                }
+                                is LoginViewModel.RegisterState.Success -> {
+                                        Log.i("Sucess","register suces")
+                                }
+                                is LoginViewModel.RegisterState.Error -> {
+                                    showError(it.message)
+                                }
+                            }
+                        }
+
                         navigateToHome()
                     }
                     is LoginViewModel.LoginState.Error -> {
@@ -69,13 +100,13 @@ class LoginFragment : Fragment() {
             }
         }
 
+
+
+
         return view
     }
 
-    private fun saveToken(token: String) {
-        Log.i("LoginFragment", "Token: $token")
-        // SharedPreferences veya SecureStorage'a token'i kaydet
-    }
+
 
     private fun navigateToHome() {
         findNavController().navigate(R.id.action_loginFragment_to_navigation_home)
