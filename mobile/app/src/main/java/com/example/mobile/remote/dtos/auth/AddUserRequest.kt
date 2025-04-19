@@ -1,8 +1,8 @@
 package com.example.mobile.remote.dtos.auth
 
-import com.example.mobile.model.User.UserType
-
-data class RegisterRequest(
+data class AddUserRequest(
+    val name:String,
+    val surname:String,
     val personalNo: String,
     val email: String,
     val password: String,
