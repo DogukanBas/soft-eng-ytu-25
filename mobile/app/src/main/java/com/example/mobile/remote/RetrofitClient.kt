@@ -1,4 +1,5 @@
 import android.util.Log
+import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.util.AuthInterceptor
 import okhttp3.OkHttpClient
@@ -33,6 +34,9 @@ object RetrofitClient {
 
     val authService: AuthService by lazy {
         instance.create(AuthService::class.java)
+    }
+    val adminService: AdminService by lazy {
+        instance.create(AdminService::class.java)
     }
 
 }
