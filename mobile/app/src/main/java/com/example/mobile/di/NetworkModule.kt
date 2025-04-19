@@ -1,5 +1,6 @@
 package com.example.mobile.di
 
+import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import dagger.Module
 import dagger.Provides
@@ -14,5 +15,11 @@ object NetworkModule {
     @Singleton
     fun provideAuthService(): AuthService {
         return RetrofitClient.authService
+    }
+
+    @Provides
+    @Singleton
+    fun provideAdminService(): AdminService {
+        return RetrofitClient.adminService
     }
 }

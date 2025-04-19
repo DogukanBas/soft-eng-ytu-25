@@ -1,5 +1,5 @@
 package com.example.mobile.remote.dtos.auth
 
-data class RegisterResponse(
+data class AddUserResponse(
     val personalNo: String
 )
