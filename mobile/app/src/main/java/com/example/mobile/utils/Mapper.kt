@@ -10,6 +10,7 @@ fun Employee.toDto(): AddUserRequest {
         personalNo = this.personalNo,
         email = this.email,
         password = this.password,
-        userType = this.userType.toString()
+        userType = this.userType.toString(),
+        deptName = this.department
     )
 }
