@@ -6,5 +6,6 @@ data class AddUserRequest(
     val personalNo: String,
     val email: String,
     val password: String,
-    val userType: String
+    val userType: String,
+    val deptName: String
 )

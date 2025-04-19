@@ -110,25 +110,25 @@ class AddUserFragment : Fragment() {
         inputList.add(
             CustomInputFormat("Name",
                 EditTextInputType.Text,100,"Name can't be empty",  { input: CustomInputFormat ->
-                !input.text.toString().isNotEmpty()
+                input.text.toString().isNotEmpty()
             })
         )
         inputList.add(
             CustomInputFormat("Surname",
                 EditTextInputType.Text,100,"Surname can't be empty",  { input: CustomInputFormat ->
-                !input.text.toString().isNotEmpty()
+                input.text.toString().isNotEmpty()
             })
         )
         inputList.add(
             CustomInputFormat("Password",
                 EditTextInputType.Password, 20,"Password can't be empty ",  { input: CustomInputFormat ->
-                !input.text.toString().isNotEmpty()
+                input.text.toString().isNotEmpty()
             })
         )
         inputList.add(
             CustomInputFormat("Email",
                 EditTextInputType.Text,255,"Invalid Email",  { input: CustomInputFormat ->
-            !input.text.toString().isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(input.text.toString()).matches()
+            input.text.toString().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(input.text.toString()).matches()
         })
         )
 
@@ -136,7 +136,7 @@ class AddUserFragment : Fragment() {
         inputList.add(
             CustomInputFormat("Personal No",
                 EditTextInputType.Number, 20,"Personal No can't be empty ",  { input: CustomInputFormat ->
-                !input.text.toString().isNotEmpty()
+                input.text.toString().isNotEmpty()
             })
         )
         inputList.add(CustomInputFormat("Department", EditTextInputType.MenuList,null,null,null).apply {

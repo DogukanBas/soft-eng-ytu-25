@@ -25,7 +25,7 @@ class AdminMenuFragment : Fragment() {
         ))
         menuItems.add(MenuItem(
             "Add Department",
-            { (activity as MainActivity).replaceFragment(AddUserFragment()) }
+            { (activity as MainActivity).replaceFragment(AddDepartmentFragment()) }
         ))
         val menuFragment = ListMenuFragment.newInstance(menuItems,"Admin Menu",true,getLogo())
         childFragmentManager.beginTransaction()
