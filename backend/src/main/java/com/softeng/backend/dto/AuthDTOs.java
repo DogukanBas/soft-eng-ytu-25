@@ -33,16 +33,20 @@ public class AuthDTOs {
         private String personalNo;
         private String email;
         private User.UserType userType;
+        private String accessToken;
 
         public LoginResponse(String personalNo, String email,
-                             User.UserType userType) {
+                             User.UserType userType, String accessToken) {
             this.personalNo = personalNo;
             this.email = email;
             this.userType = userType;
+            this.accessToken = accessToken;
         }
 
         public String getPersonalNo() { return personalNo; }
         public String getEmail() { return email; }
         public User.UserType getUserType() { return userType; }
+
+        public String getAccessToken() { return accessToken; }
     }
 }
