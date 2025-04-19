@@ -16,6 +16,7 @@ import com.example.mobile.R
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
 import com.example.mobile.ui.admin.AddUserFragment
+import com.example.mobile.ui.admin.AdminMenuFragment
 import com.example.mobile.utils.UiState
 import com.google.android.material.textfield.TextInputEditText
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
@@ -30,9 +31,7 @@ class LoginFragment : Fragment() {
     private lateinit var loginButton: Button
 
 
-    private fun getLogo(): Int {
-        return R.drawable.ic_launcher_foreground
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,18 +73,7 @@ class LoginFragment : Fragment() {
 
                         when (User.userType) {
                             UserType.ADMIN -> {
-                                val menuItems = mutableListOf<IListMenuItem>()
-                                //admin has two functionalities, add user, add department
-                                menuItems.add(MenuItem(
-                                    "Add User",
-                                    { (activity as MainActivity).replaceFragment(AddUserFragment()) }
-                                ))
-                                menuItems.add(MenuItem(
-                                    "Add Department",
-                                    { (activity as MainActivity).replaceFragment(AddUserFragment()) }
-                                ))
-                                val menuFragment = ListMenuFragment.newInstance(menuItems,"Admin Menu",true,getLogo())
-                                (activity as MainActivity).replaceFragment(menuFragment as Fragment)
+                                (activity as MainActivity).replaceFragment(AdminMenuFragment(), false)
 
 
                                 //add fragment AdminHome
@@ -119,3 +107,4 @@ class LoginFragment : Fragment() {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
+
