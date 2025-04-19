@@ -2,17 +2,50 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_add_user"
+        android:enabled="false"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:title="Add User" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/navigation_add_department"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Add Department" />
+
+    <item
+        android:id="@+id/navigation_edit_budget"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Edit Budget" />
+
+    <item
+        android:id="@+id/navigation_list_and_approve_tickets"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Tickets" />
+
+    <item
+        android:id="@+id/navigation_create_report"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Report" />
+
+    <item
+        android:id="@+id/navigation_create_ticket"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Create Ticket" />
+
+    <item
+        android:id="@+id/navigation_list_tickets"
+        android:enabled="false"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="List Ticket" />
 
     <item
         android:id="@+id/navigation_notifications"
+        android:visible="false"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/title_notifications" />
 

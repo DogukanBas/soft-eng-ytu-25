@@ -7,31 +7,49 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.mobile.fragments.LoginFragment"
+        android:name="com.example.mobile.ui.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_navigation_home"
-            app:destination="@id/navigation_home"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.mobile.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.mobile.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.mobile.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_add_user"
+        android:label="Add User"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_add_department"
+        android:label="Add Department"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_edit_budget"
+        android:label="Edit Budget"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_list_and_approve_tickets"
+        android:label="Tickets"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_create_report"
+        android:label="Report"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_create_ticket"
+        android:label="Create Ticket"
+        tools:layout="" />
+
+    <fragment
+        android:id="@+id/navigation_list_tickets"
+        android:label="List Ticket"
+        tools:layout="" />
 </navigation>

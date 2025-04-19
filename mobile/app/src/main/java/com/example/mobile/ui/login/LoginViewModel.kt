@@ -1,7 +1,8 @@
-package com.example.mobile.viewmodels
+package com.example.mobile.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
 import com.example.mobile.remote.dtos.auth.LoginResponse
 import com.example.mobile.remote.dtos.auth.RegisterResponse
@@ -42,7 +43,16 @@ class LoginViewModel @Inject constructor(
             _loginState.value = LoginState.Loading
             val result = authRepository.login(username, password)
             _loginState.value = when {
-                result.isSuccess -> LoginState.Success(result.getOrNull()!!)
+                result.isSuccess -> {
+                    val loginResponse = result.getOrNull()!!
+                    User.setUser(
+                            personalNo = loginResponse.personalNo,
+                            email = loginResponse.email,
+                            userType = UserType.fromString(loginResponse.userType),
+                            accessToken = loginResponse.accessToken,
+                    )
+                    LoginState.Success(loginResponse)
+                }
                 else -> LoginState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }

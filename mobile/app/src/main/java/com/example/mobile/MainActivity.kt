@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
 
-        // Bottom navigation'ı sadece ana ekranlarda göster
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.loginFragment) {
                 navView.visibility = View.GONE
@@ -37,9 +36,18 @@ class MainActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.loginFragment, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.loginFragment,
+             //   R.id.navigation_create_ticket,
+             //   R.id.navigation_list_tickets,
+             //   R.id.navigation_list_and_approve_tickets,
+             //   R.id.navigation_edit_budget,
+             //   R.id.navigation_create_report,
+             //   R.id.navigation_add_user,
+             //   R.id.navigation_add_department,
+                R.id.navigation_notifications
             )
         )
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -48,5 +56,35 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+
+    fun activateAdminNavigation()  {
+        navView.menu.findItem(R.id.navigation_add_user).isEnabled = true
+        navView.menu.findItem(R.id.navigation_add_department).isEnabled = true
+        navController.navigate(R.id.navigation_add_user)
+    }
+
+    fun activateAccountantNavigation() {
+        navView.menu.findItem(R.id.navigation_list_and_approve_tickets).isEnabled = true
+        navView.menu.findItem(R.id.navigation_edit_budget).isEnabled = true
+        navView.menu.findItem(R.id.navigation_create_report).isEnabled = true
+        navView.menu.findItem(R.id.navigation_notifications).isEnabled = true
+        navController.navigate(R.id.navigation_list_and_approve_tickets)
+
+    }
+
+    fun activateTeamMemberNavigation() {
+        navView.menu.findItem(R.id.navigation_create_ticket).isEnabled = true
+        navView.menu.findItem(R.id.navigation_list_tickets).isEnabled = true
+        navView.menu.findItem(R.id.navigation_notifications).isEnabled = true
+        navController.navigate(R.id.navigation_list_tickets)
+    }
+
+    fun activateManagerNavigation() {
+        navView.menu.findItem(R.id.navigation_create_ticket).isEnabled = true
+        navView.menu.findItem(R.id.navigation_list_and_approve_tickets).isEnabled = true
+        navView.menu.findItem(R.id.navigation_notifications).isEnabled = true
+        navController.navigate(R.id.navigation_list_and_approve_tickets)
     }
 }
