@@ -43,4 +43,11 @@ class MainActivity : AppCompatActivity() {
         }
         transaction.commit()
     }
+
+    fun popFragment() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment != null) {
+            supportFragmentManager.popBackStack()
+        }
+    }
 }
