@@ -26,8 +26,8 @@ public class User {
     private UserType userType;
 
     public enum UserType {
-        @JsonProperty("team-member")
-        team_member("team-member"),
+        @JsonProperty("team_member")
+        team_member("team_member"),
         @JsonProperty("employee")
         manager("manager"),
         @JsonProperty("accountant")
