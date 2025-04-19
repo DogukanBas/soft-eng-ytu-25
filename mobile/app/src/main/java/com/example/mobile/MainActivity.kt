@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.mobile.databinding.ActivityMainBinding
-import com.example.mobile.ui.login.LoginFragment
+import com.example.mobile.ui.admin.AdminMenuFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         hideSystemUI()
 
-        replaceFragment(LoginFragment())
+        //replaceFragment(LoginFragment(),false)
+        replaceFragment(AdminMenuFragment(),false)
     }
 
     private fun hideSystemUI() {
@@ -34,10 +35,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun replaceFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
+        if (addToBackStack) {
+            transaction.addToBackStack(null)
+        }
         transaction.commit()
     }
 }
