@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
 import com.example.mobile.remote.dtos.auth.LoginResponse
-import com.example.mobile.remote.dtos.auth.RegisterResponse
 import com.example.mobile.repositories.AuthRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,12 +17,6 @@ class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    sealed class LoginState {
-        object Idle : LoginState()
-        object Loading : LoginState()
-        data class Success(val loginResponse: LoginResponse) : LoginState()
-        data class Error(val message: String) : LoginState()
-    }
 
     private val _loginState = MutableStateFlow<UiState<LoginResponse>>(UiState.Idle)
     val loginState: StateFlow<UiState<LoginResponse>> = _loginState
