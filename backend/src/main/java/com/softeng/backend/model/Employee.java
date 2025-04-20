@@ -25,4 +25,14 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "deptId", nullable = false)
     private Department department;
+
+    public Employee() {
+    }
+
+    public Employee(User user, String name, String surname, Department department) {
+        this.user = user;
+        this.name = name;
+        this.surname = surname;
+        this.department = department;
+    }
 }
