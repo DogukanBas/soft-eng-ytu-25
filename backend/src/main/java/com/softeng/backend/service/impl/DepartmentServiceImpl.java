@@ -27,7 +27,6 @@ try {
 
     @Override
     public void setManager(Integer deptId, String personalNo) {
-        System.out.println("Setting manager for department ID: " + deptId + " to personal number: " + personalNo);
         departmentRepository.setManager(deptId, personalNo);
     }
 
@@ -46,6 +45,10 @@ try {
         departmentRepository.resetDepartmentBudget(deptId);
     }
 
+    @Override
+    public List<String> getAllDepartmentNames() {
+        return departmentRepository.getAllDepartmentNames();
+    }
     @Override
     public Department getDepartmentByName(String deptname) {
         return departmentRepository.findByDeptname(deptname)

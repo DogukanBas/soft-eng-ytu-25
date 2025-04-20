@@ -17,6 +17,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     boolean existsByDeptId(Integer deptId);
     List<Department> findAll();
 
+    @Query("SELECT d.deptname FROM Department d")
+    List<String> getAllDepartmentNames();
+
     @Modifying
     @Query(value = "UPDATE departments SET deptManager = :personalNo WHERE deptId = :deptId", nativeQuery = true)
     void setManager(@Param("deptId") Integer deptId, @Param("personalNo") String personalNo);

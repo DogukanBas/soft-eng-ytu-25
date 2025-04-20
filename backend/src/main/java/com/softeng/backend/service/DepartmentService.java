@@ -1,10 +1,7 @@
 package com.softeng.backend.service;
 
 import com.softeng.backend.model.Department;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface DepartmentService {
     Department addDepartment(Department department);
@@ -13,6 +10,7 @@ public interface DepartmentService {
     void setDepartmentInitialBudget(Integer deptId, Double initialBudget);
     void resetDepartmentBudget(Integer deptId);
     List<Department> getAllDepartments();
+    List<String> getAllDepartmentNames();
     Department getDepartmentByName(String deptname);
     boolean existsByDeptname(String deptname);
     boolean existsByDeptId(Integer deptId);

@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
             String hashedPassword = passwordUtil.hashPassword(plainPassword);
             user.setPasswordHash(hashedPassword);
             userRepository.save(user);
-            System.out.println("User added successfully: " + user.getPersonalNo() + ", " + user.getEmail() + ", " + user.getUserType());
         } catch (Exception e) {
             throw new IllegalArgumentException("Error while adding user: " + e.getMessage());
         }
