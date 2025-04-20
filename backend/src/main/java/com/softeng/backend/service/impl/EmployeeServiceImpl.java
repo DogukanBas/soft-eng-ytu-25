@@ -23,7 +23,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void addEmployee(Employee employee) {
         try {
-            System.out.println("Adding employee: " + employee.toString());
             employeeRepository.save(employee);
         }
         catch (Exception e) {

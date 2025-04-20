@@ -14,10 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -45,14 +44,15 @@ public class AdminController {
         logger.debug("Current User1903: {}", personaNo);
 
         if (currentUser.getUserType() != User.UserType.admin) {
-            return ResponseEntity.status(403).body(AdminDTOs.AddEmployeeResponse.INVALID_AUTHENTICATION.getMessage());
+            return ResponseEntity.status(403).body(Map.of("message", AdminDTOs.AddEmployeeResponse.INVALID_AUTHENTICATION.getMessage()
+            ));
         }
 
         String personalNo = request.getPersonalNo();
         String email = request.getEmail();
 
         if (userService.existsByPersonalNo(personalNo) || userService.existsByEmail(email)) {
-            return ResponseEntity.badRequest().body(AdminDTOs.AddEmployeeResponse.EMPLOYEE_ALREADY_EXISTS.getMessage());
+            return ResponseEntity.status(409).body(Map.of("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ALREADY_EXISTS.getMessage()));
         }
 
         try {
@@ -82,6 +82,20 @@ public class AdminController {
             return ResponseEntity.status(500).body("Internal server error");
         }
 
-        return ResponseEntity.ok(AdminDTOs.AddEmployeeResponse.EMPLOYEE_ADDED.getMessage());
+        return ResponseEntity.ok(Map.of("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ADDED.getMessage()));
+    }
+
+    @GetMapping("/departments")
+    public ResponseEntity<?> getAllDepartmentNames() {
+        logger.debug("Getting all department names in JSON format");
+        try {
+            return ResponseEntity.ok(Map.of("departments",
+                    departmentService.getAllDepartmentNames()
+            ));
+        } catch (Exception e) {
+            logger.error("Error while getting all department names: {}", e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+
     }
 }
