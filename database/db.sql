@@ -1,7 +1,6 @@
 -- USERS
 CREATE TABLE users (
-    userId SERIAL PRIMARY KEY,
-    personalNo VARCHAR(20) UNIQUE NOT NULL,
+    personalNo VARCHAR(20) PRIMARY KEY UNIQUE NOT NULL,
     passwordHash TEXT NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     userType VARCHAR(20) CHECK (userType IN ('team_member', 'manager', 'accountant', 'admin')) NOT NULL
