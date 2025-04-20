@@ -9,9 +9,7 @@ import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
-import com.token.uicomponents.ListMenuFragment.ListMenuFragment
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
-import kotlin.jvm.functions.Function0
 
 class AdminMenuFragment : Fragment() {
 
