@@ -24,4 +24,15 @@ public class Department {
     @OneToOne
     @JoinColumn(name="deptManager", referencedColumnName = "personalNo", columnDefinition = "VARCHAR(20)")
     private User deptManager;
+
+    public Department() {
+        this.remainingBudget = BigDecimal.ZERO;
+        this.initialBudget = BigDecimal.ZERO;
+    }
+
+    public Department(String deptname) {
+        this.deptname = deptname;
+        this.remainingBudget = BigDecimal.ZERO;
+        this.initialBudget = BigDecimal.ZERO;
+    }
 }

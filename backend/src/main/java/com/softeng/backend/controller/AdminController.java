@@ -1,6 +1,7 @@
 package com.softeng.backend.controller;
 
 import com.softeng.backend.dto.AdminDTOs;
+import com.softeng.backend.model.Department;
 import com.softeng.backend.model.Employee;
 import com.softeng.backend.model.User;
 import com.softeng.backend.service.DepartmentService;
@@ -83,6 +84,35 @@ public class AdminController {
         }
 
         return ResponseEntity.ok(Map.of("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ADDED.getMessage()));
+    }
+
+    @Transactional
+    @PostMapping("/add-department")
+    public ResponseEntity<?> addDepartment(@RequestBody AdminDTOs.AddDepartmentRequest request, Authentication authentication) {
+        logger.debug("Adding department with name: {}", request.getDeptName());
+        String personaNo = authentication.getName();
+        User currentUser = userService.getUserByPersonalNo(personaNo);
+        logger.debug("Current User: {}", personaNo);
+
+        if (currentUser.getUserType() != User.UserType.admin) {
+            return ResponseEntity.status(403).body(Map.of("message", AdminDTOs.AddDepartmentResponse.INVALID_AUTHENTICATION.getMessage()
+            ));
+        }
+
+        if (departmentService.existsByDeptname(request.getDeptName())) {
+            return ResponseEntity.status(409).body(Map.of("message", AdminDTOs.AddDepartmentResponse.DEPARTMENT_ALREADY_EXISTS.getMessage()));
+        }
+
+        try {
+            departmentService.addDepartment(new Department(request.getDeptName()));
+            logger.info("Department added successfully: {}", request.getDeptName());
+        } catch (Exception e) {
+            logger.error("Error while adding department: {}", e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+
+        return ResponseEntity.ok(Map.of("message", AdminDTOs.AddDepartmentResponse.DEPARTMENT_ADDED.getMessage()));
     }
 
     @GetMapping("/departments")

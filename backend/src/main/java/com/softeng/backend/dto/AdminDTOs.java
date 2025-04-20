@@ -44,4 +44,27 @@ public class AdminDTOs {
             return message;
         }
     }
+
+    public static class AddDepartmentRequest {
+        private String deptName;
+
+        public String getDeptName() { return deptName; }
+        public void setDeptName(String deptName) { this.deptName = deptName; }
+    }
+
+    public enum AddDepartmentResponse {
+        DEPARTMENT_ADDED("Department added successfully"),
+        DEPARTMENT_ALREADY_EXISTS("Department already exists"),
+        INVALID_AUTHENTICATION("Invalid authentication");
+
+        private final String message;
+
+        AddDepartmentResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }
