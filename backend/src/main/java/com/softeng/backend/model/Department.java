@@ -2,7 +2,6 @@ package com.softeng.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -23,6 +22,6 @@ public class Department {
     private BigDecimal initialBudget;
 
     @OneToOne
-    @JoinColumn(name="deptManager", referencedColumnName = "personalNo")
+    @JoinColumn(name="deptManager", referencedColumnName = "personalNo", columnDefinition = "VARCHAR(20)")
     private User deptManager;
 }
