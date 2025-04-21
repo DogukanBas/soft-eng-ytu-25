@@ -45,15 +45,18 @@ public class AdminController {
         logger.debug("Current User1903: {}", personaNo);
 
         if (currentUser.getUserType() != User.UserType.admin) {
-            return ResponseEntity.status(403).body(Map.of("message", AdminDTOs.AddEmployeeResponse.INVALID_AUTHENTICATION.getMessage()
-            ));
+            return ResponseEntity.status(403)
+                    .header("message", AdminDTOs.AddEmployeeResponse.INVALID_AUTHENTICATION.getMessage())
+                    .build();
         }
 
         String personalNo = request.getPersonalNo();
         String email = request.getEmail();
 
         if (userService.existsByPersonalNo(personalNo) || userService.existsByEmail(email)) {
-            return ResponseEntity.status(409).body(Map.of("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ALREADY_EXISTS.getMessage()));
+            return ResponseEntity.status(409)
+                    .header("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ALREADY_EXISTS.getMessage())
+                    .build();
         }
 
         try {
@@ -76,11 +79,12 @@ public class AdminController {
 
             logger.info("Employee added successfully: {}", employee);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error while adding employee: {}", e.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(500).body("Internal server error");
+            return ResponseEntity.status(500)
+                    .header("message", "Internal server error")
+                    .build();
         }
 
         return ResponseEntity.ok(Map.of("message", AdminDTOs.AddEmployeeResponse.EMPLOYEE_ADDED.getMessage()));
@@ -95,12 +99,15 @@ public class AdminController {
         logger.debug("Current User: {}", personaNo);
 
         if (currentUser.getUserType() != User.UserType.admin) {
-            return ResponseEntity.status(403).body(Map.of("message", AdminDTOs.AddDepartmentResponse.INVALID_AUTHENTICATION.getMessage()
-            ));
+            return ResponseEntity.status(403)
+                    .header("message", AdminDTOs.AddDepartmentResponse.INVALID_AUTHENTICATION.getMessage())
+                    .build();
         }
 
         if (departmentService.existsByDeptname(request.getDeptName())) {
-            return ResponseEntity.status(409).body(Map.of("message", AdminDTOs.AddDepartmentResponse.DEPARTMENT_ALREADY_EXISTS.getMessage()));
+            return ResponseEntity.status(409)
+                    .header("message", AdminDTOs.AddDepartmentResponse.DEPARTMENT_ALREADY_EXISTS.getMessage())
+                    .build();
         }
 
         try {
@@ -109,7 +116,9 @@ public class AdminController {
         } catch (Exception e) {
             logger.error("Error while adding department: {}", e.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResponseEntity.status(500).body("Internal server error");
+            return ResponseEntity.status(500)
+                    .header("message", "Internal server error")
+                    .build();
         }
 
         return ResponseEntity.ok(Map.of("message", AdminDTOs.AddDepartmentResponse.DEPARTMENT_ADDED.getMessage()));
@@ -126,6 +135,5 @@ public class AdminController {
             logger.error("Error while getting all department names: {}", e.getMessage());
             return ResponseEntity.status(500).body("Internal server error");
         }
-
     }
 }
