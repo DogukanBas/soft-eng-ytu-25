@@ -2,28 +2,28 @@ package com.example.mobile.ui.admin
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobile.MainActivity
 import com.example.mobile.R
+import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.UiState
 import com.token.uicomponents.CustomInput.CustomInputFormat
 import com.token.uicomponents.CustomInput.EditTextInputType
 import com.token.uicomponents.components330.input_menu_fragment.InputMenuFragment330
-import com.token.uicomponents.infodialog.InfoDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddDepartmentFragment : Fragment() {
     private val viewModel: AdminViewModel by viewModels()
-
+    companion object{
+        val TAG = "AddDepartmentFragment"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +48,7 @@ class AddDepartmentFragment : Fragment() {
         )
         setStateCollectors()
         val addDepartmentFragment = InputMenuFragment330(inputList,{outputList->
-            Log.i("AddDepartment","Add Department buton triggered")
+            Log.i(TAG,"Add Department button triggered")
             val departmentName = outputList.get(0).toString()
             viewModel.addDepartment(departmentName)
         },
@@ -63,18 +63,17 @@ class AddDepartmentFragment : Fragment() {
     }
     //todo this reccurs, make this generic in a util maybe
     private fun setStateCollectors() {
-        val dialog = InfoDialog.newInstance(InfoDialog.InfoType.Processing, "Department is being added", false)
+        val dialog = (activity as MainActivity).getDialog(DialogType.LOADING,"Loading")
 
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addDepartmentState.collect { state ->
                     when (state) {
                         is UiState.Idle -> {
-                            Log.i("AddDepartmentFragment", "State: Idle")
+                            Log.i(TAG, "State: Idle")
                         }
 
                         is UiState.Loading -> {
-                            Log.i("AddDepartmentFragment", "State: Loading")
+                            Log.i(TAG, "State: Loading")
                             dialog.show(
                                 requireActivity().supportFragmentManager,
                                 "ProcessingDialog"
@@ -82,31 +81,20 @@ class AddDepartmentFragment : Fragment() {
                         }
 
                         is UiState.Success -> {
-                            Log.i(
-                                "AddDepartmentFragment",
-                                "State: Success with data: ${state.data}"
-                            )
+                            Log.i(TAG, "State: Success with data: ${state.data}")
                             dialog.dismiss()
-                            InfoDialog.newInstance(
-                                InfoDialog.InfoType.Confirmed,
-                                "Department added successfully",
-                                true
-                            )
+                            (activity as MainActivity).getDialog(DialogType.SUCCESS,"Department added successfully")
                                 .show(requireActivity().supportFragmentManager, "SuccessDialog")
                             (activity as MainActivity).popFragment()
                         }
 
                         is UiState.Error -> {
-                            Log.e(
-                                "AddDepartmentFragment",
-                                "State: Error with message: ${state.message}"
-                            )
+                            Log.e(TAG, "State: Error with message: ${state.message}")
                             dialog.dismiss()
-                            InfoDialog.newInstance(InfoDialog.InfoType.Error, state.message, true)
-                                .show(requireActivity().supportFragmentManager, "ErrorDialog")
+                            (activity as MainActivity).getDialog(DialogType.ERROR,state.message).show(requireActivity().supportFragmentManager, "ErrorDialog")
                         }
                     }
-                }
+
             }
         }
     }

@@ -7,96 +7,91 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.model.User.Employee
 import com.example.mobile.model.User.UserType
+import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.UiState
 import com.token.uicomponents.CustomInput.CustomInputFormat
 import com.token.uicomponents.CustomInput.EditTextInputType
 import com.token.uicomponents.components330.input_menu_fragment.InputMenuFragment330
-import com.token.uicomponents.infodialog.InfoDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddUserFragment : Fragment() {
+class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : Fragment() {
     private val viewModel: AdminViewModel by viewModels()
-
-
+    private lateinit var addUseInputFragment: InputMenuFragment330
+    companion object{
+        val TAG = "AddUserFragment"
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val arrangedInputList = arrangeInputList()
-        Log.i("AddUserFragment", "Input list: $arrangedInputList")
-        setStateCollectors()
-        val addUseInputFragment = InputMenuFragment330(arrangedInputList,  buttonListener = { inputList ->
-            Log.d("InputMenuFragment330", "inputList: $inputList")
-            val userType :String = inputList?.get(0).toString()
-            val name :String = inputList?.get(1).toString()
-            val surname :String = inputList?.get(2).toString()
-            val password:String = inputList?.get(3).toString()
+        Log.i(TAG,"onCreateView")
 
-            val email :String = inputList?.get(4).toString()
-            val personalNo :String = inputList?.get(5).toString()
-            val department :String = inputList?.get(6).toString()
-            val employee = Employee(UserType.fromString(userType), name, surname, password, email, personalNo, department)
-            viewModel.addUser(employee)
-            Log.i("AddUserFragment", "userType: $userType, name: $name, surname: $surname, email: $email, personalNo: $personalNo,password: $password, department: $department")
-        },
-            btnOKName = "Kullanıcı Oluştur",)
+        return inflater.inflate(R.layout.fragment_input_list_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val arrangedInputList = arrangeInputList()
+        Log.i(TAG,"onViewCreated")
+        setStateCollectors()
+        val addUserInputFragment = setMenu(arrangedInputList)
+
 
         childFragmentManager.beginTransaction()
             .replace(R.id.input_menu_container, addUseInputFragment)
             .commit()
 
-        return inflater.inflate(R.layout.fragment_input_list_layout, container, false)
     }
 
-    private fun setStateCollectors() {
-        Log.i("AddUserFragment", "Setting up state collectors")
 
-        val dialog = InfoDialog.newInstance(InfoDialog.InfoType.Processing, "User is being added", false)
+    private fun setStateCollectors() {
+        Log.i(TAG, "Setting up state collectors")
+
+        val dialog = (activity as MainActivity).getDialog(DialogType.LOADING,"Loading")
+
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addUserState.collect { state ->
-                    Log.i("AddUserFragment", "Received state: $state")
+                    Log.i(TAG, "Received state: $state")
 
                     when (state) {
                         is UiState.Idle -> {
-                            Log.i("AddUserFragment", "State: Idle")
+                            Log.i(TAG, "State: Idle")
                         }
                         is UiState.Loading -> {
-                            Log.i("AddUserFragment", "State: Loading")
+                            Log.i(TAG, "State: Loading")
                             dialog.show(requireActivity().supportFragmentManager, "ProcessingDialog")
                         }
                         is UiState.Success -> {
-                            Log.i("AddUserFragment", "State: Success with data: ${state.data}")
+                            Log.i(TAG, "State: Success with data: ${state.data}")
                             dialog.dismiss()
-                            InfoDialog.newInstance(InfoDialog.InfoType.Confirmed, "User added successfully", true)
+                            (activity as MainActivity).getDialog(DialogType.SUCCESS,"User added successfully")
                                 .show(requireActivity().supportFragmentManager, "SuccessDialog")
                             (activity as MainActivity).popFragment()
-                        }
+                            }
+
                         is UiState.Error -> {
-                            Log.e("AddUserFragment", "State: Error with message: ${state.message}")
+                            Log.e(TAG, "State: Error with message: ${state.message}")
                             dialog.dismiss()
-                            InfoDialog.newInstance(InfoDialog.InfoType.Error, state.message, true)
-                                .show(requireActivity().supportFragmentManager, "ErrorDialog")
-                        }
+                            (activity as MainActivity).getDialog(DialogType.ERROR,state.message).show(requireActivity().supportFragmentManager, "ErrorDialog")
+                            (activity as MainActivity).popFragment()
                     }
                 }
-            }
+
         }
+    }
     }
     private fun arrangeInputList() : MutableList<CustomInputFormat> {
         val inputList = mutableListOf<CustomInputFormat>()
-        //setStateCollectors()
-        Log.i("AddUserFragment", "Current addUserState value: ${viewModel.addUserState.value}")
+
+        Log.i(TAG, "Current addUserState value: ${viewModel.addUserState.value}")
         inputList.add(CustomInputFormat("Select Account Type", EditTextInputType.MenuList,null,null,null).apply {
             singleSelectionListItems = listOf(
                 "Team Member",
@@ -139,17 +134,33 @@ class AddUserFragment : Fragment() {
                 input.text.toString().isNotEmpty()
             })
         )
-        inputList.add(CustomInputFormat("Department", EditTextInputType.MenuList,null,null,null).apply {
-            singleSelectionListItems = listOf(
-                "HR",
-                "IT",
-                "Finance"
-            )
-            text= singleSelectionListItems[0]
 
+
+        inputList.add(CustomInputFormat("Department", EditTextInputType.MenuList,null,null,null).apply {
+            singleSelectionListItems = ListOfAdmins
+            text= singleSelectionListItems[0]
         })
         return inputList
     }
+    private fun setMenu(arrangedInputList: MutableList<CustomInputFormat>) : InputMenuFragment330 {
+        return  InputMenuFragment330(arrangedInputList,  buttonListener = { inputList ->
+            val userType :String = inputList?.get(0).toString()
+            val name :String = inputList?.get(1).toString()
+            val surname :String = inputList?.get(2).toString()
+            val password:String = inputList?.get(3).toString()
+
+            val email :String = inputList?.get(4).toString()
+            val personalNo :String = inputList?.get(5).toString()
+            val department :String = inputList?.get(6).toString()
+            val employee = Employee(UserType.fromString(userType), name, surname, password, email, personalNo, department)
+            viewModel.addUser(employee)
+            Log.i(TAG, "userType: $userType, name: $name, surname: $surname, email: $email, personalNo: $personalNo,password: $password, department: $department")
+        },
+            btnOKName = "Kullanıcı Oluştur",)
+    }
+
+
+
 
 
 }
