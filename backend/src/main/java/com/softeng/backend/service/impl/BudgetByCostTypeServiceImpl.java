@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,11 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     }
 
     @Override
-    public Optional<BudgetByCostType> findByTypeName(String typeName) {
+    public List<BudgetByCostType> getAllCostTypes() {
+        return budgetByCostTypeRepository.findAll();
+    }
+    @Override
+    public Optional<BudgetByCostType> getByTypeName(String typeName) {
         return budgetByCostTypeRepository.findByTypeName(typeName);
     }
 
