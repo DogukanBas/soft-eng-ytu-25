@@ -9,9 +9,6 @@ import lombok.Data;
 @Data
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
-
     @Column(name = "personalNo", unique = true, nullable = false)
     private String personalNo;
 
@@ -28,7 +25,7 @@ public class User {
     public enum UserType {
         @JsonProperty("team_member")
         team_member("team_member"),
-        @JsonProperty("employee")
+        @JsonProperty("manager")
         manager("manager"),
         @JsonProperty("accountant")
         accountant("accountant"),
@@ -44,5 +41,14 @@ public class User {
         public String getValue() {
             return value;
         }
+    }
+
+    public User() {
+    }
+
+    public User(String personalNo, String email, UserType userType) {
+        this.personalNo = personalNo;
+        this.email = email;
+        this.userType = userType;
     }
 }
