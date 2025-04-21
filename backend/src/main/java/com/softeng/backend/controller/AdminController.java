@@ -42,7 +42,7 @@ public class AdminController {
         logger.debug("Adding user with personalNo: {}", request.getPersonalNo());
         String personaNo = authentication.getName();
         User currentUser = userService.getUserByPersonalNo(personaNo);
-        logger.debug("Current User1903: {}", personaNo);
+        logger.debug("Current User: {}", personaNo);
 
         if (currentUser.getUserType() != User.UserType.admin) {
             return ResponseEntity.status(403)
@@ -73,7 +73,7 @@ public class AdminController {
             employeeService.addEmployee(employee);
 
             if (user.getUserType() == User.UserType.manager) {
-                departmentService.setManager(employee.getDepartment().getDeptId(),
+                departmentService.setManager(employee.getDepartment().getDeptname(),
                         employee.getPersonalNo());
             }
 
