@@ -7,6 +7,7 @@ import com.softeng.backend.service.UserService;
 import com.softeng.backend.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,18 +25,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(User user, String plainPassword) {
-        if (userRepository.existsByPersonalNo(user.getPersonalNo())) {
-            throw new IllegalArgumentException("Personal number already registered");
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already registered");
-        }
+    @Transactional
+    public void addUser(User user, String plainPassword) {
 
-        String hashedPassword = passwordUtil.hashPassword(plainPassword);
-        user.setPasswordHash(hashedPassword);
-
-        return userRepository.save(user);
+        try {
+            String hashedPassword = passwordUtil.hashPassword(plainPassword);
+            user.setPasswordHash(hashedPassword);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error while adding user: " + e.getMessage());
+        }
     }
 
     @Override
@@ -45,11 +44,6 @@ public class UserServiceImpl implements UserService {
 
         return user.map(u -> passwordUtil.verifyPassword(plainPassword, u.getPasswordHash()))
                 .orElse(false);
-    }
-
-    @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
     }
 
     @Override
@@ -74,24 +68,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    public User updateUser(Long userId, User userDetails) {
-        User user = getUserById(userId);
-
-        user.setPersonalNo(userDetails.getPersonalNo());
-        user.setEmail(userDetails.getEmail());
-        user.setPasswordHash(userDetails.getPasswordHash());
-        user.setUserType(userDetails.getUserType());
-
-        return userRepository.save(user);
-    }
-
-    @Override
-    public void deleteUser(Long userId) {
-        User user = getUserById(userId);
-        userRepository.delete(user);
     }
 
     @Override
