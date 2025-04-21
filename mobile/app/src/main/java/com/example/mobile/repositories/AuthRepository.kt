@@ -8,14 +8,19 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(
     private val authService: AuthService
 ) {
+    companion object {
+        const val TAG = "AuthRepository"
+    }
     suspend fun login(username: String, password: String): Result<LoginResponse> {
-        Log.i("Login initialized", "Login initialized")
+        Log.i(TAG, "login called")
         return try {
             val response = authService.login(LoginRequest(username, password))
 
             if (response.isSuccessful && response.body() != null) {
+                Log.i(TAG, "Login successful")
                 Result.success(response.body()!!)
             } else {
+                Log.i(TAG, "Login failed: ${response.message()}")
                 Result.failure(Exception("Login failed: ${response.message()}"))
             }
         } catch (e: Exception) {
