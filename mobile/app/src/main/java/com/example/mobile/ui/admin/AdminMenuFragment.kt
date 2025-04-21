@@ -57,6 +57,7 @@ class AdminMenuFragment : Fragment() {
                         (activity as MainActivity).replaceFragment(
                             AddUserFragment(departments)
                         )
+                        viewModel.setGetDepartmentsState(UiState.Idle)
 
                     }
                     is UiState.Error -> {
