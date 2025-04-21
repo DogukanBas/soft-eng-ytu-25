@@ -31,8 +31,9 @@ class LoginFragment : Fragment() {
     private lateinit var loginButton: Button
 
 
-
-
+    companion object {
+        const val TAG = "LoginFragment"
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,15 +70,11 @@ class LoginFragment : Fragment() {
                     is UiState.Idle -> {}
                     is UiState.Loading -> {}
                     is UiState.Success -> {
-                        Log.i("LoginFragment", "Login successful for user: ${User.personalNo}")
+                        Log.i(TAG, "Login successful for user: ${User.personalNo}")
 
                         when (User.userType) {
                             UserType.ADMIN -> {
                                 (activity as MainActivity).replaceFragment(AdminMenuFragment(), false)
-
-
-                                //add fragment AdminHome
-
                             }
                             UserType.MANAGER -> {
 

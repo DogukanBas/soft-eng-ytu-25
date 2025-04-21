@@ -1,5 +1,7 @@
 package com.example.mobile.model.User
 
+import android.util.Log
+
 enum class UserType {
 
     ADMIN,
@@ -21,6 +23,12 @@ enum class UserType {
 
             }
         }
+
+
+    }
+    override fun toString(): String {
+        Log.i("UserType", "toString() called")
+        return super.toString().lowercase()
     }
 
 }

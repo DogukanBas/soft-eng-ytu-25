@@ -1,5 +1,6 @@
 package com.example.mobile.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile.model.User.User
@@ -21,7 +22,9 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableStateFlow<UiState<LoginResponse>>(UiState.Idle)
     val loginState: StateFlow<UiState<LoginResponse>> = _loginState
 
-
+    companion object {
+        const val TAG = "LoginViewModel"
+    }
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _loginState.value = UiState.Loading
@@ -35,9 +38,15 @@ class LoginViewModel @Inject constructor(
                             userType = UserType.fromString(loginResponse.userType),
                             accessToken = loginResponse.accessToken,
                     )
+                    Log.i(TAG, "Login successful for user: ${User.personalNo}")
+
                     UiState.Success(loginResponse)
                 }
-                else -> UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+
+                else -> {
+                    Log.i(TAG, "Login failed")
+                    UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
             }
         }
     }
