@@ -67,4 +67,18 @@ public class AdminDTOs {
             return message;
         }
     }
+
+    public enum GetDepartmentResponse {
+        INVALID_AUTHENTICATION("Invalid authentication");
+
+        private final String message;
+
+        GetDepartmentResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }

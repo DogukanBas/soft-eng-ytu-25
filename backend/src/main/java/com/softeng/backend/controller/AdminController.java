@@ -94,11 +94,7 @@ public class AdminController {
     @PostMapping("/add-department")
     public ResponseEntity<?> addDepartment(@RequestBody AdminDTOs.AddDepartmentRequest request, Authentication authentication) {
         logger.debug("Adding department with name: {}", request.getDeptName());
-        String personaNo = authentication.getName();
-        User currentUser = userService.getUserByPersonalNo(personaNo);
-        logger.debug("Current User: {}", personaNo);
-
-        if (currentUser.getUserType() != User.UserType.admin) {
+        if (!isAuthenticated(authentication)) {
             return ResponseEntity.status(403)
                     .header("message", AdminDTOs.AddDepartmentResponse.INVALID_AUTHENTICATION.getMessage())
                     .build();
@@ -125,9 +121,15 @@ public class AdminController {
     }
 
     @GetMapping("/departments")
-    public ResponseEntity<?> getAllDepartmentNames() {
+    public ResponseEntity<?> getAllDepartmentNames(Authentication authentication) {
         logger.debug("Getting all department names in JSON format");
         try {
+            if (!isAuthenticated(authentication)) {
+                return ResponseEntity.status(403)
+                        .header("message", AdminDTOs.GetDepartmentResponse.INVALID_AUTHENTICATION.getMessage())
+                        .build();
+            }
+
             return ResponseEntity.ok(Map.of("departments",
                     departmentService.getAllDepartmentNames()
             ));
@@ -135,5 +137,12 @@ public class AdminController {
             logger.error("Error while getting all department names: {}", e.getMessage());
             return ResponseEntity.status(500).body("Internal server error");
         }
+    }
+
+    private boolean isAuthenticated(Authentication authentication) {
+        String personalNo = authentication.getName();
+        User currentUser = userService.getUserByPersonalNo(personalNo);
+        logger.debug("Current User: {}", personalNo);
+        return currentUser.getUserType() == User.UserType.admin;
     }
 }
