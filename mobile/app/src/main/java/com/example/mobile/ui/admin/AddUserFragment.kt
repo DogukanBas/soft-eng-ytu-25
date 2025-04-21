@@ -45,7 +45,7 @@ class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : Fragment()
 
 
         childFragmentManager.beginTransaction()
-            .replace(R.id.input_menu_container, addUseInputFragment)
+            .replace(R.id.input_menu_container, addUserInputFragment)
             .commit()
 
     }
