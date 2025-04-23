@@ -1,0 +1,21 @@
+.admin-container {
+    height: 40rem;
+    width: 40rem;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+
+}
+
+.buttons-container > h1{
+    padding: 2rem 0;
+}
