@@ -1,0 +1,12 @@
+.header-container {
+    background-color: #1976d2;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8rem;
+}
+.header-container > div {
+    font-size: 3rem;
+    color: white;
+}
