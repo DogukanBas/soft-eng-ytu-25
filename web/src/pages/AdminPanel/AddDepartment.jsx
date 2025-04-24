@@ -17,14 +17,14 @@ function AddDepartment() {
             const response = await addDepartment(deptName)
             console.log(response);
             setDeptName("");
-            alert("Department added successfuly");
+            
 
             
             
             
         } catch (error) {
             console.log(error);
-            alert("Department could not be added");
+            
             
         }
     }

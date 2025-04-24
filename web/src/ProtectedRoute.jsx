@@ -1,10 +1,29 @@
-import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
-import { getAuthToken } from './services/authService.js'
 
-const ProtectedRoute = () => {
-    const token = getAuthToken(); // localStorage'dan token al
-    return token ? <Outlet /> : <Navigate to="/" />
-}
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext.jsx';
+
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { auth, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Yükleniyor...</div>; // ya da bir spinner
+  }
+
+  if (!auth.token) {
+    console.log("Missing authentication token.");
+    return <Navigate to="/" />;
+  }
+
+  if (requiredRole === "admin" && auth.userType !== "admin") {
+    console.log("Access to the admin panel is denied.");
+    return <Navigate to="/" />;
+  } 
+
+  if (requiredRole === "user" && auth.userType === "admin") {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+};
 
 export default ProtectedRoute;
