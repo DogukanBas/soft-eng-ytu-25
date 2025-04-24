@@ -3,10 +3,15 @@ import Footer from "../../shared/Footer"
 import "./Admin.css"
 import { Button } from "@mui/material"
 import { Link } from "react-router"
-import { setAuthToken } from "../../services/authService"
+import { useAuth } from "../../contexts/AuthContext"
 
 
 function Admin() {
+    const { logout } = useAuth()
+    const handleLogout = () => {
+        logout();
+    };
+
     return (
         <>
             <Header />
@@ -21,7 +26,7 @@ function Admin() {
                     </Link>
                 </div>
                 <Link to="/">
-                        <Button onClick={() => setAuthToken(null)} sx={{width: "100%"}}>Log Out</Button>
+                        <Button onClick={handleLogout} sx={{width: "100%"}}>Log Out</Button>
                 </Link>
             </div>
                 

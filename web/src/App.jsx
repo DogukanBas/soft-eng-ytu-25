@@ -16,28 +16,28 @@ import ProtectedRoute from './ProtectedRoute.jsx';
         path: "/", 
         element: <Login /> 
       },
-      {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "/admin",
-            element: <Admin />,
-          },
-          {
-            path: "/admin/add-department",
-            element: <AddDepartment />
-          },
-          {
-            path: "/admin/add-user",
-            element: <AddUser />
-          },
 
-          {
-            path: "/user",
-            element: <User />
-          } 
-        ]
-      }
+      {
+        path: "/admin",
+        element: <ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>
+      
+      },
+
+      {
+        path: "/admin/add-department",
+        element: <ProtectedRoute requiredRole="admin"><AddDepartment /></ProtectedRoute>
+      },
+
+      {
+        path: "/admin/add-user",
+        element: <ProtectedRoute requiredRole="admin"><AddUser /></ProtectedRoute>
+      },
+        
+      {   
+        path: "/user",
+        element: <ProtectedRoute requiredRole="user"><User /></ProtectedRoute>
+      },
+      
     ]);
 
     return (

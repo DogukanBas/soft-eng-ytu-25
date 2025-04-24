@@ -4,9 +4,10 @@ import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import Header from "../shared/Header";
 import Footer from "../shared/Footer";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useState } from "react";
-import { login, setAuthToken } from '../services/authService';
+import { login } from '../services/authService';
+import { useAuth } from "../contexts/AuthContext";
 
 
 function Login(props) {
@@ -14,6 +15,9 @@ function Login(props) {
     const [password, setPassword] = useState("")
     const [error, setError] = useState('')
     const navigate = useNavigate()
+    const { setAuth } = useAuth()
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,17 +25,14 @@ function Login(props) {
         
         try {
           const response = await login(personalNoOrEmail, password);
+          console.log(response);
           
           // Giriş başarılı ise token'i kaydet ve yönlendir
-          setAuthToken(response.accessToken);
+          setAuth({ token: response.accessToken, userType: response.userType });
           
           
           // Kullanıcı tipine göre yönlendirme yapabilirsiniz
-          if (response.userType === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/user');
-          }
+          navigate(response.userType === 'admin' ? '/admin' : '/user');
           
         } catch (err) {
           setError('Giriş başarısız. Bilgilerinizi kontrol edin.');

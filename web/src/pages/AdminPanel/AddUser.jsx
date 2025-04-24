@@ -1,3 +1,4 @@
+//AddUser.jsx
 import Header from "../../shared/Header"
 import Footer from "../../shared/Footer"
 import "./AddUser.css"
@@ -7,12 +8,12 @@ import { Select } from "@mui/material"
 import { MenuItem } from "@mui/material"
 import { Link } from "react-router"
 import { addEmployee, getDepartments } from "../../services/adminService"
-import axios from "axios"
+
 
 function AddUser() {  
     const [userData, setUserData] = useState({name:"", surname:"", personalNo:"", email:"", password:"", userType:"", deptName:""});
-    // const getDepartments = {departments: ["IT", "Finance", "Tech", "HR"]}
     const [departments, setDepartments] = useState([]);
+   
 
     const departmentsLoader = async () => {
         try {
@@ -34,11 +35,11 @@ function AddUser() {
             try {
                 const response = await addEmployee(userData)
                 console.log(response);
-                alert("User added successfully")
+                
                 setUserData({name:"", surname:"", personalNo:"", email:"", password:"", userType:"", deptName:""})
             } catch (error) {
                 console.log(error);
-                alert("User could not be added")
+                
                 
             }
         }
@@ -98,9 +99,7 @@ function AddUser() {
                                 name="deptName"
                                 required
                             >
-                                {/* <MenuItem value={"IT"}>IT</MenuItem> */}
                                 {departments.map((el, index) => <MenuItem key={index} value={el}>{el}</MenuItem>)}
-
                             </Select>
                         </FormControl>
                         <Button variant="outlined" type="submit">Add User</Button>
