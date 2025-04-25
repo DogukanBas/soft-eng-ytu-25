@@ -32,7 +32,6 @@ class AccountantMenuFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.i(TAG, "onViewCreated")
-        setStateObservers()
         val menuFragment = setMenu()
 
         childFragmentManager.beginTransaction()
@@ -44,23 +43,6 @@ class AccountantMenuFragment : BaseFragment() {
         return R.drawable.ic_launcher_foreground
     }
 
-    private fun setStateObservers(){
-        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.XXX.collect { state ->
-//                when (state) {
-//                    is UiState.Loading -> {
-//
-//                    }
-//                    is UiState.Success -> {
-//
-//                    }
-//                    is UiState.Error -> {
-//                    }
-//                    else -> {}
-//                }
-//            }
-        }
-    }
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
@@ -71,8 +53,29 @@ class AccountantMenuFragment : BaseFragment() {
         })
         menuItems.add(MenuItem(
             "Set Budgets") {
-            Log.i(TAG,"Set Budget button triggered")
-                replaceFragment(SetDepartmentBudgetsFragment())
+                val newMenuItems = mutableListOf<IListMenuItem>()
+                newMenuItems.add(MenuItem(
+                    "Set Department Budgets") {
+                    replaceFragment(
+                        SetDepartmentBudgetsFragment()
+                    )
+                })
+
+                newMenuItems.add(MenuItem(
+                    "Set Cost Type Budgets") {
+                    replaceFragment(
+                        SetCostTypeBudgetsFragment()
+                    )
+                })
+
+                replaceFragment(
+                    NavigationListFragment(
+                        "SetBudgets",
+                        true,
+                        newMenuItems,
+                        headerImage= getLogo(),
+                    )
+                )
              }
         )
 

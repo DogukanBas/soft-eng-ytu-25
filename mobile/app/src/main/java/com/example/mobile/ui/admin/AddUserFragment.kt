@@ -67,7 +67,7 @@ class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : BaseFragme
                 Log.e(TAG, "Error: $message")
                 dialog.dismiss()
                 getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
-                popFragment()
+                //popFragment()
             },
             onLoading = {
                 Log.i(TAG, "Loading...")

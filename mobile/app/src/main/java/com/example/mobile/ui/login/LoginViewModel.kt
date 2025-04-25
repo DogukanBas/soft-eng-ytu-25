@@ -45,7 +45,7 @@ class LoginViewModel @Inject constructor(
 
                 else -> {
                     Log.i(TAG, "Login failed, invalid credantials")
-                    UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                    UiState.Error("Login failed, invalid credantials")
                 }
             }
         }
