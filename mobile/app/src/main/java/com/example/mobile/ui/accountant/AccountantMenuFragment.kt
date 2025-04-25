@@ -1,25 +1,26 @@
-package com.example.mobile.ui.admin
+package com.example.mobile.ui.accountant
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
-import com.example.mobile.utils.UiState
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
-@AndroidEntryPoint
-class AdminMenuFragment : BaseFragment() {
+import kotlinx.coroutines.launch
 
-    private val viewModel: AdminViewModel by viewModels()
+@AndroidEntryPoint
+class AccountantMenuFragment : BaseFragment() {
+
     companion object {
-        val TAG = "AdminMenuFragment"
+        val TAG = "AccountantMenuFragment"
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +32,7 @@ class AdminMenuFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.i(TAG, "onViewCreated")
-        setAddUserObservers()
+        setStateObservers()
         val menuFragment = setMenu()
 
         childFragmentManager.beginTransaction()
@@ -43,41 +44,40 @@ class AdminMenuFragment : BaseFragment() {
         return R.drawable.ic_launcher_foreground
     }
 
-    private fun setAddUserObservers(){
-        observeUiState(
-            viewModel.getDepartmentsState,
-            onSuccess = { departments ->
-                Log.i(TAG, "Success: $departments")
-                replaceFragment(
-                    AddUserFragment(departments)
-                )
-                viewModel.setGetDepartmentsState(UiState.Idle)
-            },
-            onError = {
-                getDialog(
-                    DialogType.ERROR,
-                    "Can't retrieve departments"
-                ).show(
-                    childFragmentManager,
-                    "ErrorDialog"
-                )
-            }
-        )
+    private fun setStateObservers(){
+        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.XXX.collect { state ->
+//                when (state) {
+//                    is UiState.Loading -> {
+//
+//                    }
+//                    is UiState.Success -> {
+//
+//                    }
+//                    is UiState.Error -> {
+//                    }
+//                    else -> {}
+//                }
+//            }
+        }
     }
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
-            "Add User"
-        ) {
-            viewModel.getDepartments()
+            "List Tickets") {
+            replaceFragment(
+                ListAccountantTicketsFragment()
+            )
         })
         menuItems.add(MenuItem(
-            "Add Department",
-            { Log.i(TAG,"add department init")
-               replaceFragment(AddDepartmentFragment()) }
-        ))
+            "Set Budgets") {
+            Log.i(TAG,"Set Budget button triggered")
+                replaceFragment(SetDepartmentBudgetsFragment())
+             }
+        )
+
         return NavigationListFragment(
-            "Admin Menu",
+            "AccountantMenu",
             true,
             menuItems,
             headerImage= getLogo(),

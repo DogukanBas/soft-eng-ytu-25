@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.mobile.MainActivity
 import com.example.mobile.R
-import com.example.mobile.base.BaseFragment
+import com.example.mobile.ui.BaseFragment
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.UiState
 import com.token.uicomponents.CustomInput.CustomInputFormat

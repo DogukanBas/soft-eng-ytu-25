@@ -1,4 +1,4 @@
-package com.example.mobile.base
+package com.example.mobile.ui
 
 import android.util.Log
 import androidx.fragment.app.Fragment

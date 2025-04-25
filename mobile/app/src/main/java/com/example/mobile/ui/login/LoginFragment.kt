@@ -9,9 +9,10 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
-import com.example.mobile.base.BaseFragment
+import com.example.mobile.ui.BaseFragment
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
+import com.example.mobile.ui.accountant.AccountantMenuFragment
 import com.example.mobile.ui.admin.AdminMenuFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,8 +71,11 @@ class LoginFragment : BaseFragment() {
                     }
                     UserType.TEAM_MEMBER -> {
 
-                    }
-                    UserType.ACCOUNTANT -> {
+                        }
+                        UserType.ACCOUNTANT -> {
+                            replaceFragment(
+                                AccountantMenuFragment()
+                            )
 
                     }
                     null -> {

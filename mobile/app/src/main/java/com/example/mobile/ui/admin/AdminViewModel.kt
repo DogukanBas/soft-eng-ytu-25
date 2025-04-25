@@ -29,6 +29,7 @@ class AdminViewModel @Inject constructor(private val adminRepository: AdminRepos
     fun setGetDepartmentsState(state: UiState<List<String>>) {
         _getDepartmentsState.value = state
     }
+
     fun getDepartments() {
         Log.i(TAG, "Initialized in AdminViewModel")
         viewModelScope.launch {
