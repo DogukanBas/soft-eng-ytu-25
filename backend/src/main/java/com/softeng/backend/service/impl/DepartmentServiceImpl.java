@@ -5,6 +5,7 @@ import com.softeng.backend.repository.DepartmentRepository;
 import com.softeng.backend.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,23 +27,26 @@ try {
     }
 
     @Override
-    public void setManager(Integer deptId, String personalNo) {
-        departmentRepository.setManager(deptId, personalNo);
+    public void setManager(String deptName, String personalNo) {
+        departmentRepository.setManager(deptName, personalNo);
     }
 
     @Override
-    public void setDepartmentRemainingBudget(Integer deptId, Double remainingBudget) {
-        departmentRepository.setDepartmentRemainingBudget(deptId, remainingBudget);
+    @Transactional
+    public void setDepartmentRemainingBudget(String deptName, Double remainingBudget) {
+        departmentRepository.setDepartmentRemainingBudget(deptName, remainingBudget);
     }
 
     @Override
-    public void setDepartmentInitialBudget(Integer deptId, Double initialBudget) {
-        departmentRepository.setDepartmentInitialBudget(deptId, initialBudget);
+    @Transactional
+    public void setDepartmentInitialBudget(String deptName, Double initialBudget) {
+        departmentRepository.setDepartmentInitialBudget(deptName, initialBudget);
     }
 
     @Override
-    public void resetDepartmentBudget(Integer deptId) {
-        departmentRepository.resetDepartmentBudget(deptId);
+    @Transactional
+    public void resetDepartmentBudget(String deptName) {
+        departmentRepository.resetDepartmentBudget(deptName);
     }
 
     @Override

@@ -21,21 +21,21 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     List<String> getAllDepartmentNames();
 
     @Modifying
-    @Query(value = "UPDATE departments SET deptManager = :personalNo WHERE deptId = :deptId", nativeQuery = true)
-    void setManager(@Param("deptId") Integer deptId, @Param("personalNo") String personalNo);
+    @Query(value = "UPDATE departments SET deptManager = :personalNo WHERE deptname = :deptName", nativeQuery = true)
+    void setManager(@Param("deptName") String deptName, @Param("personalNo") String personalNo);
    @Modifying
     @Query("UPDATE Department d SET d.remainingBudget = :remainingBudget " +
-           "WHERE d.deptId = :deptId")
-    void setDepartmentRemainingBudget(@Param("deptId") Integer deptId, @Param("remainingBudget") Double remainingBudget);
+           "WHERE d.deptname = :deptName")
+    void setDepartmentRemainingBudget(@Param("deptName") String deptName, @Param("remainingBudget") Double remainingBudget);
 
     @Modifying
     @Query("UPDATE Department d SET d.initialBudget = :initialBudget " +
-           "WHERE d.deptId = :deptId")
-    void setDepartmentInitialBudget(@Param("deptId") Integer deptId, @Param("initialBudget") Double initialBudget);
+           "WHERE d.deptname = :deptName")
+    void setDepartmentInitialBudget(@Param("deptName") String deptName, @Param("initialBudget") Double initialBudget);
 
     @Modifying
     @Query("UPDATE Department d SET d.remainingBudget = d.initialBudget " +
-           "WHERE d.deptId = :deptId")
-    void resetDepartmentBudget(@Param("deptId") Integer deptId);
+           "WHERE d.deptname = :deptName")
+    void resetDepartmentBudget(@Param("deptName") String deptName);
 
 }

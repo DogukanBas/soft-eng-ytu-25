@@ -5,10 +5,10 @@ import java.util.List;
 
 public interface DepartmentService {
     Department addDepartment(Department department);
-    void setManager(Integer deptId, String personalNo);
-    void setDepartmentRemainingBudget(Integer deptId, Double remainingBudget);
-    void setDepartmentInitialBudget(Integer deptId, Double initialBudget);
-    void resetDepartmentBudget(Integer deptId);
+    void setManager(String deptName, String personalNo);
+    void setDepartmentRemainingBudget(String deptName, Double remainingBudget);
+    void setDepartmentInitialBudget(String deptName, Double initialBudget);
+    void resetDepartmentBudget(String deptName);
     List<Department> getAllDepartments();
     List<String> getAllDepartmentNames();
     Department getDepartmentByName(String deptname);

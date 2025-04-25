@@ -2,14 +2,12 @@ package com.example.mobile.ui.admin
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
 import com.example.mobile.R
+import com.example.mobile.ui.BaseFragment
 import com.example.mobile.model.User.Employee
 import com.example.mobile.model.User.UserType
 import com.example.mobile.utils.DialogType
@@ -21,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : Fragment() {
+class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : BaseFragment() {
     private val viewModel: AdminViewModel by viewModels()
     private lateinit var addUseInputFragment: InputMenuFragment330
     companion object{
@@ -54,39 +52,29 @@ class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : Fragment()
     private fun setStateCollectors() {
         Log.i(TAG, "Setting up state collectors")
 
-        val dialog = (activity as MainActivity).getDialog(DialogType.LOADING,"Loading")
+        val dialog = getDialog(DialogType.LOADING,"Loading")
 
+        observeUiState(
+            viewModel.addUserState,
+            onSuccess = { data ->
+                Log.i(TAG, "Success: $data")
+                dialog.dismiss()
+                getDialog(DialogType.SUCCESS,"User added successfully")
+                    .show(requireActivity().supportFragmentManager, "SuccessDialog")
+                popFragment()
+            },
+            onError = { message ->
+                Log.e(TAG, "Error: $message")
+                dialog.dismiss()
+                getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
+                //popFragment()
+            },
+            onLoading = {
+                Log.i(TAG, "Loading...")
+                dialog.show(requireActivity().supportFragmentManager, "ProcessingDialog")
+            },
+        )
 
-        viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.addUserState.collect { state ->
-                    Log.i(TAG, "Received state: $state")
-
-                    when (state) {
-                        is UiState.Idle -> {
-                            Log.i(TAG, "State: Idle")
-                        }
-                        is UiState.Loading -> {
-                            Log.i(TAG, "State: Loading")
-                            dialog.show(requireActivity().supportFragmentManager, "ProcessingDialog")
-                        }
-                        is UiState.Success -> {
-                            Log.i(TAG, "State: Success with data: ${state.data}")
-                            dialog.dismiss()
-                            (activity as MainActivity).getDialog(DialogType.SUCCESS,"User added successfully")
-                                .show(requireActivity().supportFragmentManager, "SuccessDialog")
-                            (activity as MainActivity).popFragment()
-                            }
-
-                        is UiState.Error -> {
-                            Log.e(TAG, "State: Error with message: ${state.message}")
-                            dialog.dismiss()
-                            (activity as MainActivity).getDialog(DialogType.ERROR,state.message).show(requireActivity().supportFragmentManager, "ErrorDialog")
-                            (activity as MainActivity).popFragment()
-                    }
-                }
-
-        }
-    }
     }
     private fun arrangeInputList() : MutableList<CustomInputFormat> {
         val inputList = mutableListOf<CustomInputFormat>()
