@@ -1,10 +1,15 @@
-import "./Header.css"
+import "./Header.css";
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+
 function Header() {
     return (
-        <div className="header-container">
-            <div className="header-item">Cost Management System</div>
-        </div>
-    )
+        <header className="header-container">
+            <div className="logo">
+                <AccountBalanceWalletIcon className="logo-icon" />
+                CostMS
+            </div>
+        </header>
+    );
 }
 
-export default Header
+export default Header;
