@@ -17,7 +17,7 @@ public interface BudgetByCostTypeRepository  extends JpaRepository<BudgetByCostT
     boolean existsByTypeName(String typeName);
 
     @Modifying
-    @Query("UPDATE BudgetByCostType b SET b.remainingBudget = :remainingBudget " +
+    @Query("UPDATE BudgetByCostType b SET b.initialBudget = :initialBudget " +
            "WHERE b.typeName = :typeName")
     void setInitialBudgetByTypeName(String typeName, Double initialBudget);
 
