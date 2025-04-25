@@ -20,8 +20,8 @@ class AuthRepository @Inject constructor(
                 Log.i(TAG, "Login successful")
                 Result.success(response.body()!!)
             } else {
-                Log.i(TAG, "Login failed: ${response.message()}")
-                Result.failure(Exception("Login failed: ${response.message()}"))
+                Log.i(TAG, "Login failed: ${response.body()!!}")
+                Result.failure(Exception("Login failed: ${response.headers()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)

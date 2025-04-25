@@ -7,24 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
 import com.example.mobile.R
+import com.example.mobile.base.BaseFragment
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
-import com.example.mobile.ui.admin.AddUserFragment
 import com.example.mobile.ui.admin.AdminMenuFragment
-import com.example.mobile.utils.UiState
 import com.google.android.material.textfield.TextInputEditText
-import com.token.uicomponents.ListMenuFragment.IListMenuItem
-import com.token.uicomponents.ListMenuFragment.ListMenuFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var emailInput: TextInputEditText
     private lateinit var passwordInput: TextInputEditText
@@ -64,43 +57,33 @@ class LoginFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.loginState.collect { state ->
-                when (state) {
-                    is UiState.Idle -> {}
-                    is UiState.Loading -> {}
-                    is UiState.Success -> {
-                        Log.i(TAG, "Login successful for user: ${User.personalNo}")
-
-                        when (User.userType) {
-                            UserType.ADMIN -> {
-                                (activity as MainActivity).replaceFragment(AdminMenuFragment(), false)
-                            }
-                            UserType.MANAGER -> {
-
-                            }
-                            UserType.TEAM_MEMBER -> {
-
-                            }
-                            UserType.ACCOUNTANT -> {
-
-                            }
-
-                            null -> {
-                                showError("User Type is Unknown")
-                            }
-                        }
+        observeUiState(stateFlow = viewModel.loginState,
+            onSuccess = {
+                Log.i(TAG, "Login successful for user: ${User.personalNo}")
+                when (User.userType) {
+                    UserType.ADMIN -> {
+                        replaceFragment(AdminMenuFragment(), false)
                     }
-                    is UiState.Error -> {
-                        showError(state.message)
+                    UserType.MANAGER -> {
+
+
+                    }
+                    UserType.TEAM_MEMBER -> {
+
+                    }
+                    UserType.ACCOUNTANT -> {
+
+                    }
+                    null -> {
+                        showToastError("User Type is Unknown")
                     }
                 }
-            }
-        }
-
+            },
+            onError = {
+                showToastError(it)
+            })
     }
-
-    private fun showError(message: String) {
+    private fun showToastError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

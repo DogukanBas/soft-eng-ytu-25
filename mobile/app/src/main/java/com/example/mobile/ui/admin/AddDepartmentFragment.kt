@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.mobile.MainActivity
 import com.example.mobile.R
+import com.example.mobile.base.BaseFragment
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.UiState
 import com.token.uicomponents.CustomInput.CustomInputFormat
@@ -19,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddDepartmentFragment : Fragment() {
+class AddDepartmentFragment : BaseFragment() {
     private val viewModel: AdminViewModel by viewModels()
     companion object{
         val TAG = "AddDepartmentFragment"
@@ -63,39 +64,29 @@ class AddDepartmentFragment : Fragment() {
     }
     //todo this reccurs, make this generic in a util maybe
     private fun setStateCollectors() {
-        val dialog = (activity as MainActivity).getDialog(DialogType.LOADING,"Loading")
-
-        lifecycleScope.launch {
-                viewModel.addDepartmentState.collect { state ->
-                    when (state) {
-                        is UiState.Idle -> {
-                            Log.i(TAG, "State: Idle")
-                        }
-
-                        is UiState.Loading -> {
-                            Log.i(TAG, "State: Loading")
-                            dialog.show(
-                                requireActivity().supportFragmentManager,
-                                "ProcessingDialog"
-                            )
-                        }
-
-                        is UiState.Success -> {
-                            Log.i(TAG, "State: Success with data: ${state.data}")
-                            dialog.dismiss()
-                            (activity as MainActivity).getDialog(DialogType.SUCCESS,"Department added successfully")
-                                .show(requireActivity().supportFragmentManager, "SuccessDialog")
-                            (activity as MainActivity).popFragment()
-                        }
-
-                        is UiState.Error -> {
-                            Log.e(TAG, "State: Error with message: ${state.message}")
-                            dialog.dismiss()
-                            (activity as MainActivity).getDialog(DialogType.ERROR,state.message).show(requireActivity().supportFragmentManager, "ErrorDialog")
-                        }
-                    }
-
-            }
-        }
+        val dialog = getDialog(DialogType.LOADING,"Loading")
+        observeUiState(
+            viewModel.addDepartmentState,
+            onSuccess = { data ->
+                Log.i(TAG, "Success: $data")
+                dialog.dismiss()
+                getDialog(DialogType.SUCCESS,"Department added successfully")
+                    .show(requireActivity().supportFragmentManager, "SuccessDialog")
+                popFragment()
+            },
+            onError = { message ->
+                Log.e(TAG, "Error: $message")
+                dialog.dismiss()
+                getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
+            },
+            onLoading = {
+                Log.i(TAG, "Loading")
+                dialog.show(
+                    requireActivity().supportFragmentManager,
+                    "ProcessingDialog"
+                )
+            },
+        )
     }
+
 }

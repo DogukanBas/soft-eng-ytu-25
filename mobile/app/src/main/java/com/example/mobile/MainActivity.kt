@@ -26,7 +26,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hideSystemUI()
-        replaceFragment(LoginFragment(),false)
+
+         supportFragmentManager.beginTransaction().apply{
+            replace(R.id.fragment_container, LoginFragment())
+            commit()
+        }
+
     }
 
     private fun hideSystemUI() {
@@ -39,48 +44,5 @@ class MainActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_FULLSCREEN
                 )
     }
-
-
-    fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        if (addToBackStack) {
-            transaction.addToBackStack(null)
-        }
-        transaction.commit()
-    }
-
-    fun popFragment() {
-        Log.i(TAG, "Popping fragment")
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        if (fragment != null) {
-            supportFragmentManager.popBackStack()
-        }
-    }
-    fun getDialog(dialogType: DialogType, message:String ): InfoDialog {
-        Log.i(TAG, "getDialog called with type: $dialogType")
-        val dialog = when (dialogType) {
-            DialogType.LOADING -> DialogBoxFullScreen330(
-                InfoDialog.InfoType.Processing,
-                message,
-                isCancelable = false)
-            DialogType.ERROR -> DialogBoxInfo330(
-                "Error",
-                isCancelable= true,
-                info = message,
-                infoDialogButtons = InfoDialog.InfoDialogButtons.Confirm
-
-            )
-            DialogType.SUCCESS ->
-                DialogBoxInfo330(
-                    "Success",
-                    info = message,
-                    isCancelable = true,
-                    infoDialogButtons = InfoDialog.InfoDialogButtons.Confirm
-            )
-        }
-        return dialog
-    }
-
 
 }
