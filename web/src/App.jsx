@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router';
-import Login from './pages/Login.jsx';
+import Login from './pages/LoginPanel/Login.jsx';
 import Admin from "./pages/AdminPanel/Admin.jsx"
 import AddDepartment from './pages/AdminPanel/AddDepartment.jsx';
 import AddUser from './pages/AdminPanel/AddUser.jsx';
