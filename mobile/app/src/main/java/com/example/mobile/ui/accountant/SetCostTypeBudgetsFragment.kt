@@ -17,6 +17,17 @@ class SetCostTypeBudgetsFragment : BaseBudgetFragment<CostTypeBudgetResponse>() 
                 AddCostTypeItemFragment(), true
             )
         }
+        btnSetmaxCost.setOnClickListener{
+            val input = etmaxCostValue.text.toString()
+            val item = selectedItem ?: return@setOnClickListener
+            input.toDoubleOrNull()?.let { newValue ->
+                selectedItem = updateItemBudget(item, initial = null, remaining = null , maxCost = newValue)
+                viewModel.setmaxCost(item.name, newValue)
+                etmaxCostValue.text.clear()
+            } ?: run {
+                etmaxCostValue.error = "Invalid number"
+            }
+        }
     }
     override fun getItemsOne () {
         viewModel.getCostTypesWithBudget()

@@ -36,6 +36,12 @@ interface CostTypeService {
     suspend fun addCostTypeBudget(
         @Query("costTypeName") typeName : String,
         @Query ("initialBudget") initialBudget: Double,
+        @Query ("maxCost") maxCost: Double,
 
+    ): Response<Unit>
+    @POST("api/accountant/cost-types/set-max-cost")
+    suspend fun setmaxCost(
+        @Query("typeName") costType: String,
+        @Query("maxCost") maxCost: Double
     ): Response<Unit>
 }

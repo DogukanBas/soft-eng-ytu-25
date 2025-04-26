@@ -87,4 +87,19 @@ class CostTypeRepository @Inject constructor() {
              return Result.failure(e)
         }
     }
+    suspend fun setmaxCost(costType: String, maxCost: Double): Result<Unit> {
+        Log.i(TAG, "Set max budget called")
+        return try {
+            val response = costTypeService.setmaxCost(costType, maxCost)
+            if (response.isSuccessful) {
+                Log.i(TAG, "Set max budget successful")
+                Result.success(response.body()!!)
+            } else {
+                Log.i(TAG, "Set max budget failed: ${response.headers().get("message")}")
+                Result.failure(Exception("Set max budget failed: ${response.headers().get("message")}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

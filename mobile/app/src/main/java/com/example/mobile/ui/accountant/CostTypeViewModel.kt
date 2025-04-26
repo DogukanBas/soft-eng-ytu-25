@@ -86,4 +86,19 @@ class CostTypeViewModel @Inject constructor(
             }
         }
     }
+
+    fun setmaxCost(costTypeName: String, budget: Double) {
+        viewModelScope.launch {
+            _addCostTypeBudgetState.value = UiState.Loading
+            val result = costTypeRepository.setmaxCost(costTypeName, budget)
+            if (result.isSuccess) {
+                Log.i("CostTypeViewModel", "Success: ${result.getOrNull()}")
+                _addCostTypeBudgetState.value = UiState.Success(result.getOrNull()!!)
+            } else {
+                Log.i("CostTypeViewModel", "Error: ${result.exceptionOrNull()?.message}")
+                _addCostTypeBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+            }
+
+        }
+    }
 }

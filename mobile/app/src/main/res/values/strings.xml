@@ -23,4 +23,5 @@
     <string name="set_button">Set</string>
     <string name="reset_to_initial_button">Reset Remaining to Initial</string>
     <string name="add_button">Add</string>
+    <string name="max_budget_label"> Max Budget</string>
 </resources>

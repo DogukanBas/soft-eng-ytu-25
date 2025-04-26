@@ -103,7 +103,7 @@
             android:inputType="numberDecimal"
             android:hint="$0.00"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="12dp"/>
 
         <Button
             android:id="@+id/btn_set_remaining_budget"
@@ -111,8 +111,44 @@
             android:layout_height="wrap_content"
             android:text="@string/set_button"
             android:layout_gravity="center_vertical"/>
+
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:id="@+id/tv_max_budget_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_budget_label"
+            android:visibility="gone"
+            android:textSize="16sp"
+            android:layout_gravity="center_vertical"/>
+        <EditText
+            android:id="@+id/et_max_budget_value"
+            android:layout_width="0dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="numberDecimal"
+            android:hint="$0.00"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"/>
+
+        <Button
+            android:id="@+id/btn_set_max_budget_value"
+            android:visibility="gone"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_button"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
     <!-- Reset Button -->
     <Button
         android:id="@+id/btn_reset_to_initial"
