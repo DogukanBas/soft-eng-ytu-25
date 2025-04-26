@@ -59,6 +59,7 @@ public class AccountantDTOs {
         private String name;
         private BigDecimal initialBudget;
         private BigDecimal remainingBudget;
+        private BigDecimal maxCost;
 
         public BudgetResponse(String typeName, BigDecimal initialBudget, BigDecimal remainingBudget) {
             this.name = typeName;
@@ -76,6 +77,7 @@ public class AccountantDTOs {
             this.name = budgetByCostType.getTypeName();
             this.initialBudget = budgetByCostType.getInitialBudget();
             this.remainingBudget = budgetByCostType.getRemainingBudget();
+            this.maxCost = budgetByCostType.getMaxCost();
         }
 
         public String getName() {
@@ -100,6 +102,12 @@ public class AccountantDTOs {
 
         public void setRemainingBudget(BigDecimal remainingBudget) {
             this.remainingBudget = remainingBudget;
+        }
+        public BigDecimal getMaxCost() {
+            return maxCost;
+        }
+        public void setMaxCost(BigDecimal maxCost) {
+            this.maxCost = maxCost;
         }
     }
 }
