@@ -41,10 +41,8 @@ CREATE TABLE approveHistory (
     status TEXT NOT NULL CHECK (
         status IN (
             'sent to manager',
-            'approved by manager',
             'rejected by manager - can be fixed',
             'closed as rejected by manager',
-            'approved by manager - waiting for invoice',
             'sent to accountant',
             'closed as approved',
             'rejected by accountant - can be fixed',
@@ -61,7 +59,8 @@ CREATE TABLE budgetByCostType (
     id SERIAL PRIMARY KEY,
     typeName VARCHAR(100) UNIQUE NOT NULL,
     remainingBudget NUMERIC(12, 2) DEFAULT 0,
-    initialBudget NUMERIC(12, 2) DEFAULT 0
+    initialBudget NUMERIC(12, 2) DEFAULT 0,
+	maxCost NUMERIC(12, 2) DEFAULT 0
 );
 
 -- ATTACHMENTS
