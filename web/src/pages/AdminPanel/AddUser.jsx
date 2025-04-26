@@ -116,7 +116,7 @@ function AddUser() {
                             Personal Information
                         </div>
 
-                        <div className="form-group">
+                        <div className="adduser-form-group">
                             <TextField
                                 id="name"
                                 name="name"
@@ -141,7 +141,7 @@ function AddUser() {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="adduser-form-group">
                             <TextField
                                 id="personalNo"
                                 name="personalNo"
@@ -171,7 +171,7 @@ function AddUser() {
                             Account Details
                         </div>
 
-                        <div className="form-group">
+                        <div className="adduser-form-group">
                             <TextField
                                 id="password"
                                 name="password"
@@ -238,16 +238,7 @@ function AddUser() {
                     </form>
                 </div>
 
-                <div className="back-link">
-                    <Link to="/admin">
-                        <Button 
-                            variant="text" 
-                            startIcon={<ArrowBackIcon />}
-                        >
-                            Back to Admin Panel
-                        </Button>
-                    </Link>
-                </div>
+            
             </div>
             <Footer />
         </>

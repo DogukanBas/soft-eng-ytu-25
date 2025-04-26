@@ -98,16 +98,6 @@ function AddDepartment() {
                     </form>
                 </div>
 
-                <div className="back-link">
-                    <Link to="/admin">
-                        <Button 
-                            variant="text" 
-                            startIcon={<ArrowBackIcon />}
-                        >
-                            Back to Admin Panel
-                        </Button>
-                    </Link>
-                </div>
             </div>
             <Footer />
         </>

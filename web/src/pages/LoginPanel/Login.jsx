@@ -65,9 +65,7 @@ function Login(props) {
                                 required
                                 fullWidth
                                 variant="outlined"
-                                InputLabelProps={{
-                                    style: { fontSize: '0.8rem' } 
-                                }}
+                                
                             />
                         </div>
                         
