@@ -93,7 +93,7 @@ public class AccountantController {
     }
 
     @PostMapping("/cost-types/add")
-    public ResponseEntity<?> addCostType(String costTypeName, Double initialBudget, Authentication authentication) {
+    public ResponseEntity<?> addCostType(String costTypeName, Double initialBudget, Double maxCost,  Authentication authentication) {
         logger.debug("Adding cost type: {}", costTypeName);
         if (!isAuthenticated(authentication)) {
             return ResponseEntity.status(403)
@@ -105,7 +105,7 @@ public class AccountantController {
                     .header("message", AccountantDTOs.AddCostTypeResponse.COST_TYPE_ALREADY_EXISTS.getMessage())
                     .build();
         }
-        budgetByCostTypeService.addBudgetByCostType(costTypeName, initialBudget);
+        budgetByCostTypeService.addBudgetByCostType(costTypeName, initialBudget, maxCost);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.AddCostTypeResponse.COST_TYPE_ADDED.getMessage())
                 .build();
@@ -168,7 +168,25 @@ public class AccountantController {
                 .build();
     }
 
-    // Get all cost types
+    @PostMapping("/cost-types/set-max-cost")
+    public ResponseEntity<?> setMaxCostByTypeName(String typeName, Double maxCost, Authentication authentication) {
+        logger.debug("Setting max budget for cost type: {}", typeName);
+        if (!budgetByCostTypeService.existsByTypeName(typeName)) {
+            return ResponseEntity.status(404)
+                    .header("message", AccountantDTOs.SetBudgetResponse.COST_TYPE_NOT_FOUND.getMessage())
+                    .build();
+        }
+        if (!isAuthenticated(authentication)) {
+            return ResponseEntity.status(403)
+                    .header("message", AccountantDTOs.SetBudgetResponse.INVALID_AUTHENTICATION.getMessage())
+                    .build();
+        }
+        budgetByCostTypeService.setMaxCostByTypeName(typeName, maxCost);
+        return ResponseEntity.ok()
+                .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
+                .build();
+    }
+
     @GetMapping("/cost-types")
     public ResponseEntity<?> getAllCostTypes(Authentication authentication) {
         logger.debug("Getting all cost types in JSON format");

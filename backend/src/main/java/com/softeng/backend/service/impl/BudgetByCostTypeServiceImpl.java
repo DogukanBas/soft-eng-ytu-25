@@ -19,8 +19,8 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     }
 
     @Override
-    public void addBudgetByCostType(String typeName, Double initialBudget) {
-        BudgetByCostType budgetByCostType = new BudgetByCostType(typeName, initialBudget);
+    public void addBudgetByCostType(String typeName, Double initialBudget, Double maxCost) {
+        BudgetByCostType budgetByCostType = new BudgetByCostType(typeName, initialBudget, maxCost);
         budgetByCostTypeRepository.save(budgetByCostType);
     }
 
@@ -48,6 +48,12 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     @Transactional
     public void setRemainingBudgetByTypeName(String typeName, Double remainingBudget) {
         budgetByCostTypeRepository.setRemainingBudgetByTypeName(typeName, remainingBudget);
+    }
+
+    @Override
+    @Transactional
+    public void setMaxCostByTypeName(String typeName, Double maxCost) {
+        budgetByCostTypeRepository.setMaxCostByTypeName(typeName, maxCost);
     }
 
     @Override

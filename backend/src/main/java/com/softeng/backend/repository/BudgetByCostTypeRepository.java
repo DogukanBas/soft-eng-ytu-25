@@ -27,6 +27,11 @@ public interface BudgetByCostTypeRepository  extends JpaRepository<BudgetByCostT
     void setRemainingBudgetByTypeName(String typeName, Double remainingBudget);
 
     @Modifying
+    @Query("UPDATE BudgetByCostType b SET b.maxCost = :maxCost " +
+           "WHERE b.typeName = :typeName")
+    void setMaxCostByTypeName(String typeName, Double maxCost);
+
+    @Modifying
     @Query("UPDATE BudgetByCostType b SET b.remainingBudget = b.initialBudget " +
            "WHERE b.typeName = :typeName")
     void resetBudgetByTypeName(String typeName);
