@@ -28,7 +28,7 @@ class AddCostTypeItemFragment: BaseFragment() {
                 EditTextInputType.Text,
                 100,
                 true,
-                "Boş Bırakılamaz",
+                "Cost Type Name can't Be Empty",
                 {input->
                     input.text.isNotEmpty()
                 }
@@ -36,11 +36,25 @@ class AddCostTypeItemFragment: BaseFragment() {
             CustomInputFormat(
                 "Initial Budget",
                 EditTextInputType.Number,
-                100,
-                true,
-                "Boş Bırakılamaz",
+                15,
+                false,
+                "Budget Can't Be Empty",
                 {input->
-                    input.text.isNotEmpty()
+                    input.text.isNotBlank() && input.text.toDouble() > 0
+
+
+
+                }
+            ),
+            CustomInputFormat(
+                "Max Cost",
+                EditTextInputType.Number,
+                15,
+                false,
+                "Enter a positive value",
+                {input->
+                    input.text.isNotBlank() && input.text.toDouble() > 0
+
                 }
             )
         )
@@ -49,7 +63,8 @@ class AddCostTypeItemFragment: BaseFragment() {
             Log.i(TAG,"Add Cost Type button triggered")
             val costTypeName = outputList.get(0).toString()
             val initialBudget = outputList.get(1).toString().toDouble()
-            viewModel.addCostTypeBudget(costTypeName, initialBudget)
+            val maxCost = outputList.get(2).toString().toDouble()
+            viewModel.addCostTypeBudget(costTypeName, initialBudget,maxCost)
         },
             "Add Cost Type"
         )

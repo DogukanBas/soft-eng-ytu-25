@@ -71,10 +71,10 @@ class CostTypeRepository @Inject constructor() {
             Result.failure(e)
         }
     }
-    suspend fun addCostTypeBudget(costType: String, initialBudget: Double): Result<Unit> {
+    suspend fun addCostTypeBudget(costType: String, initialBudget: Double,maxCost: Double): Result<Unit> {
         Log.i(TAG, "Add cost type budget called")
          try {
-            val response = costTypeService.addCostTypeBudget(costType,initialBudget)
+            val response = costTypeService.addCostTypeBudget(costType,initialBudget,maxCost)
             if (response.isSuccessful) {
                 //Log.i(TAG, "Add cost type budget successful")
                 return Result.success(response.body()!!)

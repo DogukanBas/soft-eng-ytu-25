@@ -25,13 +25,12 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
     protected abstract fun saveRemainingBudget(item: T, remainingBudget: Double)
 
     protected abstract fun resetRemainingBudget(item: T)
-    protected abstract var items: List<T>
+    protected abstract var items: MutableList<T>
     protected abstract fun getItemName(item: T): String
 
-    protected abstract fun updateUIForReset()
     protected abstract fun updateUIForSelectedItem(item: T)
-
-    protected abstract fun updateItemBudget(item: T, initial: Double?, remaining: Double?): T
+    protected abstract fun updateItemInList(item:T)
+    protected abstract fun updateItemBudget(item: T, initial: Double?, remaining: Double?, maxCost : Double? = null): T
 
     // Views
     protected lateinit var spinnerItem: Spinner
@@ -43,8 +42,12 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
     protected lateinit var btnResetToInitial: Button
     protected lateinit var tvTitle: TextView
     protected lateinit var tvItemLabel: TextView
-
+    protected lateinit var etmaxCostValue: EditText
+    protected lateinit var btnSetmaxCost: Button
+    protected lateinit var tvMaxCost: TextView
+    protected lateinit var adapter: ArrayAdapter<String>
     protected var selectedItem: T? = null
+    protected var itemNames = mutableListOf<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.set_budget, container, false)
@@ -58,6 +61,9 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
         btnResetToInitial = view.findViewById(R.id.btn_reset_to_initial)
         tvTitle = view.findViewById(R.id.tv_title)
         tvItemLabel = view.findViewById(R.id.tv_item_label)
+        etmaxCostValue = view.findViewById(R.id.et_max_budget_value)
+        btnSetmaxCost = view.findViewById(R.id.btn_set_max_budget_value)
+        tvMaxCost = view.findViewById(R.id.tv_max_budget_label)
 
         return view
     }
@@ -68,6 +74,10 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
         tvTitle.text = getString(titleResId)
         tvItemLabel.text = getString(labelResId)
         btnAddItem.visibility = if (showAddButton) View.VISIBLE else View.GONE
+        btnSetmaxCost.visibility =if (showAddButton) View.VISIBLE else View.GONE
+        etmaxCostValue.visibility = if (showAddButton) View.VISIBLE else View.GONE
+        tvMaxCost.visibility = if (showAddButton) View.VISIBLE else View.GONE
+
 
         setupListeners()
         observeState()
@@ -75,9 +85,8 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
         Log.i(TAG, "getItems() called")
     }
 
-    protected fun setupSpinner(items: List<T>) {
-        this.items = items
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items.map { getItemName(it) })
+    protected fun setupSpinner() {
+        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, this.items.map{ getItemName(it) })
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerItem.adapter = adapter
 
@@ -85,11 +94,13 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedItem = items[position]
                 updateUIForSelectedItem(items[position])
+                Log.i(TAG,"items is $items")
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 etInitialBudgetValue.text.clear()
                 etRemainingBudgetValue.text.clear()
+                etmaxCostValue.text.clear()
             }
         }
     }
@@ -99,9 +110,8 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
             val input = etInitialBudgetValue.text.toString()
             val item = selectedItem ?: return@setOnClickListener
             input.toDoubleOrNull()?.let { newValue ->
-                saveInitialBudget(item, newValue)
                 selectedItem = updateItemBudget(item, initial = newValue, remaining = null)
-                updateUIForSelectedItem(selectedItem!!)
+                saveInitialBudget(item, newValue)
                 etInitialBudgetValue.text.clear()
             } ?: run {
                 etInitialBudgetValue.error = "Invalid number"
@@ -112,9 +122,8 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
             val input = etRemainingBudgetValue.text.toString()
             val item = selectedItem ?: return@setOnClickListener
             input.toDoubleOrNull()?.let { newValue ->
-                saveRemainingBudget(item, newValue)
                 selectedItem = updateItemBudget(item, initial = null, remaining = newValue)
-                updateUIForSelectedItem(selectedItem!!)
+                saveRemainingBudget(item, newValue)
                 etRemainingBudgetValue.text.clear()
             } ?: run {
                 etRemainingBudgetValue.error = "Invalid number"
@@ -123,8 +132,9 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
 
         btnResetToInitial.setOnClickListener {
             val item = selectedItem ?: return@setOnClickListener
+            selectedItem = updateItemBudget(item, initial = null, remaining = etInitialBudgetValue.hint.toString().toDouble())
             resetRemainingBudget(item)
-            updateUIForReset()
+
         }
     }
 }

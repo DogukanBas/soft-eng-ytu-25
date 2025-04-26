@@ -40,40 +40,55 @@ class CostTypeViewModel @Inject constructor(
 
     fun setInitialBudget(costTypeName: String, budget: Double) {
         viewModelScope.launch {
-            try {
-                costTypeRepository.setInitialBudget(costTypeName, budget)
-            } catch (e: Exception) {
-                // Handle error if needed
+            _addCostTypeBudgetState.value = UiState.Loading
+            val result = costTypeRepository.setInitialBudget(costTypeName, budget)
+            if (result.isSuccess) {
+                Log.i("CostTypeViewModel", "Success: ${result.getOrNull()}")
+                _addCostTypeBudgetState.value = UiState.Success(result.getOrNull()!!)
+            } else {
+                Log.i("CostTypeViewModel", "Error: ${result.exceptionOrNull()?.message}")
+                _addCostTypeBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
+
         }
     }
 
     fun setRemainingBudget(costTypeName: String, budget: Double) {
         viewModelScope.launch {
-            try {
-                costTypeRepository.setRemainingBudget(costTypeName, budget)
-
-            } catch (e: Exception) {
-                // Handle error if needed
+            _addCostTypeBudgetState.value = UiState.Loading
+            val result = costTypeRepository.setRemainingBudget(costTypeName, budget)
+            if (result.isSuccess) {
+                Log.i("CostTypeViewModel", "Success: ${result.getOrNull()}")
+                _addCostTypeBudgetState.value = UiState.Success(result.getOrNull()!!)
+            } else {
+                Log.i("CostTypeViewModel", "Error: ${result.exceptionOrNull()?.message}")
+                _addCostTypeBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
+
         }
     }
 
     fun resetRemainingBudget(costTypeName: String) {
         viewModelScope.launch {
-            try {
-                costTypeRepository.resetRemainingBudget(costTypeName)
-            } catch (e: Exception) {
-                // Handle error if needed
+            _addCostTypeBudgetState.value = UiState.Loading
+            val result = costTypeRepository.resetRemainingBudget(costTypeName)
+            if (result.isSuccess) {
+                Log.i("CostTypeViewModel", "Success: ${result.getOrNull()}")
+                _addCostTypeBudgetState.value = UiState.Success(result.getOrNull()!!)
+            } else {
+                Log.i("CostTypeViewModel", "Error: ${result.exceptionOrNull()?.message}")
+                _addCostTypeBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
+
         }
     }
 
-    fun addCostTypeBudget(costTypeName: String, initialBudget : Double) {
+
+    fun addCostTypeBudget(costTypeName: String, initialBudget : Double, maxCost: Double) {
         _addCostTypeBudgetState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val result = costTypeRepository.addCostTypeBudget(costTypeName, initialBudget)
+                val result = costTypeRepository.addCostTypeBudget(costTypeName, initialBudget, maxCost)
                 if (result.isSuccess) {
                     Log.i("CostTypeViewModel", "Success: ${result.getOrNull()}")
                     _addCostTypeBudgetState.value = UiState.Success(result.getOrNull()!!)

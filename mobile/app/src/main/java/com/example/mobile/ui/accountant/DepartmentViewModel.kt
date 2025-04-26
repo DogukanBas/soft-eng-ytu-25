@@ -25,6 +25,9 @@ class DepartmentViewModel @Inject constructor(
     private val _departmentBudgetState = MutableStateFlow<UiState<List<DepartmentBudgetResponse>>>(UiState.Idle)
     val departmentBudgetState: StateFlow<UiState<List<DepartmentBudgetResponse>>> = _departmentBudgetState
 
+    private val _addDepartmentBudgetState = MutableStateFlow<UiState<Unit>>(UiState.Idle)
+    val addDepartmentBudgetState: StateFlow<UiState<Unit>> = _addDepartmentBudgetState
+
     // Add any necessary properties and methods for the ViewModel here
     // For example, you might want to add LiveData or StateFlow properties to hold data
     // and methods to fetch or update that data.
@@ -45,42 +48,42 @@ class DepartmentViewModel @Inject constructor(
 
     fun setInitialBudget(deptName:String, newInitialBudget:Double){
         viewModelScope.launch {
-            _departmentBudgetState.value = UiState.Loading
+            _addDepartmentBudgetState.value = UiState.Loading
             val result = departmentRepository.setInitialBudget(deptName, newInitialBudget)
             if (result.isSuccess) {
                 Log.i("DepartmentViewModel", "Success: ${result.getOrNull()}")
-                //_departmentBudgetState.value = UiState.Success(result.getOrNull()!!)
+                _addDepartmentBudgetState.value = UiState.Success(result.getOrNull()!!)
             } else {
                 Log.i("DepartmentViewModel", "Error: ${result.exceptionOrNull()?.message}")
-                //_departmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                _addDepartmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }
     }
 
     fun setRemainingBudget(department: String, budgetDouble: Double) {
         viewModelScope.launch {
-            _departmentBudgetState.value = UiState.Loading
+            _addDepartmentBudgetState.value = UiState.Loading
             val result = departmentRepository.setRemainingBudget(department, budgetDouble)
             if (result.isSuccess) {
                 Log.i("DepartmentViewModel", "Success: ${result.getOrNull()}")
-                //_departmentBudgetState.value = UiState.Success(result.getOrNull()!!)
+                _addDepartmentBudgetState.value = UiState.Success(result.getOrNull()!!)
             } else {
                 Log.i("DepartmentViewModel", "Error: ${result.exceptionOrNull()?.message}")
-                //_departmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                _addDepartmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }
 
     }
     fun resetRemainingBudget(department: String) {
         viewModelScope.launch {
-            _departmentBudgetState.value = UiState.Loading
+            _addDepartmentBudgetState.value = UiState.Loading
             val result = departmentRepository.resetRemainingBudget(department)
             if (result.isSuccess) {
                 Log.i("DepartmentViewModel", "Success: ${result.getOrNull()}")
-                //_departmentBudgetState.value = UiState.Success(result.getOrNull()!!)
+                _addDepartmentBudgetState.value = UiState.Success(result.getOrNull()!!)
             } else {
                 Log.i("DepartmentViewModel", "Error: ${result.exceptionOrNull()?.message}")
-                //_departmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                _addDepartmentBudgetState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         }
 
