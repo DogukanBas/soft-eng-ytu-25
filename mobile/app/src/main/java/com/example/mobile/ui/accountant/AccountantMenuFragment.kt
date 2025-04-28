@@ -70,7 +70,7 @@ class AccountantMenuFragment : BaseFragment() {
 
                 replaceFragment(
                     NavigationListFragment(
-                        "SetBudgets",
+                        "Set Budgets",
                         true,
                         newMenuItems,
                         headerImage= getLogo(),
@@ -80,7 +80,7 @@ class AccountantMenuFragment : BaseFragment() {
         )
 
         return NavigationListFragment(
-            "AccountantMenu",
+            "Accountant Menu",
             true,
             menuItems,
             headerImage= getLogo(),

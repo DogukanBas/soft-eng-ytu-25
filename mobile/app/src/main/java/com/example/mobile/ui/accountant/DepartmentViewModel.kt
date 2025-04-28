@@ -28,10 +28,6 @@ class DepartmentViewModel @Inject constructor(
     private val _addDepartmentBudgetState = MutableStateFlow<UiState<Unit>>(UiState.Idle)
     val addDepartmentBudgetState: StateFlow<UiState<Unit>> = _addDepartmentBudgetState
 
-    // Add any necessary properties and methods for the ViewModel here
-    // For example, you might want to add LiveData or StateFlow properties to hold data
-    // and methods to fetch or update that data.
-
     fun getDepartmentsWithBudget() {
         viewModelScope.launch {
             _departmentBudgetState.value = UiState.Loading
