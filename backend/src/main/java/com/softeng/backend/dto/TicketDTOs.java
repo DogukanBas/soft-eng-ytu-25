@@ -1,9 +1,7 @@
 package com.softeng.backend.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 
 public class TicketDTOs {
 
@@ -11,7 +9,7 @@ public class TicketDTOs {
         private String costType;
         private BigDecimal amount;
         private String description;
-        private LocalDateTime date;
+        private LocalDate date;
         private byte[] invoice;
 
         public String getCostType() {
@@ -38,11 +36,11 @@ public class TicketDTOs {
             this.description = description;
         }
 
-        public LocalDateTime getDate() {
+        public LocalDate getDate() {
             return date;
         }
 
-        public void setDate(LocalDateTime date) {
+        public void setDate(LocalDate date) {
             this.date = date;
         }
 
@@ -63,8 +61,7 @@ public class TicketDTOs {
         DEPARTMENT_BUDGET_EMPTY("Department has no remaining budget"),
         COST_TYPE_BUDGET_EMPTY("Cost type has no remaining budget"),
         NO_MANAGER_AVAILABLE("No manager assigned to the department"),
-        INVALID_AUTHENTICATION("Invalid authentication"),
-        COST_TYPE_NOT_FOUND("Cost type not found");
+        INVALID_AUTHENTICATION("Invalid authentication");
 
         private final String message;
 

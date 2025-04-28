@@ -30,6 +30,11 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     }
 
     @Override
+    public List<String> getAllCostTypeNames() {
+        return budgetByCostTypeRepository.findAllTypeNames();
+    }
+
+    @Override
     public BudgetByCostType getByTypeName(String typeName) {
         return budgetByCostTypeRepository.findByTypeName(typeName)
                 .orElseThrow(() -> new IllegalArgumentException("Budget not found with type name: " + typeName));

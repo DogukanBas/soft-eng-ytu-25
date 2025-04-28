@@ -12,9 +12,13 @@ import java.util.Optional;
 @Repository
 public interface BudgetByCostTypeRepository  extends JpaRepository<BudgetByCostType, Integer> {
     List<BudgetByCostType> findAll();
+
     Optional<BudgetByCostType> findByTypeName(String typeName);
 
     boolean existsByTypeName(String typeName);
+
+    @Query("SELECT b.typeName FROM BudgetByCostType b")
+    List<String> findAllTypeNames();
 
     @Modifying
     @Query("UPDATE BudgetByCostType b SET b.initialBudget = :initialBudget " +

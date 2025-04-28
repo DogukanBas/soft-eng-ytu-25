@@ -1,10 +1,7 @@
 package com.softeng.backend.controller;
 
 import com.softeng.backend.dto.TicketDTOs;
-import com.softeng.backend.model.BudgetByCostType;
-import com.softeng.backend.model.Department;
-import com.softeng.backend.model.Ticket;
-import com.softeng.backend.model.User;
+import com.softeng.backend.model.*;
 import com.softeng.backend.service.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -13,11 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 @RestController
 @SecurityRequirement(name = "BearerAuth")
@@ -48,33 +50,98 @@ public class TicketController {
         if (currentUser.getUserType() == User.UserType.team_member || currentUser.getUserType() == User.UserType.manager) {
             BigDecimal amount = request.getAmount();
             Department department = employeeService.getEmployeeByPersonalNo(personalNo).getDepartment();
+            if (department.getDeptManager() == null) {
+                return ResponseEntity.status(403)
+                        .body(new TicketDTOs.TicketResponse(
+                                TicketDTOs.CreateTicketResponse.NO_MANAGER_AVAILABLE.getMessage()
+                        ));
+            }
             BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(request.getCostType());
             BigDecimal departmentRemainingBudget = department.getRemainingBudget();
             BigDecimal costTypeRemainingBudget = budgetByCostType.getRemainingBudget();
             BigDecimal maxCost = budgetByCostType.getMaxCost();
 
+            boolean isEmpty = false;
+            StringJoiner messageJoiner = new StringJoiner("\n");
+            if (departmentRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
+                messageJoiner.add(TicketDTOs.CreateTicketResponse.DEPARTMENT_BUDGET_EMPTY.getMessage());
+                isEmpty = true;
+            }
+
+            if (costTypeRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
+                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_TYPE_BUDGET_EMPTY.getMessage());
+                isEmpty = true;
+            }
+
+            if (isEmpty) {
+                return ResponseEntity.status(403)
+                        .body(new TicketDTOs.TicketResponse(
+                                messageJoiner.toString()
+                        ));
+            }
+
+            if (amount.compareTo(departmentRemainingBudget) > 0) {
+                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_DEPARTMENT_BUDGET.getMessage());
+            }
+
+            if (amount.compareTo(costTypeRemainingBudget) > 0) {
+                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_COST_TYPE_BUDGET.getMessage());
+            }
+
+            if (amount.compareTo(maxCost) > 0) {
+                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_MAX_COST.getMessage());
+            }
+
             BigDecimal minCost = departmentRemainingBudget
                     .min(costTypeRemainingBudget)
                     .min(maxCost);
 
-            if (amount.compareTo(minCost) < 0) { // amount < minCost
+            Ticket ticket = new Ticket(personalNo,
+                    department.getDeptManager().getPersonalNo(),
+                    request.getCostType(),
+                    request.getAmount()
+            );
+            ticketService.addTicket(ticket);
 
-                return ResponseEntity.ok()
-                        .body(new TicketDTOs.TicketResponse(
-                                TicketDTOs.CreateTicketResponse.TICKET_CREATED.getMessage()
-                        ));
+            Attachment attachment = new Attachment();
+            attachment.setTicket(ticket);
+            byte[] decodedInvoice = Base64.getDecoder().decode(request.getInvoice());
+            attachment.setInvoice(decodedInvoice);
+            ticketService.addAttachment(attachment);
+
+            ApproveHistory approveHistory = new ApproveHistory();
+            approveHistory.setTicket(ticket);
+            approveHistory.setActor(currentUser);
+            approveHistory.setDescription(request.getDescription());
+            approveHistory.setDate(request.getDate());
+            if (currentUser.getUserType() == User.UserType.team_member) {
+                approveHistory.setStatus(ApproveHistory.Status.SENT_TO_MANAGER);
+            } else {
+                approveHistory.setStatus(ApproveHistory.Status.SENT_TO_ACCOUNTANT);
             }
-        }
+            ticketService.addApproveHistory(approveHistory);
 
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.TICKET_CREATED.getMessage());
+            return ResponseEntity.ok()
+                    .body(new TicketDTOs.TicketResponse(
+                            messageJoiner.toString(),
+                            minCost
+                    ));
+        }
         else {
             return ResponseEntity.status(403)
                     .body(new TicketDTOs.TicketResponse(
                             TicketDTOs.CreateTicketResponse.INVALID_AUTHENTICATION.getMessage()
                     ));
         }
+    }
 
-
-
+    @GetMapping("/cost-types")
+    public ResponseEntity<?> getAllCostTypeNames() {
+        logger.debug("Fetching cost types");
+        List<String> costTypes = budgetByCostTypeService.getAllCostTypeNames();
+        return ResponseEntity.ok()
+                .body(Map.of("costTypes", costTypes));
     }
 
 
