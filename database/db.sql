@@ -37,17 +37,17 @@ CREATE TABLE tickets (
 CREATE TABLE approveHistory (
     id SERIAL PRIMARY KEY,
     ticketId INTEGER NOT NULL REFERENCES tickets(ticketId) ON DELETE CASCADE,
-    date TIMESTAMP NOT NULL DEFAULT NOW(),
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
     status TEXT NOT NULL CHECK (
         status IN (
-            'sent to manager',
-            'rejected by manager - can be fixed',
-            'closed as rejected by manager',
-            'sent to accountant',
-            'closed as approved',
-            'rejected by accountant - can be fixed',
-            'closed as rejected by accountant',
-            'canceled by user'
+            'SENT_TO_MANAGER',
+	        'REJECTED_BY_MANAGER_CAN_BE_FIXED',
+	        'CLOSED_AS_REJECTED_BY_MANAGER',
+	        'SENT_TO_ACCOUNTANT',
+	        'CLOSED_AS_APPROVED',
+	        'REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED',
+	        'CLOSED_AS_REJECTED_BY_ACCOUNTANT',
+	        'CANCELED_BY_USER'
         )
     ),
     description TEXT,
@@ -67,7 +67,7 @@ CREATE TABLE budgetByCostType (
 CREATE TABLE attachments (
     id SERIAL PRIMARY KEY,
     ticketId INTEGER NOT NULL REFERENCES tickets(ticketId) ON DELETE CASCADE,
-    invoice BYTEA NOT NULL
+    invoice oid NOT NULL
 );
 
 

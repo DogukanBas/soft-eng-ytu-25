@@ -1,9 +1,11 @@
 package com.softeng.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "approvehistory")
@@ -18,7 +20,7 @@ public class ApproveHistory {
     private Ticket ticket;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -30,17 +32,16 @@ public class ApproveHistory {
     @JoinColumn(name = "actorId", nullable = false, referencedColumnName = "personalNo")
     private User actor;
 
+    @Getter
     public enum Status {
-        SENT_TO_MANAGER("sent to manager"),
-        APPROVED_BY_MANAGER("approved by manager"),
-        REJECTED_BY_MANAGER_CAN_BE_FIXED("rejected by manager - can be fixed"),
-        CLOSED_AS_REJECTED_BY_MANAGER("closed as rejected by manager"),
-        APPROVED_BY_MANAGER_WAITING_FOR_INVOICE("approved by manager - waiting for invoice"),
-        SENT_TO_ACCOUNTANT("sent to accountant"),
-        CLOSED_AS_APPROVED("closed as approved"),
-        REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED("rejected by accountant - can be fixed"),
-        CLOSED_AS_REJECTED_BY_ACCOUNTANT("closed as rejected by accountant"),
-        CANCELED_BY_USER("canceled by user");
+        SENT_TO_MANAGER("SENT_TO_MANAGER"),
+        REJECTED_BY_MANAGER_CAN_BE_FIXED("REJECTED_BY_MANAGER_CAN_BE_FIXED"),
+        CLOSED_AS_REJECTED_BY_MANAGER("CLOSED_AS_REJECTED_BY_MANAGER"),
+        SENT_TO_ACCOUNTANT("SENT_TO_ACCOUNTANT"),
+        CLOSED_AS_APPROVED("CLOSED_AS_APPROVED"),
+        REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED("REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED"),
+        CLOSED_AS_REJECTED_BY_ACCOUNTANT("CLOSED_AS_REJECTED_BY_ACCOUNTANT"),
+        CANCELED_BY_USER("CANCELED_BY_USER");
 
         private final String value;
 
@@ -48,8 +49,5 @@ public class ApproveHistory {
             this.value = value;
         }
 
-        public String getValue() {
-            return value;
-        }
     }
 }

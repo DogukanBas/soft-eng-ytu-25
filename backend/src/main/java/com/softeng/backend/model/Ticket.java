@@ -31,4 +31,18 @@ public class Ticket {
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     private Attachment attachment;
+
+    public Ticket() {
+    }
+
+    public Ticket(String employeeId, String managerId, String costType, BigDecimal amount) {
+        this.employeeId = employeeId;
+        this.managerId = managerId;
+        this.costType = costType;
+        this.amount = amount;
+    }
+
+
+
+
 }
