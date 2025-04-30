@@ -47,7 +47,7 @@ public class TicketController {
         if (currentUser.getUserType() == User.UserType.team_member || currentUser.getUserType() == User.UserType.manager) {
             BigDecimal amount = request.getAmount();
             Department department = employeeService.getEmployeeByPersonalNo(personalNo).getDepartment();
-            if (department.getDeptManager() != null) {
+            if (department.getDeptManager()== null) {
                 return ResponseEntity.status(403)
                         .header("message",
                                 TicketDTOs.CreateTicketResponse.NO_MANAGER_AVAILABLE.getMessage()
