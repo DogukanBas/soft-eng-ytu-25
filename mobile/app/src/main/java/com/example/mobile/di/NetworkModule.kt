@@ -4,6 +4,7 @@ import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService
 import com.example.mobile.remote.api.DepartmentService
+import com.example.mobile.remote.api.TeamMemberService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +35,11 @@ object NetworkModule {
     @Singleton
     fun provideCostTypeService(): CostTypeService {
         return RetrofitClient.costTypeService
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamMemberService(): TeamMemberService {
+        return RetrofitClient.teamMemberService
     }
 }

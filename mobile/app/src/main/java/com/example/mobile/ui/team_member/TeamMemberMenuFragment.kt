@@ -1,0 +1,92 @@
+package com.example.mobile.ui.accountant
+
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.example.mobile.MainActivity
+import com.example.mobile.R
+import com.example.mobile.ui.BaseFragment
+import com.example.mobile.ui.team_member.TeamMemberViewModel
+import com.example.mobile.utils.MenuItem
+import com.token.uicomponents.ListMenuFragment.IListMenuItem
+import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class TeamMemberMenuFragment : BaseFragment() {
+
+    companion object {
+        val TAG = "TeamMemberMenuFragment"
+    }
+    private val teamMemberViewModel: TeamMemberViewModel by viewModels()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        return inflater.inflate(R.layout.fragment_input_list_layout, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG, "onViewCreated")
+        val menuFragment = setMenu()
+
+        childFragmentManager.beginTransaction()
+            .replace(R.id.input_menu_container, menuFragment)
+            .commit()
+    }
+
+    private fun getLogo(): Int {
+        return R.drawable.ic_launcher_foreground
+    }
+
+    private fun setMenu(): NavigationListFragment {
+        val menuItems = mutableListOf<IListMenuItem>()
+        menuItems.add(MenuItem(
+            "Create Ticket") {
+            Log.i(TAG, "Create Ticket button clicked")
+            teamMemberViewModel.getCostTypes()
+
+                observeUiState(
+                    teamMemberViewModel.getCostTypeTeamMembers,
+                    onSuccess = { data ->
+                        replaceFragment(
+                            CreateTicketFragment(data)
+                        )
+                    },
+                    onError = {
+                        Log.e(TAG, "Error fetching team members: $it")
+                        popFragment()
+                    },
+                    onLoading = {
+                        showLoading()
+                    },
+                    onIdle = {
+                        hideLoading()
+                    }
+                )
+
+        })
+        menuItems.add(MenuItem(
+            "List Tickets") {
+            replaceFragment(
+                ListAccountantTicketsFragment()
+            )
+        })
+
+
+        return NavigationListFragment(
+            "Team-Member Menu",
+            true,
+            menuItems,
+            headerImage= getLogo(),
+        )
+    }
+}
+
