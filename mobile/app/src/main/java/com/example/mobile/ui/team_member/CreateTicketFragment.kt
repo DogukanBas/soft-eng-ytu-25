@@ -30,6 +30,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.Calendar
+import java.util.Date
 
 @AndroidEntryPoint
 class CreateTicketFragment ( private val costTypes: List<String>): BaseFragment() {
@@ -66,13 +67,15 @@ class CreateTicketFragment ( private val costTypes: List<String>): BaseFragment(
             onSuccess = { data ->
                 Log.i(TAG, "Success: $data")
                 dialog.dismiss()
-                getDialog(DialogType.SUCCESS,"Ticket Created Successfully")
-                    .show(requireActivity().supportFragmentManager, "SuccessDialog")
+
+                getDialog(DialogType.SUCCESS,data.message + " \n Afforded amount is  " + data.budget.toString()).show(
+                    requireActivity().supportFragmentManager, "SuccessDialog")
                 popFragment()
             },
             onError = { message ->
                 Log.e(TAG, "Error: $message")
                 dialog.dismiss()
+                popFragment()
                 getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
             },
             onLoading = {

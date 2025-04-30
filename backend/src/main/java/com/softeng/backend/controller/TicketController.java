@@ -47,11 +47,12 @@ public class TicketController {
         if (currentUser.getUserType() == User.UserType.team_member || currentUser.getUserType() == User.UserType.manager) {
             BigDecimal amount = request.getAmount();
             Department department = employeeService.getEmployeeByPersonalNo(personalNo).getDepartment();
-            if (department.getDeptManager() == null) {
+            if (department.getDeptManager() != null) {
                 return ResponseEntity.status(403)
-                        .body(new TicketDTOs.TicketResponse(
+                        .header("message",
                                 TicketDTOs.CreateTicketResponse.NO_MANAGER_AVAILABLE.getMessage()
-                        ));
+                        )
+                        .build();
             }
             BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(request.getCostType());
             BigDecimal departmentRemainingBudget = department.getRemainingBudget();
@@ -72,9 +73,10 @@ public class TicketController {
 
             if (isEmpty) {
                 return ResponseEntity.status(403)
-                        .body(new TicketDTOs.TicketResponse(
+                        .header("message",
                                 messageJoiner.toString()
-                        ));
+                        )
+                        .build();
             }
 
             if (amount.compareTo(departmentRemainingBudget) > 0) {
@@ -91,12 +93,14 @@ public class TicketController {
 
             BigDecimal minCost = departmentRemainingBudget
                     .min(costTypeRemainingBudget)
-                    .min(maxCost);
+                    .min(maxCost)
+                    .min(request.getAmount());
 
             Ticket ticket = new Ticket(personalNo,
                     department.getDeptManager().getPersonalNo(),
                     request.getCostType(),
-                    request.getAmount()
+                    minCost
+
             );
             ticketService.addTicket(ticket);
 
@@ -127,9 +131,10 @@ public class TicketController {
         }
         else {
             return ResponseEntity.status(403)
-                    .body(new TicketDTOs.TicketResponse(
+                    .header("message",
                             TicketDTOs.CreateTicketResponse.INVALID_AUTHENTICATION.getMessage()
-                    ));
+                    )
+                    .build();
         }
     }
 

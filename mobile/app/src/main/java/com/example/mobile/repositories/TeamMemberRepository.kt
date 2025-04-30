@@ -1,6 +1,7 @@
 package com.example.mobile.repositories
 
 import Ticket
+import android.util.Log
 import com.example.mobile.remote.api.TeamMemberService
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.utils.toDto
@@ -28,7 +29,14 @@ class TeamMemberRepository @Inject constructor(
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Failed to create ticket"))
+                if(response.body() != null) {
+                    Log.i("TAG", "Error: ${response.body()!!.message}, ${response.message()}")
+                    Result.failure(Exception(response.message()))
+                }
+                else {
+                    Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                    Result.failure(Exception(response.headers().get("message")))
+                }
             }
         } catch (e: Exception) {
             Result.failure(e)
