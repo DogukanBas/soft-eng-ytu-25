@@ -1,8 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
-
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -12,10 +9,14 @@
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:defaultFocusHighlightEnabled">false</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
+
+        <!-- Fix for DatePicker dialog buttons -->
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button.DialogButton</item>
     </style>
 
-
-    <style name="CostMSTheme" parent="AppTheme">
+    <style name="AppTheme330" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -26,5 +27,12 @@
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
     </style>
 
+    <!-- Button styles for the DatePicker dialog -->
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
 
+    <style name="Widget.App.Button.DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
 </resources>
