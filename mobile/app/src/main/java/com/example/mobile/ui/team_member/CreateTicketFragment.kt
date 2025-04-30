@@ -109,20 +109,23 @@ class CreateTicketFragment ( private val costTypes: List<String>): BaseFragment(
             "Enter Date",
             EditTextInputType.Date,
             null,
-            "null",
+            "Enter valid date",
             InputValidator { customInputFormat: CustomInputFormat ->
                 try {
-                    val array = customInputFormat.text.split("/").toTypedArray()
-                    val date = array[2].substring(2) + array[1] + array[0]
-                    val now = Calendar.getInstance().time
-                    val sdf = SimpleDateFormat("yyMMdd")
-                    return@InputValidator sdf.format(now).toInt() >= date.toInt()
-                } catch (_: Exception) {
-                }
+                if (customInputFormat.text.isEmpty()) return@InputValidator false
+                val array = customInputFormat.text.split("/").toTypedArray()
+                val date = array[2].substring(2) + array[1] + array[0]
+                val now = Calendar.getInstance().time
+                val sdf = SimpleDateFormat("yyMMdd")
+                sdf.format(now).toInt() >= date.toInt()
+            } catch (_: Exception) {
                 false
             }
+            }
 
-        ))
+        ).apply{
+            maxDate = Date().time // set max date to today
+        })
 
         inputList.add(CustomInputFormat(
             "Enter Description",
