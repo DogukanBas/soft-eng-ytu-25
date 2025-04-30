@@ -1,7 +1,9 @@
 package com.example.mobile.utils
 
+import Ticket
 import com.example.mobile.model.User.Employee
 import com.example.mobile.remote.dtos.auth.AddUserRequest
+import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 
 fun Employee.toDto(): AddUserRequest {
     return AddUserRequest(
@@ -12,5 +14,14 @@ fun Employee.toDto(): AddUserRequest {
         password = this.password,
         userType = this.userType.toString(),
         deptName = this.department
+    )
+}
+fun Ticket.toDto(): CreateTicketRequest {
+    return CreateTicketRequest(
+        costType = this.costType,
+        amount = this.amount,
+        description = this.description,
+        date = this.date,
+        invoice = this.invoice
     )
 }
