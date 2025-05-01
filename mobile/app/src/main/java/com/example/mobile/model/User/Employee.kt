@@ -8,5 +8,4 @@ data class Employee(
     val email :String,
     val personalNo :String,
     val department :String
-
 )

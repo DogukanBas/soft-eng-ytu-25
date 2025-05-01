@@ -1,7 +1,6 @@
 package com.softeng.backend.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -22,4 +21,18 @@ public class BudgetByCostType {
 
     @Column(columnDefinition = "NUMERIC(12,2) DEFAULT 0")
     private BigDecimal initialBudget;
+
+    @Column(columnDefinition = "NUMERIC(12,2) DEFAULT 0")
+    private BigDecimal maxCost;
+
+    public BudgetByCostType() {
+    }
+
+    public BudgetByCostType(String typeName, Double initialBudget, Double maxCost) {
+        this.typeName = typeName;
+        this.initialBudget = BigDecimal.valueOf(initialBudget);
+        this.maxCost = BigDecimal.valueOf(maxCost);
+        this.remainingBudget = this.initialBudget;
+
+    }
 }

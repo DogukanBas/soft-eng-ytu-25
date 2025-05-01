@@ -16,6 +16,9 @@ public class Attachment {
     private Ticket ticket;
 
     @Lob
-    @Column(columnDefinition = "BYTEA", nullable = false)
+    @Column(nullable = false)
     private byte[] invoice;
+
+    public Attachment() {
+    }
 }

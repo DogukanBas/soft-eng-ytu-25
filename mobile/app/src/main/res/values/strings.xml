@@ -3,4 +3,25 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+
+    <!-- Department Budget Strings -->
+    <string name="set_department_budget_title">Set Department Budget</string>
+    <string name="department_label">Department:</string>
+
+    <!-- Cost Type Budget Strings -->
+    <string name="set_cost_type_budget_title">Set Cost Type Budget</string>
+    <string name="cost_type_label">Cost Type:</string>
+    <string name="add_cost_type_budget_title">Add New Cost Type Budget</string>
+    <string name="cost_type_name_label">Cost Type Name:</string>
+
+    <!-- Common Budget Strings -->
+    <string name="set_budget_title">Set Budget</string>
+    <string name="item_label">Item:</string>
+    <string name="initial_budget_label">Initial Budget:</string>
+    <string name="remaining_budget_label">Remaining Budget:</string>
+    <string name="set_button">Set</string>
+    <string name="reset_to_initial_button">Reset Remaining to Initial</string>
+    <string name="add_button">Add</string>
+    <string name="max_budget_label"> Max Budget</string>
 </resources>

@@ -14,13 +14,11 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ticketId;
 
-    @ManyToOne
-    @JoinColumn(name = "employeeId", nullable = false, referencedColumnName = "personalNo")
-    private User employee;
+    @Column(nullable = false)
+    private String employeeId;
 
-    @ManyToOne
-    @JoinColumn(name = "managerId", nullable = false, referencedColumnName = "personalNo")
-    private User manager;
+    @Column(nullable = false)
+    private String managerId;
 
     @Column(nullable = false)
     private String costType;
@@ -31,6 +29,20 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<ApproveHistory> history;
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    private List<Attachment> attachments;
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
+    private Attachment attachment;
+
+    public Ticket() {
+    }
+
+    public Ticket(String employeeId, String managerId, String costType, BigDecimal amount) {
+        this.employeeId = employeeId;
+        this.managerId = managerId;
+        this.costType = costType;
+        this.amount = amount;
+    }
+
+
+
+
 }
