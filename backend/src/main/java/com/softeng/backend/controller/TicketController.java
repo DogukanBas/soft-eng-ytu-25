@@ -152,8 +152,9 @@ public class TicketController {
         String personalNo = authentication.getName();
         List<Integer> ticketIds = ticketService.getClosedTicketIdsByEmployeeId(personalNo);
         if (ticketIds.isEmpty()) {
-            return ResponseEntity.ok()
-                    .body(Map.of("message", "No tickets found"));
+            return ResponseEntity.status(404)
+                    .header("message","No Tickets found")
+                    .build();
         }
         return ResponseEntity.ok()
                 .body(Map.of("ticketIds", ticketIds));
