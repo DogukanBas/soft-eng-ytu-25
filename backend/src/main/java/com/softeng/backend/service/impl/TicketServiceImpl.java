@@ -1,5 +1,7 @@
 package com.softeng.backend.service.impl;
 
+import com.softeng.backend.dto.TicketDTOs;
+import com.softeng.backend.exception.ResourceNotFoundException;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
 import com.softeng.backend.model.Employee;
@@ -76,6 +78,17 @@ public class TicketServiceImpl implements TicketService {
             throw new IllegalArgumentException("Error adding ticket: " + e.getMessage());
         }
     }
+    @Override
+    public List<Integer> getClosedTicketIdsByEmployeeId(String personalNo) {
+        return ticketRepository.findAllClosedTicketsByEmployeeId(personalNo);
+    }
+
+    @Override
+    public TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId) {
+        return ticketRepository.findByTicketId(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+    }
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.softeng.backend.service;
 
+import com.softeng.backend.dto.TicketDTOs;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
 import com.softeng.backend.model.Employee;
@@ -13,7 +14,6 @@ public interface TicketService {
     void addAttachment(Attachment attachment);
     void addTicket(Ticket ticket);
     void addApproveHistory(ApproveHistory approveHistory);
-
-
-
+    List<Integer> getClosedTicketIdsByEmployeeId(String personalNo);
+    TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId);
 }
