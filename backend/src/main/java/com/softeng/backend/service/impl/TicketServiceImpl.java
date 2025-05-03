@@ -89,6 +89,13 @@ public class TicketServiceImpl implements TicketService {
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
     }
 
-
-
+    @Override
+    public List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return approveHistoryRepository.findByTicket(ticket).stream().toList()
+                .stream()
+                .map(TicketDTOs.ApproveHistoryResponse::new)
+                .toList();
+    }
 }

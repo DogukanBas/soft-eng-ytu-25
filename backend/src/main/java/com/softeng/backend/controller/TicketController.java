@@ -172,4 +172,16 @@ public class TicketController {
                 .body(ticket);
     }
 
+    @GetMapping
+    ("/approve-history")
+    public ResponseEntity<?> getApproveHistoryByTicketId(@RequestParam("ticketId") int ticketId) {
+        logger.debug("Fetching approve history for ticket with ID: {}", ticketId);
+        List<TicketDTOs.ApproveHistoryResponse> approveHistory = ticketService.getApproveHistoryByTicketId(ticketId);
+        if (approveHistory.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("message", "Approve history not found"));
+        }
+        return ResponseEntity.ok()
+                .body(approveHistory);
+    }
 }

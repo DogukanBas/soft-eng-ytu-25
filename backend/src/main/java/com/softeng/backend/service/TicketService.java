@@ -3,7 +3,6 @@ package com.softeng.backend.service;
 import com.softeng.backend.dto.TicketDTOs;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
-import com.softeng.backend.model.Employee;
 import com.softeng.backend.model.Ticket;
 
 import java.util.List;
@@ -16,4 +15,5 @@ public interface TicketService {
     void addApproveHistory(ApproveHistory approveHistory);
     List<Integer> getClosedTicketIdsByEmployeeId(String personalNo);
     TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId);
+    List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId);
 }

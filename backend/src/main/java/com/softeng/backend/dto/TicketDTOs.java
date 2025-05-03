@@ -1,5 +1,7 @@
 package com.softeng.backend.dto;
 
+import com.softeng.backend.model.ApproveHistory;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -146,6 +148,70 @@ public class TicketDTOs {
 
         public void setManagerId(String managerId) {
             this.managerId = managerId;
+        }
+    }
+
+    public static class ApproveHistoryResponse {
+        private int id;
+        private String status;
+        private LocalDate date;
+        private String actorId;
+        private String actorRole;
+        private String description;
+
+        public ApproveHistoryResponse(ApproveHistory approveHistory) {
+            this.id = approveHistory.getId();
+            this.status = approveHistory.getStatus().name();
+            this.date = approveHistory.getDate();
+            this.actorId = approveHistory.getActor().getPersonalNo();
+            this.description = approveHistory.getDescription();
+            this.actorRole = approveHistory.getActor().getUserType().name();
+        }
+
+        public ApproveHistoryResponse(int id, String status, LocalDate date, String actorId, String actorRole, String description) {
+            this.id = id;
+            this.status = status;
+            this.date = date;
+            this.actorId = actorId;
+            this.actorRole = actorRole;
+            this.description = description;
+        }
+
+        public int getId() {
+            return id;
+        }
+        public void setId(int id) {
+            this.id = id;
+        }
+        public String getStatus() {
+            return status;
+        }
+        public void setStatus(String status) {
+            this.status = status;
+        }
+        public LocalDate getDate() {
+            return date;
+        }
+        public void setDate(LocalDate date) {
+            this.date = date;
+        }
+        public String getActorId() {
+            return actorId;
+        }
+        public void setActorId(String actorId) {
+            this.actorId = actorId;
+        }
+        public String getActorRole() {
+            return actorRole;
+        }
+        public void setActorRole(String actorRole) {
+            this.actorRole = actorRole;
+        }
+        public String getDescription() {
+            return description;
+        }
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 }
