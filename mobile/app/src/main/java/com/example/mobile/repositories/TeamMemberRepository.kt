@@ -42,6 +42,20 @@ class TeamMemberRepository @Inject constructor(
             Result.failure(e)
         }
     }
+    suspend fun getClosedTicketsId(): Result<List<Int>> {
+        return try {
+            val response = teamMemberService.getClosedTickets()
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.ticketIds)
+            } else {
+
+                    Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                    Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
 
 

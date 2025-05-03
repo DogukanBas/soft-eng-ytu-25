@@ -76,7 +76,7 @@ class TeamMemberMenuFragment : BaseFragment() {
         menuItems.add(MenuItem(
             "List Tickets") {
             replaceFragment(
-                ListAccountantTicketsFragment()
+                ListTicketFragment()
             )
         })
 

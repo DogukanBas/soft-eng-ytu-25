@@ -3,6 +3,7 @@ package com.example.mobile.remote.api
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
+import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,5 +16,6 @@ interface TeamMemberService {
     @POST("api/ticket/create-ticket")
     suspend fun createTicket(@Body request: CreateTicketRequest): Response<CreateTicketResponse>
 
-
+    @GET("api/ticket/closed-tickets")
+    suspend fun getClosedTickets(): Response<ListTicketIdResponseList>
 }

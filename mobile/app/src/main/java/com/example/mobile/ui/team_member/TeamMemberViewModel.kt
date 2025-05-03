@@ -27,6 +27,9 @@ class TeamMemberViewModel @Inject constructor(
     private val _createTicket = MutableStateFlow<UiState<CreateTicketResponse>> (UiState.Idle)
     val createTicketState: StateFlow<UiState<CreateTicketResponse>> = _createTicket
 
+    private val _getClosedTicketsIdState = MutableStateFlow<UiState<List<Int>>>(UiState.Idle)
+    val getClosedTicketsIdState: StateFlow<UiState<List<Int>>> = _getClosedTicketsIdState
+
     fun getCostTypes() {
         // Logic to fetch team members
         viewModelScope.launch {
@@ -68,6 +71,23 @@ class TeamMemberViewModel @Inject constructor(
             }
         }
 
+
+    }
+    fun getClosedTicketsId(){
+        viewModelScope.launch {
+            _getClosedTicketsIdState.value = UiState.Loading
+            try {
+                val result = teamMemberRepository.getClosedTicketsId()
+                if (result.isSuccess) {
+                    val closedTickets = result.getOrNull()
+                    _getClosedTicketsIdState.value = UiState.Success(closedTickets ?: emptyList())
+                } else {
+                    _getClosedTicketsIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getClosedTicketsIdState.value = UiState.Error(e.toString())
+            }
+        }
 
     }
 
