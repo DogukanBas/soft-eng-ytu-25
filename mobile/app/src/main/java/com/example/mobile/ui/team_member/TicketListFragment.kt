@@ -13,6 +13,7 @@ import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.team_member.TeamMemberViewModel
+import com.example.mobile.ui.team_member.TicketDetailFragment
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.CustomInput.CustomInputFormat
@@ -33,10 +34,10 @@ import java.util.Calendar
 import java.util.Date
 
 @AndroidEntryPoint
-class ListTicketFragment (): BaseFragment() {
+class TicketListFragment (val tickets:List<Int>): BaseFragment() {
 
     companion object {
-        val TAG = "ListTicketFragment"
+        val TAG = "TicketListFragment"
     }
 
     private val viewModel: TeamMemberViewModel by viewModels()
@@ -60,32 +61,6 @@ class ListTicketFragment (): BaseFragment() {
 
     private fun setStateCollectors() {
         Log.i(TAG, "Setting up state collectors")
-        val dialog = getDialog(DialogType.LOADING,"Loading")
-
-        observeUiState(
-            viewModel.createTicketState,
-            onSuccess = { data ->
-                Log.i(TAG, "Success: $data")
-                dialog.dismiss()
-
-                getDialog(DialogType.SUCCESS,data.message + " \n Afforded amount is  " + data.budget.toString()).show(
-                    requireActivity().supportFragmentManager, "SuccessDialog")
-                popFragment()
-            },
-            onError = { message ->
-                Log.e(TAG, "Error: $message")
-                dialog.dismiss()
-                popFragment()
-                getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
-            },
-            onLoading = {
-                Log.i(TAG, "Loading")
-                dialog.show(
-                    requireActivity().supportFragmentManager,
-                    "ProcessingDialog"
-                )
-            },
-        )
     }
     private fun getLogo(): Int {
         return R.drawable.ic_launcher_foreground
@@ -93,8 +68,29 @@ class ListTicketFragment (): BaseFragment() {
 
     private fun setMenu(): NavigationListFragment {
         val menuItemsList = mutableListOf<IListMenuItem>()
-        menuItemsList.add(MenuItem("List Active Tickets"){listActiveTickets()})
-        menuItemsList.add(MenuItem("List Closed Tickets"){listClosedTickets()})
+        for (ticket in tickets){
+            menuItemsList.add(MenuItem("Ticket ID: $ticket") {
+                Log.i(TAG, "Ticket ID: $ticket button clicked")
+                viewModel.getTicketDetails(ticket)
+                observeUiState(
+                    viewModel.getTicketState,
+                    onSuccess = { data ->
+                        Log.i(TAG, "Ticket details fetched successfully: $data")
+                        System.out.print("as")
+                        replaceFragment(
+                            TicketDetailFragment(data,ticket)
+                        )
+                    }
+                    , onError = {
+                        Log.e(TAG, "Error fetching ticket details: $it")
+                        popFragment()
+                        getDialog(DialogType.ERROR,it).show(requireActivity().supportFragmentManager, "ErrorDialog")
+
+                    },
+                )
+            })
+        }
+
 
         return NavigationListFragment(
             "List Tickets",
@@ -102,38 +98,8 @@ class ListTicketFragment (): BaseFragment() {
             menuItemsList,
             headerImage = getLogo(),
         )
+    }
 
-
-    }
-    private fun listActiveTickets(){
-        Log.i(TAG, "List Active Tickets button clicked")
-    }
-    private fun listClosedTickets(){
-        Log.i(TAG, "List Closed Tickets button clicked")
-        viewModel.getClosedTicketsId()
-        observeUiState(
-            viewModel.getClosedTicketsIdState,
-            onSuccess = { data ->
-                 Log.i(TAG, "Success: $data")
-                 val ticketList = data
-                 Log.i(TAG, "Ticket List: $ticketList")
-                 System.out.print("hi")
-                val ticketListFragment = TicketListFragment(ticketList)
-                replaceFragment(ticketListFragment)
-            },
-            onError = {
-                Log.e(TAG, "Error fetching team members: $it")
-                getDialog(DialogType.ERROR,it).show(requireActivity().supportFragmentManager, "ErrorDialog")
-                popFragment()
-            },
-            onLoading = {
-                showLoading()
-            },
-            onIdle = {
-                hideLoading()
-            }
-        )
-    }
 }
 
 

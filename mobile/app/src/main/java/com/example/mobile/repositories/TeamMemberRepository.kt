@@ -3,6 +3,7 @@ package com.example.mobile.repositories
 import Ticket
 import android.util.Log
 import com.example.mobile.remote.api.TeamMemberService
+import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
@@ -51,6 +52,19 @@ class TeamMemberRepository @Inject constructor(
 
                     Log.i("TAG", "Error: ${response.headers().get("message")}, ")
                     Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun getTicket(ticketId: Int): Result<TicketWithoutInvoice> {
+        return try {
+            val response = teamMemberService.getTicket(ticketId)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
             }
         } catch (e: Exception) {
             Result.failure(e)

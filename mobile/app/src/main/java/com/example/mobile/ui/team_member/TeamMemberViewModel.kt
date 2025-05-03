@@ -4,6 +4,7 @@ import Ticket
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.repositories.TeamMemberRepository
 import com.example.mobile.utils.UiState
@@ -30,6 +31,8 @@ class TeamMemberViewModel @Inject constructor(
     private val _getClosedTicketsIdState = MutableStateFlow<UiState<List<Int>>>(UiState.Idle)
     val getClosedTicketsIdState: StateFlow<UiState<List<Int>>> = _getClosedTicketsIdState
 
+    private val _getTicketState = MutableStateFlow<UiState<TicketWithoutInvoice>> (UiState.Idle)
+    val getTicketState: StateFlow<UiState<TicketWithoutInvoice>> = _getTicketState
     fun getCostTypes() {
         // Logic to fetch team members
         viewModelScope.launch {
@@ -86,6 +89,23 @@ class TeamMemberViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _getClosedTicketsIdState.value = UiState.Error(e.toString())
+            }
+        }
+
+    }
+    fun getTicketDetails(ticketId: Int){
+        viewModelScope.launch {
+            _getTicketState.value = UiState.Loading
+            try {
+                val result = teamMemberRepository.getTicket(ticketId)
+                if (result.isSuccess) {
+                    val ticket = result.getOrNull()
+                    _getTicketState.value = UiState.Success(ticket!!)
+                } else {
+                    _getTicketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getTicketState.value = UiState.Error(e.toString())
             }
         }
 
