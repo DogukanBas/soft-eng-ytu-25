@@ -146,6 +146,29 @@ public class TicketController {
                 .body(Map.of("costTypes", costTypes));
     }
 
+    @GetMapping("/closed-tickets")
+    public ResponseEntity<?> getTicketIDs(Authentication authentication) {
+        logger.debug("Fetching ticket IDs");
+        String personalNo = authentication.getName();
+        List<Integer> ticketIds = ticketService.getClosedTicketIdsByEmployeeId(personalNo);
+        if (ticketIds.isEmpty()) {
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "No tickets found"));
+        }
+        return ResponseEntity.ok()
+                .body(Map.of("ticketIds", ticketIds));
+    }
 
+    @GetMapping()
+    public ResponseEntity<?> getTicketById(@RequestParam("ticketId") int ticketId) {
+        logger.debug("Fetching ticket with ID: {}", ticketId);
+        TicketDTOs.TicketWithoutInvoiceResponse ticket = ticketService.getTicketById(ticketId);
+        if (ticket == null) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("message", "Ticket not found"));
+        }
+        return ResponseEntity.ok()
+                .body(ticket);
+    }
 
 }

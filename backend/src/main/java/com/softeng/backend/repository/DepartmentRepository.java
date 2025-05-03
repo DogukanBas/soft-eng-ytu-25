@@ -23,7 +23,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     @Modifying
     @Query(value = "UPDATE departments SET deptManager = :personalNo WHERE deptname = :deptName", nativeQuery = true)
     void setManager(@Param("deptName") String deptName, @Param("personalNo") String personalNo);
-   @Modifying
+
+    @Modifying
     @Query("UPDATE Department d SET d.remainingBudget = :remainingBudget " +
            "WHERE d.deptname = :deptName")
     void setDepartmentRemainingBudget(@Param("deptName") String deptName, @Param("remainingBudget") Double remainingBudget);

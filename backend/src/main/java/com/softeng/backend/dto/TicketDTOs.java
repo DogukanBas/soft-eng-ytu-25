@@ -102,4 +102,50 @@ public class TicketDTOs {
             this.budget = budget;
         }
     }
+
+    public static class TicketWithoutInvoiceResponse {
+        private String costType;
+        private BigDecimal amount;
+        private String employeeId;
+        private String managerId;
+
+        public TicketWithoutInvoiceResponse(String costType, BigDecimal amount, String employeeId, String managerId) {
+            this.costType = costType;
+            this.amount = amount;
+            this.employeeId = employeeId;
+            this.managerId = managerId;
+        }
+
+        public String getCostType() {
+            return costType;
+        }
+
+        public void setCostType(String costType) {
+            this.costType = costType;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+
+        public String getEmployeeId() {
+            return employeeId;
+        }
+
+        public void setEmployeeId(String employeeId) {
+            this.employeeId = employeeId;
+        }
+
+        public String getManagerId() {
+            return managerId;
+        }
+
+        public void setManagerId(String managerId) {
+            this.managerId = managerId;
+        }
+    }
 }

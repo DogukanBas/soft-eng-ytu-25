@@ -17,9 +17,3 @@ public interface TicketService {
 
 
 }
-
-
-/*
-add ticket
-
- */
