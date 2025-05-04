@@ -1,4 +1,4 @@
-package com.example.mobile.ui.team_member
+package com.example.mobile.ui.ticket
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
@@ -16,18 +15,13 @@ import com.example.mobile.adapters.ApprovalHistoryAdapter
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.utils.DialogType
-import com.example.mobile.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @AndroidEntryPoint
 class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val ticketId:Int, private val approveHistory: List<ApprovalHistoryItem>) : BaseFragment() {
 
-    private val viewModel: TeamMemberViewModel by viewModels()
+    private val viewModel: TicketViewModel by viewModels()
     private lateinit var ticketCostType: TextView
     private lateinit var ticketAmount: TextView
     private lateinit var ticketEmployeeId: TextView

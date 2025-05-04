@@ -1,4 +1,4 @@
-package com.example.mobile.ui.team_member
+package com.example.mobile.ui.ticket
 
 import Ticket
 import android.util.Log
@@ -7,24 +7,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
-import com.example.mobile.repositories.TeamMemberRepository
+import com.example.mobile.repositories.TicketRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TeamMemberViewModel @Inject constructor(
-    private val teamMemberRepository: TeamMemberRepository
+class TicketViewModel @Inject constructor(
+    private val ticketRepository: TicketRepository
 ) : ViewModel(){
 //    companion object {
 //        const val TAG = "TeamMemberViewModel"
 //    }
-    private val _getCostTypeTeamMembers = MutableStateFlow<UiState<List<String>>>(UiState.Idle)
-    val getCostTypeTeamMembers: StateFlow<UiState<List<String>>> = _getCostTypeTeamMembers
+    private val _getCostType = MutableStateFlow<UiState<List<String>>>(UiState.Idle)
+    val getCostType: StateFlow<UiState<List<String>>> = _getCostType
 
 
     private val _createTicket = MutableStateFlow<UiState<CreateTicketResponse>> (UiState.Idle)
@@ -39,23 +38,20 @@ class TeamMemberViewModel @Inject constructor(
     private val _getApproveHistoryState = MutableStateFlow<UiState<List<ApprovalHistoryItem>>>(UiState.Idle)
     val getApproveHistoryState: StateFlow<UiState<List<ApprovalHistoryItem>>> = _getApproveHistoryState
     fun getCostTypes() {
-        // Logic to fetch team members
+
         viewModelScope.launch {
 
-        _getCostTypeTeamMembers.value = UiState.Loading
+        _getCostType.value = UiState.Loading
         try {
-//            val result:List<String> = listOf("Bus","Taxi","hotel")
-//            _getCostTypeTeamMembers.value = UiState.Success(result)
-
-            val result = teamMemberRepository.getCostTypes()
+            val result = ticketRepository.getCostTypes()
             if (result.isSuccess) {
                 val teamMembers = result.getOrNull()
-                _getCostTypeTeamMembers.value = UiState.Success(teamMembers ?: emptyList())
+                _getCostType.value = UiState.Success(teamMembers ?: emptyList())
             } else {
-                _getCostTypeTeamMembers.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                _getCostType.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
         } catch (e: Exception) {
-            _getCostTypeTeamMembers.value = UiState.Error(e.toString())
+            _getCostType.value = UiState.Error(e.toString())
         }
         Log.i("TAG", "Fetching team members")
 
@@ -67,7 +63,7 @@ class TeamMemberViewModel @Inject constructor(
         viewModelScope.launch {
             _createTicket.value = UiState.Loading
             try {
-                val result = teamMemberRepository.createTicket(ticket)
+                val result = ticketRepository.createTicket(ticket)
                 if (result.isSuccess) {
                     val createTicketResponse = result.getOrNull()
                     _createTicket.value = UiState.Success(createTicketResponse!!)
@@ -85,7 +81,7 @@ class TeamMemberViewModel @Inject constructor(
         viewModelScope.launch {
             _getClosedTicketsIdState.value = UiState.Loading
             try {
-                val result = teamMemberRepository.getClosedTicketsId()
+                val result = ticketRepository.getClosedTicketsId()
                 if (result.isSuccess) {
                     val closedTickets = result.getOrNull()
                     _getClosedTicketsIdState.value = UiState.Success(closedTickets ?: emptyList())
@@ -102,7 +98,7 @@ class TeamMemberViewModel @Inject constructor(
         viewModelScope.launch {
             _getTicketState.value = UiState.Loading
             try {
-                val result = teamMemberRepository.getTicket(ticketId)
+                val result = ticketRepository.getTicket(ticketId)
                 if (result.isSuccess) {
                     val ticket = result.getOrNull()
                     _getTicketState.value = UiState.Success(ticket!!)
@@ -119,7 +115,7 @@ class TeamMemberViewModel @Inject constructor(
         viewModelScope.launch {
             _getApproveHistoryState.value = UiState.Loading
             try {
-                val result = teamMemberRepository.getApproveHistory(ticketId)
+                val result = ticketRepository.getApproveHistory(ticketId)
                 if (result.isSuccess) {
                     val approveHistory = result.getOrNull()
                     _getApproveHistoryState.value = UiState.Success(approveHistory!!)

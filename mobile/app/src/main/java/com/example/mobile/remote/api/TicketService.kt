@@ -12,7 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface TeamMemberService {
+interface TicketService {
     @GET("api/ticket/cost-types")
     suspend fun getTeamMembers(): Response<TeamMemberCostTypeResponseList>
 

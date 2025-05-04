@@ -3,18 +3,18 @@ package com.example.mobile.repositories
 import Ticket
 import android.util.Log
 import com.example.mobile.models.ApprovalHistoryItem
-import com.example.mobile.remote.api.TeamMemberService
+import com.example.mobile.remote.api.TicketService
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
 
-class TeamMemberRepository @Inject constructor(
-    private val teamMemberService: TeamMemberService,
+class TicketRepository @Inject constructor(
+    private val ticketService: TicketService,
 ) {
     suspend fun getCostTypes() :Result<List<String>> {
          return try {
-            val response = teamMemberService.getTeamMembers()
+            val response = ticketService.getTeamMembers()
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!.costTypes)
             } else {
@@ -27,7 +27,7 @@ class TeamMemberRepository @Inject constructor(
     }
     suspend fun createTicket(ticket: Ticket): Result<CreateTicketResponse> {
         return try {
-            val response = teamMemberService.createTicket(ticket.toDto())
+            val response = ticketService.createTicket(ticket.toDto())
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -46,7 +46,7 @@ class TeamMemberRepository @Inject constructor(
     }
     suspend fun getClosedTicketsId(): Result<List<Int>> {
         return try {
-            val response = teamMemberService.getClosedTickets()
+            val response = ticketService.getClosedTickets()
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!.ticketIds)
             } else {
@@ -60,7 +60,7 @@ class TeamMemberRepository @Inject constructor(
     }
     suspend fun getTicket(ticketId: Int): Result<TicketWithoutInvoice> {
         return try {
-            val response = teamMemberService.getTicket(ticketId)
+            val response = ticketService.getTicket(ticketId)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -74,7 +74,7 @@ class TeamMemberRepository @Inject constructor(
 
     suspend fun getApproveHistory(ticketId: Int): Result<List<ApprovalHistoryItem>> {
         return try {
-            val response = teamMemberService.getApproveHistory(ticketId)
+            val response = ticketService.getApproveHistory(ticketId)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {

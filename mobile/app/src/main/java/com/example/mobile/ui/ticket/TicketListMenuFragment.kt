@@ -1,45 +1,28 @@
 package com.example.mobile.ui.accountant
 
-import Ticket
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.ui.team_member.TeamMemberViewModel
+import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
-import com.token.uicomponents.CustomInput.CustomInputFormat
-import com.token.uicomponents.CustomInput.EditTextInputType
-import com.token.uicomponents.CustomInput.InputListFragment
-import com.token.uicomponents.CustomInput.InputValidator
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
-import com.token.uicomponents.components330.input_menu_fragment.BtnOkVisibilityModes
-import com.token.uicomponents.components330.input_menu_fragment.InputMenuFragment330
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Base64
-import java.util.Calendar
-import java.util.Date
 
 @AndroidEntryPoint
-class ListTicketFragment (): BaseFragment() {
+class TicketListMenuFragment (): BaseFragment() {
 
     companion object {
         val TAG = "ListTicketFragment"
     }
 
-    private val viewModel: TeamMemberViewModel by viewModels()
+    private val viewModel: TicketViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -122,7 +105,7 @@ class ListTicketFragment (): BaseFragment() {
                 replaceFragment(ticketListFragment)
             },
             onError = {
-                Log.e(TAG, "Error fetching team members: $it")
+                Log.e(TAG, "Error fetching closed ticket ids: $it")
                 getDialog(DialogType.ERROR,it).show(requireActivity().supportFragmentManager, "ErrorDialog")
                 popFragment()
             },

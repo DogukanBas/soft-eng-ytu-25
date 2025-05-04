@@ -1,22 +1,20 @@
-package com.example.mobile.ui.accountant
+package com.example.mobile.ui.team_member
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.ui.team_member.TeamMemberViewModel
+import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.ticket.CreateTicketFragment
+import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TeamMemberMenuFragment : BaseFragment() {
@@ -24,7 +22,7 @@ class TeamMemberMenuFragment : BaseFragment() {
     companion object {
         val TAG = "TeamMemberMenuFragment"
     }
-    private val teamMemberViewModel: TeamMemberViewModel by viewModels()
+    private val ticketViewModel: TicketViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,10 +49,10 @@ class TeamMemberMenuFragment : BaseFragment() {
         menuItems.add(MenuItem(
             "Create Ticket") {
             Log.i(TAG, "Create Ticket button clicked")
-            teamMemberViewModel.getCostTypes()
+            ticketViewModel.getCostTypes()
 
                 observeUiState(
-                    teamMemberViewModel.getCostTypeTeamMembers,
+                    ticketViewModel.getCostType,
                     onSuccess = { data ->
                         replaceFragment(
                             CreateTicketFragment(data)
@@ -76,7 +74,7 @@ class TeamMemberMenuFragment : BaseFragment() {
         menuItems.add(MenuItem(
             "List Tickets") {
             replaceFragment(
-                ListTicketFragment()
+                TicketListMenuFragment()
             )
         })
 

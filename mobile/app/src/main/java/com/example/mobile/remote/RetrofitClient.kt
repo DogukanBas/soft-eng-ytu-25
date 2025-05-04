@@ -3,7 +3,7 @@ import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService
 import com.example.mobile.remote.api.DepartmentService
-import com.example.mobile.remote.api.TeamMemberService
+import com.example.mobile.remote.api.TicketService
 import com.example.mobile.util.AuthInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -47,8 +47,8 @@ object RetrofitClient {
     val costTypeService: CostTypeService by lazy {
         instance.create(CostTypeService::class.java)
     }
-    val teamMemberService: TeamMemberService by lazy {
-        instance.create(TeamMemberService::class.java)
+    val ticketService: TicketService by lazy {
+        instance.create(TicketService::class.java)
     }
 
 }
