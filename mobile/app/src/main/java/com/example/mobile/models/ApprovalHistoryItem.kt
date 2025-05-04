@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class ApprovalHistoryItem(
     val id: Int,
     val status: String,
-    val date: LocalDate,
+    val date: String,
     val actorId: String,
     val actorRole: String,
     val description: String? = null

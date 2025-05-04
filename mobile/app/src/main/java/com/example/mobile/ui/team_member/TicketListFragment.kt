@@ -16,6 +16,7 @@ import com.example.mobile.ui.team_member.TeamMemberViewModel
 import com.example.mobile.ui.team_member.TicketDetailFragment
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
+import com.example.mobile.utils.UiState
 import com.token.uicomponents.CustomInput.CustomInputFormat
 import com.token.uicomponents.CustomInput.EditTextInputType
 import com.token.uicomponents.CustomInput.InputListFragment
@@ -25,6 +26,7 @@ import com.token.uicomponents.components330.input_menu_fragment.BtnOkVisibilityM
 import com.token.uicomponents.components330.input_menu_fragment.InputMenuFragment330
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -72,22 +74,53 @@ class TicketListFragment (val tickets:List<Int>): BaseFragment() {
             menuItemsList.add(MenuItem("Ticket ID: $ticket") {
                 Log.i(TAG, "Ticket ID: $ticket button clicked")
                 viewModel.getTicketDetails(ticket)
-                observeUiState(
-                    viewModel.getTicketState,
-                    onSuccess = { data ->
-                        Log.i(TAG, "Ticket details fetched successfully: $data")
-                        System.out.print("as")
-                        replaceFragment(
-                            TicketDetailFragment(data,ticket)
-                        )
-                    }
-                    , onError = {
-                        Log.e(TAG, "Error fetching ticket details: $it")
-                        popFragment()
-                        getDialog(DialogType.ERROR,it).show(requireActivity().supportFragmentManager, "ErrorDialog")
+                viewModel.getApproveHistory(ticket)
 
-                    },
-                )
+                var hasHandledSuccess = false
+                val loadingDialog = getDialog(DialogType.LOADING, "Loading")
+                viewLifecycleOwner.lifecycleScope.launch {
+                    combine(viewModel.getTicketState, viewModel.getApproveHistoryState) { state1, state2 ->
+                        state1 to state2
+                    }.collect { (state1, state2) ->
+
+                        // Show loading if at least one is loading
+                        if (state1 is UiState.Loading || state2 is UiState.Loading) {
+                            if (!loadingDialog.isVisible) {
+                                loadingDialog.show(
+                                    requireActivity().supportFragmentManager,
+                                    "LoadingDialog"
+                                )
+                            }
+                            return@collect
+                        } else {
+                            loadingDialog.dismiss()
+                        }
+
+                        // Show error if any of them is error
+                        if (state1 is UiState.Error) {
+                            Log.e(TAG, "Error fetching ticket details: ${state1.message}")
+                            showError(state1.message)
+                            return@collect
+                        }
+                        if (state2 is UiState.Error) {
+                            Log.e(TAG, "Error fetching approval history: ${state2.message}")
+                            showError(state2.message)
+                            return@collect
+                        }
+
+                        // Success only when both are success, and not already handled
+                        if (!hasHandledSuccess &&
+                            state1 is UiState.Success &&
+                            state2 is UiState.Success
+                        ) {
+                            hasHandledSuccess = true
+                            val ticketDetailFragment = TicketDetailFragment(state1.data,ticket, state2.data)
+                            replaceFragment(ticketDetailFragment)
+                        }
+
+                    }
+                }
+
             })
         }
 

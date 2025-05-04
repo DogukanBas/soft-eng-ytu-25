@@ -1,5 +1,6 @@
 package com.example.mobile.remote.api
 
+import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
@@ -22,4 +23,8 @@ interface TeamMemberService {
     suspend fun getClosedTickets(): Response<ListTicketIdResponseList>
     @GET("api/ticket")
     suspend fun getTicket(@Query("ticketId") ticketId: Int): Response<TicketWithoutInvoice>
+
+    @GET("api/ticket/approve-history")
+    suspend fun getApproveHistory(@Query("ticketId") ticketId: Int): Response<List<ApprovalHistoryItem>>
+
 }

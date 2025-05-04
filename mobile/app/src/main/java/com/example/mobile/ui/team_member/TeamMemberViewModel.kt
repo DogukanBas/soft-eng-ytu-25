@@ -4,11 +4,13 @@ import Ticket
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.repositories.TeamMemberRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -33,6 +35,9 @@ class TeamMemberViewModel @Inject constructor(
 
     private val _getTicketState = MutableStateFlow<UiState<TicketWithoutInvoice>> (UiState.Idle)
     val getTicketState: StateFlow<UiState<TicketWithoutInvoice>> = _getTicketState
+
+    private val _getApproveHistoryState = MutableStateFlow<UiState<List<ApprovalHistoryItem>>>(UiState.Idle)
+    val getApproveHistoryState: StateFlow<UiState<List<ApprovalHistoryItem>>> = _getApproveHistoryState
     fun getCostTypes() {
         // Logic to fetch team members
         viewModelScope.launch {
@@ -110,5 +115,20 @@ class TeamMemberViewModel @Inject constructor(
         }
 
     }
-
+    fun getApproveHistory(ticketId: Int){
+        viewModelScope.launch {
+            _getApproveHistoryState.value = UiState.Loading
+            try {
+                val result = teamMemberRepository.getApproveHistory(ticketId)
+                if (result.isSuccess) {
+                    val approveHistory = result.getOrNull()
+                    _getApproveHistoryState.value = UiState.Success(approveHistory!!)
+                } else {
+                    _getApproveHistoryState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getApproveHistoryState.value = UiState.Error(e.toString())
+            }
+        }
+    }
 }

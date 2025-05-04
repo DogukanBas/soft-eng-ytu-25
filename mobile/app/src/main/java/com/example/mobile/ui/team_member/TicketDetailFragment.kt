@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @AndroidEntryPoint
-class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val ticketId:Int) : BaseFragment() {
+class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val ticketId:Int, private val approveHistory: List<ApprovalHistoryItem>) : BaseFragment() {
 
     private val viewModel: TeamMemberViewModel by viewModels()
     private lateinit var ticketCostType: TextView
@@ -61,6 +61,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
 
         displayTicketDetails(ticket)
         displayDummyApprovalHistory()
+
     }
 
     private fun initViews(view: View) {
@@ -120,12 +121,16 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         ticketAmount.text = "₺${String.format(Locale.getDefault(), "%.2f", ticket.amount)}"
         ticketEmployeeId.text = ticket.employeeId
         ticketManagerId.text = ticket.managerId
-
-        // In a real implementation, you would get the current status from the API
-        // For now, we'll just display a placeholder
-        ticketStatus.text = "CLOSED_AS_APPROVED" // This will come from API in real implementation
-
-        // Update button visibility based on ticket status (to be implemented)
+        ticketStatus.text = approveHistory.lastOrNull()?.status ?: "UNKNOWN"
+        val context = ticketStatus.context
+        val color = when {
+            ticketStatus.text.contains("APPROVED") || ticketStatus.text.contains("SENT_TO_ACCOUNTANT") ->
+                android.R.color.holo_green_dark
+            ticketStatus.text.contains("REJECTED") || ticketStatus.text.contains("CANCELED") ->
+                android.R.color.holo_red_dark
+            else -> android.R.color.black
+        }
+        ticketStatus.setTextColor(context.resources.getColor(color, context.theme))
         updateActionButtonsVisibility("CLOSED_AS_APPROVED")
     }
 
@@ -160,50 +165,8 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     // For demonstration purposes, this method creates dummy approval history data
     // In a real implementation, this would come from the API
     private fun displayDummyApprovalHistory() {
-        val dummyHistory = listOf(
-            ApprovalHistoryItem(
-                id = 1,
-                status = "SENT_TO_MANAGER",
-                date = LocalDate.now().minusDays(5),
-                actorId = "EMP001",
-                actorRole = "Team Member",
-                description = "Hotel accommodation for business trip"
-            ),
-            ApprovalHistoryItem(
-                id = 2,
-                status = "REJECTED_BY_MANAGER_CAN_BE_FIXED",
-                date = LocalDate.now().minusDays(4),
-                actorId = "MGR001",
-                actorRole = "Manager",
-                description = "Need more details about the accommodation"
-            ),
-            ApprovalHistoryItem(
-                id = 3,
-                status = "SENT_TO_MANAGER",
-                date = LocalDate.now().minusDays(3),
-                actorId = "EMP001",
-                actorRole = "Team Member",
-                description = "Added detailed information about hotel and stay dates"
-            ),
-            ApprovalHistoryItem(
-                id = 4,
-                status = "SENT_TO_ACCOUNTANT",
-                date = LocalDate.now().minusDays(2),
-                actorId = "MGR001",
-                actorRole = "Manager",
-                description = null
-            ),
-            ApprovalHistoryItem(
-                id = 5,
-                status = "CLOSED_AS_APPROVED",
-                date = LocalDate.now().minusDays(1),
-                actorId = "ACC001",
-                actorRole = "Accountant",
-                description = "Approved for reimbursement"
-            )
-        )
 
-        val adapter = ApprovalHistoryAdapter(dummyHistory)
+        val adapter = ApprovalHistoryAdapter(approveHistory)
         recyclerView.adapter = adapter
     }
 }
