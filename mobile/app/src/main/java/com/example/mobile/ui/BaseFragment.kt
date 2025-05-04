@@ -6,6 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.mobile.MainActivity
 import com.example.mobile.MainActivity.Companion
 import com.example.mobile.R
+import com.example.mobile.ui.accountant.TicketListFragment
+import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.UiState
 import com.token.uicomponents.components330.dialog_box_fullscreen.DialogBoxFullScreen330
@@ -128,6 +130,33 @@ abstract class BaseFragment : Fragment() {
                 )
         }
         return dialog
+    }
+    protected fun getTicketList(viewModel: TicketViewModel, myFunc: ()-> Unit) {
+            Log.i(TAG, "List Closed Tickets button clicked")
+            myFunc()
+            observeUiState(
+                viewModel.getTicketListIdState,
+                onSuccess = { data ->
+                    Log.i(TAG, "Success: $data")
+                    val ticketList = data
+                    Log.i(TAG, "Ticket List: $ticketList")
+                    System.out.print("hi")
+                    val ticketListFragment = TicketListFragment(ticketList)
+                    replaceFragment(ticketListFragment)
+                },
+                onError = {
+                    Log.e(TAG, "Error fetching ticket ids: $it")
+                    getDialog(DialogType.ERROR,it).show(requireActivity().supportFragmentManager, "ErrorDialog")
+                    popFragment()
+                },
+                onLoading = {
+                    showLoading()
+                },
+                onIdle = {
+                    hideLoading()
+                }
+            )
+
     }
 }
 

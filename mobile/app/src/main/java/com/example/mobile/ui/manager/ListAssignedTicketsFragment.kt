@@ -1,4 +1,4 @@
-package com.example.mobile.ui.accountant
+package com.example.mobile.ui.manager
 
 import android.os.Bundle
 import android.util.Log
@@ -9,14 +9,13 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.ticket.TicketViewModel
-import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TicketListMenuFragment (): BaseFragment() {
+class ListAssignedTicketsFragment (): BaseFragment() {
 
     companion object {
         val TAG = "ListTicketFragment"
@@ -46,16 +45,15 @@ class TicketListMenuFragment (): BaseFragment() {
 
     private fun setMenu(): NavigationListFragment {
         val menuItemsList = mutableListOf<IListMenuItem>()
-        menuItemsList.add(MenuItem("List Active Tickets"){getTicketList(viewModel){viewModel.getActiveCreatedTicketsId()} })
-        menuItemsList.add(MenuItem("List Closed Tickets"){getTicketList(viewModel){viewModel.getClosedCreatedTicketsId()} })
+        menuItemsList.add(MenuItem("List Active Tickets"){getTicketList(viewModel){viewModel.getActiveAssignedTicketsId()} })
+        menuItemsList.add(MenuItem("List Closed Tickets"){getTicketList(viewModel){viewModel.getClosedAssignedTicketsId()} })
 
         return NavigationListFragment(
-            "List Created Tickets",
+            "List Assigned Tickets",
             true,
             menuItemsList,
             headerImage = getLogo(),
         )
-
 
     }
 }
