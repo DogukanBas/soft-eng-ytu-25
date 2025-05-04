@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "approvehistory")
@@ -49,5 +50,13 @@ public class ApproveHistory {
             this.value = value;
         }
 
+        public static List<Status> getClosedStatus() {
+            return List.of(
+                    CLOSED_AS_APPROVED,
+                    CLOSED_AS_REJECTED_BY_MANAGER,
+                    CLOSED_AS_REJECTED_BY_ACCOUNTANT,
+                    CANCELED_BY_USER
+            );
+        }
     }
 }

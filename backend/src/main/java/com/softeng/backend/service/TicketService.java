@@ -13,7 +13,10 @@ public interface TicketService {
     void addAttachment(Attachment attachment);
     void addTicket(Ticket ticket);
     void addApproveHistory(ApproveHistory approveHistory);
-    List<Integer> getClosedTicketIdsByEmployeeId(String personalNo);
+    List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo);
+    List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo);
+    List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo);
+    List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo);
     TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId);
     List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId);
 }

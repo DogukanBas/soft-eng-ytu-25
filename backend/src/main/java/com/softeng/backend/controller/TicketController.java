@@ -146,11 +146,53 @@ public class TicketController {
                 .body(Map.of("costTypes", costTypes));
     }
 
-    @GetMapping("/closed-tickets")
-    public ResponseEntity<?> getTicketIDs(Authentication authentication) {
+    @GetMapping("/created/closed")
+    public ResponseEntity<?> getCreatedClosedTicketIDs(Authentication authentication) {
         logger.debug("Fetching ticket IDs");
         String personalNo = authentication.getName();
-        List<Integer> ticketIds = ticketService.getClosedTicketIdsByEmployeeId(personalNo);
+        List<Integer> ticketIds = ticketService.getCreatedClosedTicketIdsByPersonalNo(personalNo);
+        if (ticketIds.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .header("message","No Tickets found")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .body(Map.of("ticketIds", ticketIds));
+    }
+
+    @GetMapping("/assigned/closed")
+    public ResponseEntity<?> getAssignedClosedTicketIDs(Authentication authentication) {
+        logger.debug("Fetching assigned closed ticket IDs");
+        String personalNo = authentication.getName();
+        List<Integer> ticketIds = ticketService.getAssignedClosedTicketIdsByPersonalNo(personalNo);
+        if (ticketIds.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .header("message","No Tickets found")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .body(Map.of("ticketIds", ticketIds));
+    }
+
+    @GetMapping("/created/active")
+    public ResponseEntity<?> getCreatedActiveTicketIDs(Authentication authentication) {
+        logger.debug("Fetching created active ticket IDs");
+        String personalNo = authentication.getName();
+        List<Integer> ticketIds = ticketService.getCreatedActiveTicketIdsByPersonalNo(personalNo);
+        if (ticketIds.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .header("message","No Tickets found")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .body(Map.of("ticketIds", ticketIds));
+    }
+
+    @GetMapping("/assigned/active")
+    public ResponseEntity<?> getAssignedActiveTicketIDs(Authentication authentication) {
+        logger.debug("Fetching assigned active ticket IDs");
+        String personalNo = authentication.getName();
+        List<Integer> ticketIds = ticketService.getAssignedActiveTicketIdsByPersonalNo(personalNo);
         if (ticketIds.isEmpty()) {
             return ResponseEntity.status(404)
                     .header("message","No Tickets found")

@@ -4,7 +4,6 @@ import com.softeng.backend.dto.TicketDTOs;
 import com.softeng.backend.exception.ResourceNotFoundException;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
-import com.softeng.backend.model.Employee;
 import com.softeng.backend.model.Ticket;
 import com.softeng.backend.repository.ApproveHistoryRepository;
 import com.softeng.backend.repository.AttachmentRepository;
@@ -79,8 +78,39 @@ public class TicketServiceImpl implements TicketService {
         }
     }
     @Override
-    public List<Integer> getClosedTicketIdsByEmployeeId(String personalNo) {
-        return ticketRepository.findAllClosedTicketsByEmployeeId(personalNo);
+    public List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo) {
+        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+        return allTickets.stream()
+                .filter(ticket -> ticket.getEmployeeId().equals(personalNo))
+                .map(Ticket::getTicketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo) {
+        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+        return allTickets.stream()
+                .filter(ticket -> ticket.getEmployeeId().equals(personalNo))
+                .map(Ticket::getTicketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo) {
+        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+        return allTickets.stream()
+                .filter(ticket -> !ticket.getEmployeeId().equals(personalNo))
+                .map(Ticket::getTicketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo) {
+        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+        return allTickets.stream()
+                .filter(ticket -> !ticket.getEmployeeId().equals(personalNo))
+                .map(Ticket::getTicketId)
+                .toList();
     }
 
     @Override
