@@ -34,42 +34,12 @@ class TicketListMenuFragment (): BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.i(TAG, "onViewCreated")
-        setStateCollectors()
         val menuFragment = setMenu()
         childFragmentManager.beginTransaction()
             .replace(R.id.input_menu_container, menuFragment )
             .commit()
     }
 
-    private fun setStateCollectors() {
-        Log.i(TAG, "Setting up state collectors")
-        val dialog = getDialog(DialogType.LOADING,"Loading")
-
-        observeUiState(
-            viewModel.createTicketState,
-            onSuccess = { data ->
-                Log.i(TAG, "Success: $data")
-                dialog.dismiss()
-
-                getDialog(DialogType.SUCCESS,data.message + " \n Afforded amount is  " + data.budget.toString()).show(
-                    requireActivity().supportFragmentManager, "SuccessDialog")
-                popFragment()
-            },
-            onError = { message ->
-                Log.e(TAG, "Error: $message")
-                dialog.dismiss()
-                popFragment()
-                getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
-            },
-            onLoading = {
-                Log.i(TAG, "Loading")
-                dialog.show(
-                    requireActivity().supportFragmentManager,
-                    "ProcessingDialog"
-                )
-            },
-        )
-    }
     private fun getLogo(): Int {
         return R.drawable.ic_launcher_foreground
     }
