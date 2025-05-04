@@ -44,9 +44,9 @@ class TicketRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    suspend fun getClosedTicketsId(): Result<List<Int>> {
+    suspend fun getClosedCreatedTicketsId(): Result<List<Int>> {
         return try {
-            val response = ticketService.getClosedTickets()
+            val response = ticketService.getClosedCreatedTickets()
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!.ticketIds)
             } else {
@@ -58,6 +58,46 @@ class TicketRepository @Inject constructor(
             Result.failure(e)
         }
     }
+    suspend fun getActiveCreatedTicketsId(): Result<List<Int>> {
+        return try {
+            val response = ticketService.getActiveCreatedTickets()
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.ticketIds)
+            } else {
+                Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun getClosedAssignedTicketsId(): Result<List<Int>> {
+        return try {
+            val response = ticketService.getClosedAssignedTickets()
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.ticketIds)
+            } else {
+                Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun getActiveAssignedTicketsId(): Result<List<Int>> {
+        return try {
+            val response = ticketService.getActiveAssignedTickets()
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.ticketIds)
+            } else {
+                Log.i("TAG", "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getTicket(ticketId: Int): Result<TicketWithoutInvoice> {
         return try {
             val response = ticketService.getTicket(ticketId)

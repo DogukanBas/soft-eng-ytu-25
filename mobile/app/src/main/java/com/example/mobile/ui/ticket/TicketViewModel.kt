@@ -29,8 +29,8 @@ class TicketViewModel @Inject constructor(
     private val _createTicket = MutableStateFlow<UiState<CreateTicketResponse>> (UiState.Idle)
     val createTicketState: StateFlow<UiState<CreateTicketResponse>> = _createTicket
 
-    private val _getClosedTicketsIdState = MutableStateFlow<UiState<List<Int>>>(UiState.Idle)
-    val getClosedTicketsIdState: StateFlow<UiState<List<Int>>> = _getClosedTicketsIdState
+    private val _getTicketListIdState = MutableStateFlow<UiState<List<Int>>>(UiState.Idle)
+    val getTicketListIdState: StateFlow<UiState<List<Int>>> = _getTicketListIdState
 
     private val _getTicketState = MutableStateFlow<UiState<TicketWithoutInvoice>> (UiState.Idle)
     val getTicketState: StateFlow<UiState<TicketWithoutInvoice>> = _getTicketState
@@ -77,23 +77,76 @@ class TicketViewModel @Inject constructor(
 
 
     }
-    fun getClosedTicketsId(){
+    fun getClosedCreatedTicketsId(){
         viewModelScope.launch {
-            _getClosedTicketsIdState.value = UiState.Loading
+            _getTicketListIdState.value = UiState.Loading
             try {
-                val result = ticketRepository.getClosedTicketsId()
+                val result = ticketRepository.getClosedCreatedTicketsId()
                 if (result.isSuccess) {
                     val closedTickets = result.getOrNull()
-                    _getClosedTicketsIdState.value = UiState.Success(closedTickets ?: emptyList())
+                    _getTicketListIdState.value = UiState.Success(closedTickets ?: emptyList())
                 } else {
-                    _getClosedTicketsIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                    _getTicketListIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
                 }
             } catch (e: Exception) {
-                _getClosedTicketsIdState.value = UiState.Error(e.toString())
+                _getTicketListIdState.value = UiState.Error(e.toString())
             }
         }
 
     }
+    fun getActiveCreatedTicketsId(){
+        viewModelScope.launch {
+            _getTicketListIdState.value = UiState.Loading
+            try {
+                val result = ticketRepository.getActiveCreatedTicketsId()
+                if (result.isSuccess) {
+                    val activeTickets = result.getOrNull()
+                    _getTicketListIdState.value = UiState.Success(activeTickets ?: emptyList())
+                } else {
+                    _getTicketListIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getTicketListIdState.value = UiState.Error(e.toString())
+            }
+        }
+
+    }
+    fun getClosedAssignedTicketsId(){
+        viewModelScope.launch {
+            _getTicketListIdState.value = UiState.Loading
+            try {
+                val result = ticketRepository.getClosedAssignedTicketsId()
+                if (result.isSuccess) {
+                    val closedTickets = result.getOrNull()
+                    _getTicketListIdState.value = UiState.Success(closedTickets ?: emptyList())
+                } else {
+                    _getTicketListIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getTicketListIdState.value = UiState.Error(e.toString())
+            }
+        }
+
+    }
+    fun getActiveAssignedTicketsId(){
+        viewModelScope.launch {
+            _getTicketListIdState.value = UiState.Loading
+            try {
+                val result = ticketRepository.getActiveAssignedTicketsId()
+                if (result.isSuccess) {
+                    val activeTickets = result.getOrNull()
+                    _getTicketListIdState.value = UiState.Success(activeTickets ?: emptyList())
+                } else {
+                    _getTicketListIdState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getTicketListIdState.value = UiState.Error(e.toString())
+            }
+        }
+
+    }
+
+    
     fun getTicketDetails(ticketId: Int){
         viewModelScope.launch {
             _getTicketState.value = UiState.Loading

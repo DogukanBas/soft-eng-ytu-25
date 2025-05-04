@@ -19,12 +19,19 @@ interface TicketService {
     @POST("api/ticket/create-ticket")
     suspend fun createTicket(@Body request: CreateTicketRequest): Response<CreateTicketResponse>
 
-    @GET("api/ticket/closed-tickets")
-    suspend fun getClosedTickets(): Response<ListTicketIdResponseList>
     @GET("api/ticket")
     suspend fun getTicket(@Query("ticketId") ticketId: Int): Response<TicketWithoutInvoice>
 
     @GET("api/ticket/approve-history")
     suspend fun getApproveHistory(@Query("ticketId") ticketId: Int): Response<List<ApprovalHistoryItem>>
+
+    @GET("api/ticket/created/closed")
+    suspend fun getClosedCreatedTickets(): Response<ListTicketIdResponseList>
+    @GET("api/ticket/created/active")
+    suspend fun getActiveCreatedTickets(): Response<ListTicketIdResponseList>
+    @GET("api/ticket/assigned/closed")
+    suspend fun getClosedAssignedTickets(): Response<ListTicketIdResponseList>
+    @GET("api/ticket/assigned/active")
+    suspend fun getActiveAssignedTickets(): Response<ListTicketIdResponseList>
 
 }
