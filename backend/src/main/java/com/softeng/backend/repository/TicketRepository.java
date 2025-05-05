@@ -28,13 +28,19 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
           SELECT 1
           FROM ApproveHistory ah_actor_check
           WHERE ah_actor_check.ticket = ah.ticket
-            AND ah_actor_check.actor.personalNo = :personalNo
+            AND (
+            ah_actor_check.actor.personalNo = :personalNo
+            OR (:isManager = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_MANAGER)
+            OR (:isAccountant = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_ACCOUNTANT)
+            )
       )
     """)
     List<TicketSummary> findAllTicketsByEmployeeId(
             @Param("personalNo") String personalNo,
             @Param("includeStatuses") boolean includeStatuses,
-            @Param("statuses") List<ApproveHistory.Status> statuses
+            @Param("statuses") List<ApproveHistory.Status> statuses,
+            @Param("isManager") boolean isManager,
+            @Param("isAccountant") boolean isAccountant
     );
     Optional<TicketDTOs.TicketWithoutInvoiceResponse> findByTicketId(Integer ticketId);
 }

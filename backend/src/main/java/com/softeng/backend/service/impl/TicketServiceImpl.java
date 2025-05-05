@@ -79,8 +79,8 @@ public class TicketServiceImpl implements TicketService {
         }
     }
     @Override
-    public List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo) {
-        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+    public List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus(),isManager,isAccountant);
         return allTickets.stream()
                 .filter(ticket -> ticket.employeeId().equals(personalNo))
                 .map(TicketSummary::ticketId)
@@ -88,8 +88,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo) {
-        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+    public List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
         return allTickets.stream()
                 .filter(ticket -> ticket.employeeId().equals(personalNo))
                 .map(TicketSummary::ticketId)
@@ -97,8 +97,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo) {
-        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+    public List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
         return allTickets.stream()
                 .filter(ticket -> !ticket.employeeId().equals(personalNo))
                 .map(TicketSummary::ticketId)
@@ -106,8 +106,9 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo) {
-        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+    public List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
+
         return allTickets.stream()
                 .filter(ticket -> !ticket.employeeId().equals(personalNo))
                 .map(TicketSummary::ticketId)

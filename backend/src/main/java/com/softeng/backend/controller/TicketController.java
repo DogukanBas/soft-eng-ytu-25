@@ -150,7 +150,7 @@ public class TicketController {
     public ResponseEntity<?> getCreatedClosedTicketIDs(Authentication authentication) {
         logger.debug("Fetching ticket IDs");
         String personalNo = authentication.getName();
-        List<Integer> ticketIds = ticketService.getCreatedClosedTicketIdsByPersonalNo(personalNo);
+        List<Integer> ticketIds = ticketService.getCreatedClosedTicketIdsByPersonalNo(personalNo, isManager(authentication), isAccountant(authentication));
         if (ticketIds.isEmpty()) {
             return ResponseEntity.status(404)
                     .header("message","No Tickets found")
@@ -164,7 +164,7 @@ public class TicketController {
     public ResponseEntity<?> getAssignedClosedTicketIDs(Authentication authentication) {
         logger.debug("Fetching assigned closed ticket IDs");
         String personalNo = authentication.getName();
-        List<Integer> ticketIds = ticketService.getAssignedClosedTicketIdsByPersonalNo(personalNo);
+        List<Integer> ticketIds = ticketService.getAssignedClosedTicketIdsByPersonalNo(personalNo, isManager(authentication), isAccountant(authentication));
         if (ticketIds.isEmpty()) {
             return ResponseEntity.status(404)
                     .header("message","No Tickets found")
@@ -178,7 +178,7 @@ public class TicketController {
     public ResponseEntity<?> getCreatedActiveTicketIDs(Authentication authentication) {
         logger.debug("Fetching created active ticket IDs");
         String personalNo = authentication.getName();
-        List<Integer> ticketIds = ticketService.getCreatedActiveTicketIdsByPersonalNo(personalNo);
+        List<Integer> ticketIds = ticketService.getCreatedActiveTicketIdsByPersonalNo(personalNo, isManager(authentication), isAccountant(authentication));
         if (ticketIds.isEmpty()) {
             return ResponseEntity.status(404)
                     .header("message","No Tickets found")
@@ -192,7 +192,7 @@ public class TicketController {
     public ResponseEntity<?> getAssignedActiveTicketIDs(Authentication authentication) {
         logger.debug("Fetching assigned active ticket IDs");
         String personalNo = authentication.getName();
-        List<Integer> ticketIds = ticketService.getAssignedActiveTicketIdsByPersonalNo(personalNo);
+        List<Integer> ticketIds = ticketService.getAssignedActiveTicketIdsByPersonalNo(personalNo, isManager(authentication), isAccountant(authentication));
         if (ticketIds.isEmpty()) {
             return ResponseEntity.status(404)
                     .header("message","No Tickets found")
@@ -225,5 +225,17 @@ public class TicketController {
         }
         return ResponseEntity.ok()
                 .body(approveHistory);
+    }
+
+    private boolean isManager(Authentication authentication) {
+        String personalNo = authentication.getName();
+        User currentUser = userService.getUserByPersonalNo(personalNo);
+        return currentUser.getUserType() == User.UserType.manager;
+    }
+
+    private boolean isAccountant(Authentication authentication) {
+        String personalNo = authentication.getName();
+        User currentUser = userService.getUserByPersonalNo(personalNo);
+        return currentUser.getUserType() == User.UserType.accountant;
     }
 }
