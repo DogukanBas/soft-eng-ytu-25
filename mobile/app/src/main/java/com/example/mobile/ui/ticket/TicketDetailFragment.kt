@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.adapters.ApprovalHistoryAdapter
+import com.example.mobile.model.User.User
+import com.example.mobile.model.User.UserType
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
@@ -82,6 +84,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         btnCancel.visibility = View.GONE
         btnEdit.visibility = View.GONE
 
+
         // Set up button click listeners (to be implemented later)
         setupButtonListeners()
     }
@@ -125,26 +128,29 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
             else -> android.R.color.black
         }
         ticketStatus.setTextColor(context.resources.getColor(color, context.theme))
-        updateActionButtonsVisibility("CLOSED_AS_APPROVED")
+        updateActionButtonsVisibility(ticketStatus.text.toString())
     }
 
     private fun updateActionButtonsVisibility(status: String) {
-        // This logic would depend on the ticket's current status and the user's role
-        // For now, just showing/hiding buttons based on status example
-        when (status) {
-            "SENT_TO_MANAGER" -> {
-                // If user is a manager, show Accept and Reject buttons
-                btnAccept.visibility = View.VISIBLE
-                btnReject.visibility = View.VISIBLE
-                btnCancel.visibility = View.GONE
-                btnEdit.visibility = View.GONE
+
+
+        when(User.userType) {
+            UserType.MANAGER -> {
+                btnReject.visibility  = if (ticketEmployeeId.text != ticketManagerId.text && status.equals("SENT_TO_MANAGER")) View.VISIBLE else View.GONE
+                btnAccept.visibility = btnReject.visibility
+                btnEdit.visibility =  if( ticketEmployeeId.text==ticketManagerId.text && (status.equals("REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED") || status.equals("SENT_TO_ACCOUNTANT"))) View.VISIBLE else View.GONE
+                btnCancel.visibility = btnEdit.visibility
             }
-            "REJECTED_BY_MANAGER_CAN_BE_FIXED" -> {
-                // If user is the creator, show Edit button
-                btnAccept.visibility = View.GONE
-                btnReject.visibility = View.GONE
-                btnCancel.visibility = View.VISIBLE
-                btnEdit.visibility = View.VISIBLE
+            UserType.TEAM_MEMBER -> {
+                btnEdit.visibility =if (status.equals("SENT_TO_MANAGER") ||status.equals("REJECTED_BY_MANAGER_CAN_BE_FIXED") || status.equals("REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED")) View.VISIBLE else View.GONE
+                btnCancel.visibility = btnEdit.visibility
+
+            }
+            UserType.ACCOUNTANT->{
+                //TODO
+            }
+            UserType.ADMIN->{
+                //TODO
             }
             else -> {
                 // For closed/approved tickets, hide all action buttons
