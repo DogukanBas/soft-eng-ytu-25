@@ -17,6 +17,7 @@ import com.example.mobile.model.User.UserType
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
+import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -56,8 +57,28 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         initViews(view)
 
         displayTicketDetails(ticket)
-        displayDummyApprovalHistory()
+        displayApprovalHistory()
+        setupStateObservers()
+    }
 
+    private fun setupStateObservers() {
+        observeUiState(
+            viewModel.ticketState,
+            onSuccess = { message ->
+
+                Log.i(TAG, "Ticket Success $message")
+                getDialog(DialogType.SUCCESS, message).show(
+                    requireActivity().supportFragmentManager, "SuccessDialog"
+                )
+                popFragment()
+            },
+            onError = { message ->
+                Log.e(TAG, "Ticket Error: $message")
+                getDialog(DialogType.ERROR, message).show(
+                    requireActivity().supportFragmentManager, "ErrorDialog"
+                )
+            }
+        )
     }
 
     private fun initViews(view: View) {
@@ -92,17 +113,17 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     private fun setupButtonListeners() {
         btnAccept.setOnClickListener {
             Log.i(TAG, "Accept button clicked for ticket ID: $ticketId")
-            // To be implemented
+            showAcceptBottomSheet()
         }
 
         btnReject.setOnClickListener {
             Log.i(TAG, "Reject button clicked for ticket ID: $ticketId")
-            // To be implemented
+            showRejectBottomSheet()
         }
 
         btnCancel.setOnClickListener {
             Log.i(TAG, "Cancel button clicked for ticket ID: $ticketId")
-            // To be implemented
+            showCancelBottomSheet()
         }
 
         btnEdit.setOnClickListener {
@@ -111,6 +132,47 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         }
     }
 
+    private fun showRejectBottomSheet() {
+        val bottomSheet = BottomSheetFragment(
+            "Reject Ticket",
+            "Enter Your Reason To Reject",
+            "Reject And Close",
+            "Reject And Send For Edit",
+            onFirstAction = { reason ->
+                Log.i(TAG, "Rejecting and closing ticket with reason: $reason")
+                viewModel.rejectTicketClose(ticketId, reason)
+            },
+            onSecondAction = { reason ->
+                Log.i(TAG, "Rejecting and sending for edit with reason: $reason")
+                viewModel.rejectTicketEdit(ticketId, reason)
+            }
+        )
+        bottomSheet.show(requireActivity().supportFragmentManager, BottomSheetFragment.TAG)
+    }
+    private fun showAcceptBottomSheet(){
+        val bottomSheet = BottomSheetFragment(
+            "Accept Ticket",
+            "Enter Description for Approval",
+            "Approve And Close",
+            onFirstAction = { reason ->
+                Log.i(TAG, "Rejecting and closing ticket with reason: $reason")
+                viewModel.acceptTicket(ticketId, reason)
+            }
+        )
+        bottomSheet.show(requireActivity().supportFragmentManager, BottomSheetFragment.TAG)
+    }
+    private fun showCancelBottomSheet() {
+        val bottomSheet = BottomSheetFragment(
+            "Cancel Ticket",
+            "Enter Your Reason To Cancel",
+            "Cancel Ticket",
+            onFirstAction = { reason ->
+                Log.i(TAG, "Closing With Ticket $reason")
+                viewModel.cancelTicket(ticketId, reason)
+            }
+        )
+        bottomSheet.show(requireActivity().supportFragmentManager, BottomSheetFragment.TAG)
+    }
 
     private fun displayTicketDetails(ticket: TicketWithoutInvoice) {
         Log.i(TAG, "Displaying ticket details: $ticket")
@@ -144,13 +206,19 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
             UserType.TEAM_MEMBER -> {
                 btnEdit.visibility =if (status.equals("SENT_TO_MANAGER") ||status.equals("REJECTED_BY_MANAGER_CAN_BE_FIXED") || status.equals("REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED")) View.VISIBLE else View.GONE
                 btnCancel.visibility = btnEdit.visibility
-
             }
-            UserType.ACCOUNTANT->{
-                //TODO
+            UserType.ACCOUNTANT -> {
+                btnReject.visibility = if (status.equals("SENT_TO_ACCOUNTANT")) View.VISIBLE else View.GONE
+                btnAccept.visibility = btnReject.visibility
+                btnEdit.visibility = View.GONE
+                btnCancel.visibility = View.GONE
             }
-            UserType.ADMIN->{
-                //TODO
+            UserType.ADMIN -> {
+                // Admin can view but not modify tickets
+                btnAccept.visibility = View.GONE
+                btnReject.visibility = View.GONE
+                btnCancel.visibility = View.GONE
+                btnEdit.visibility = View.GONE
             }
             else -> {
                 // For closed/approved tickets, hide all action buttons
@@ -162,10 +230,8 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         }
     }
 
-    // For demonstration purposes, this method creates dummy approval history data
-    // In a real implementation, this would come from the API
-    private fun displayDummyApprovalHistory() {
-
+    // Display approval history data
+    private fun displayApprovalHistory() {
         val adapter = ApprovalHistoryAdapter(approveHistory)
         recyclerView.adapter = adapter
     }

@@ -37,6 +37,11 @@ class TicketViewModel @Inject constructor(
 
     private val _getApproveHistoryState = MutableStateFlow<UiState<List<ApprovalHistoryItem>>>(UiState.Idle)
     val getApproveHistoryState: StateFlow<UiState<List<ApprovalHistoryItem>>> = _getApproveHistoryState
+
+    // New state flows for ticket actions
+    private val _ticketState = MutableStateFlow<UiState<String>>(UiState.Idle)
+    val ticketState: StateFlow<UiState<String>> = _ticketState
+
     fun getCostTypes() {
 
         viewModelScope.launch {
@@ -74,9 +79,73 @@ class TicketViewModel @Inject constructor(
                 _createTicket.value = UiState.Error(e.toString())
             }
         }
-
-
     }
+
+    // New methods for ticket actions
+    fun rejectTicketClose(ticketId: Int, reason: String) {
+        viewModelScope.launch {
+            _ticketState.value = UiState.Loading
+            try {
+                val result = ticketRepository.rejectTicketClose(ticketId, reason)
+                if (result.isSuccess) {
+                    _ticketState.value = UiState.Success("Ticket rejected and closed successfully")
+                } else {
+                    _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to reject ticket")
+                }
+            } catch (e: Exception) {
+                _ticketState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun rejectTicketEdit(ticketId: Int, reason: String) {
+        viewModelScope.launch {
+            _ticketState.value = UiState.Loading
+            try {
+                val result = ticketRepository.rejectTicketEdit(ticketId, reason)
+                if (result.isSuccess) {
+                    _ticketState.value = UiState.Success("Ticket rejected and sent for edit successfully")
+                } else {
+                    _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to reject ticket")
+                }
+            } catch (e: Exception) {
+                _ticketState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun acceptTicket(ticketId: Int,reason: String) {
+        viewModelScope.launch {
+            _ticketState.value = UiState.Loading
+            try {
+                val result = ticketRepository.acceptTicket(ticketId,reason)
+                if (result.isSuccess) {
+                    _ticketState.value = UiState.Success("Ticket accepted successfully")
+                } else {
+                    _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to accept ticket")
+                }
+            } catch (e: Exception) {
+                _ticketState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun cancelTicket(ticketId: Int, reason: String) {
+        viewModelScope.launch {
+            _ticketState.value = UiState.Loading
+            try {
+                val result = ticketRepository.cancelTicket(ticketId, reason)
+                if (result.isSuccess) {
+                    _ticketState.value = UiState.Success("Ticket canceled successfully")
+                } else {
+                    _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to cancel ticket")
+                }
+            } catch (e: Exception) {
+                _ticketState.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
     fun getClosedCreatedTicketsId(){
         viewModelScope.launch {
             _getTicketListIdState.value = UiState.Loading
@@ -109,8 +178,8 @@ class TicketViewModel @Inject constructor(
                 _getTicketListIdState.value = UiState.Error(e.toString())
             }
         }
-
     }
+
     fun getClosedAssignedTicketsId(){
         viewModelScope.launch {
             _getTicketListIdState.value = UiState.Loading
