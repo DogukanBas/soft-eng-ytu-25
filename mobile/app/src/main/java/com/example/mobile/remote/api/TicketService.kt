@@ -7,6 +7,7 @@ import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
 import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
+import com.example.mobile.remote.dtos.auth.listticket.TicketActionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -42,22 +43,22 @@ interface TicketService {
     @POST("api/ticket/accept")
     suspend fun acceptTicket(
         @Body request: TicketActionRequest
-    ): Response<Unit>
+    ): Response<TicketActionResponse>
     
     @POST("api/ticket/reject-close")
     suspend fun rejectTicketClose(
         @Body request: TicketActionRequest
 
-    ): Response<Unit>
+    ): Response<TicketActionResponse>
     
     @POST("api/ticket/reject-edit")
     suspend fun rejectTicketEdit(
         @Body request: TicketActionRequest
-    ): Response<Unit>
+    ): Response<TicketActionResponse>
     
     @POST("api/ticket/cancel")
     suspend fun cancelTicket(
         @Body request: TicketActionRequest
 
-    ): Response<Unit>
+    ): Response<TicketActionResponse>
 }

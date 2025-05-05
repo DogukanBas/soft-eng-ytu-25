@@ -51,12 +51,12 @@ class TicketRepository @Inject constructor(
     }
     
     // New ticket action methods
-    suspend fun acceptTicket(ticketId: Int,reason: String): Result<Unit> {
+    suspend fun acceptTicket(ticketId: Int,reason: String): Result<String> {
         return try {
             val response = ticketService.acceptTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId accepted successfully")
-                Result.success(Unit)
+                Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error accepting ticket $ticketId: ${response.headers().get("message")}")
                 Result.failure(Exception(response.headers().get("message") ?: "Failed to accept ticket"))
@@ -67,12 +67,12 @@ class TicketRepository @Inject constructor(
         }
     }
     
-    suspend fun rejectTicketClose(ticketId: Int, reason: String): Result<Unit> {
+    suspend fun rejectTicketClose(ticketId: Int, reason: String): Result<String> {
         return try {
             val response = ticketService.rejectTicketClose(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId rejected and closed successfully")
-                Result.success(Unit)
+                Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error rejecting ticket $ticketId: ${response.headers().get("message")}")
                 Result.failure(Exception(response.headers().get("message") ?: "Failed to reject ticket"))
@@ -83,12 +83,12 @@ class TicketRepository @Inject constructor(
         }
     }
     
-    suspend fun rejectTicketEdit(ticketId: Int, reason: String): Result<Unit> {
+    suspend fun rejectTicketEdit(ticketId: Int, reason: String): Result<String> {
         return try {
             val response = ticketService.rejectTicketEdit(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId rejected and sent for edit successfully")
-                Result.success(Unit)
+                Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error rejecting ticket $ticketId: ${response.headers().get("message")}")
                 Result.failure(Exception(response.headers().get("message") ?: "Failed to reject ticket"))
@@ -99,12 +99,12 @@ class TicketRepository @Inject constructor(
         }
     }
     
-    suspend fun cancelTicket(ticketId: Int, reason: String): Result<Unit> {
+    suspend fun cancelTicket(ticketId: Int, reason: String): Result<String> {
         return try {
             val response = ticketService.cancelTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId cancelled successfully")
-                Result.success(Unit)
+                Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error cancelling ticket $ticketId: ${response.headers().get("message")}")
                 Result.failure(Exception(response.headers().get("message") ?: "Failed to cancel ticket"))

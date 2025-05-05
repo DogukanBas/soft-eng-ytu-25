@@ -88,7 +88,7 @@ class TicketViewModel @Inject constructor(
             try {
                 val result = ticketRepository.rejectTicketClose(ticketId, reason)
                 if (result.isSuccess) {
-                    _ticketState.value = UiState.Success("Ticket rejected and closed successfully")
+                    _ticketState.value = UiState.Success(result.getOrNull()!!)
                 } else {
                     _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to reject ticket")
                 }
@@ -104,7 +104,7 @@ class TicketViewModel @Inject constructor(
             try {
                 val result = ticketRepository.rejectTicketEdit(ticketId, reason)
                 if (result.isSuccess) {
-                    _ticketState.value = UiState.Success("Ticket rejected and sent for edit successfully")
+                    _ticketState.value = UiState.Success(result.getOrNull()!!)
                 } else {
                     _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to reject ticket")
                 }
@@ -120,7 +120,7 @@ class TicketViewModel @Inject constructor(
             try {
                 val result = ticketRepository.acceptTicket(ticketId,reason)
                 if (result.isSuccess) {
-                    _ticketState.value = UiState.Success("Ticket accepted successfully")
+                    _ticketState.value = UiState.Success(result.getOrNull()!!)
                 } else {
                     _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to accept ticket")
                 }
@@ -136,7 +136,7 @@ class TicketViewModel @Inject constructor(
             try {
                 val result = ticketRepository.cancelTicket(ticketId, reason)
                 if (result.isSuccess) {
-                    _ticketState.value = UiState.Success("Ticket canceled successfully")
+                    _ticketState.value = UiState.Success(result.getOrNull()!!)
                 } else {
                     _ticketState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to cancel ticket")
                 }
