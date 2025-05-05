@@ -1,6 +1,6 @@
 package com.example.mobile.remote.dtos.auth.listticket
 
-data class AcceptCancelRejectTicketRequest (
+data class TicketActionRequest (
     val ticketId: Int,
     val reason: String
     )

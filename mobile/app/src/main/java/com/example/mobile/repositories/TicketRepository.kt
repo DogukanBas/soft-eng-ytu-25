@@ -6,7 +6,7 @@ import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.api.TicketService
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
-import com.example.mobile.remote.dtos.auth.listticket.AcceptCancelRejectTicketRequest
+import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
 
@@ -53,7 +53,7 @@ class TicketRepository @Inject constructor(
     // New ticket action methods
     suspend fun acceptTicket(ticketId: Int,reason: String): Result<Unit> {
         return try {
-            val response = ticketService.acceptTicket(AcceptCancelRejectTicketRequest(ticketId, reason))
+            val response = ticketService.acceptTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId accepted successfully")
                 Result.success(Unit)
@@ -69,7 +69,7 @@ class TicketRepository @Inject constructor(
     
     suspend fun rejectTicketClose(ticketId: Int, reason: String): Result<Unit> {
         return try {
-            val response = ticketService.rejectTicketClose(AcceptCancelRejectTicketRequest(ticketId, reason))
+            val response = ticketService.rejectTicketClose(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId rejected and closed successfully")
                 Result.success(Unit)
@@ -85,7 +85,7 @@ class TicketRepository @Inject constructor(
     
     suspend fun rejectTicketEdit(ticketId: Int, reason: String): Result<Unit> {
         return try {
-            val response = ticketService.rejectTicketEdit(AcceptCancelRejectTicketRequest(ticketId, reason))
+            val response = ticketService.rejectTicketEdit(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId rejected and sent for edit successfully")
                 Result.success(Unit)
@@ -101,7 +101,7 @@ class TicketRepository @Inject constructor(
     
     suspend fun cancelTicket(ticketId: Int, reason: String): Result<Unit> {
         return try {
-            val response = ticketService.cancelTicket(AcceptCancelRejectTicketRequest(ticketId, reason))
+            val response = ticketService.cancelTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
                 Log.i(TAG, "Ticket $ticketId cancelled successfully")
                 Result.success(Unit)

@@ -5,7 +5,7 @@ import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
-import com.example.mobile.remote.dtos.auth.listticket.AcceptCancelRejectTicketRequest
+import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
 import retrofit2.Response
 import retrofit2.http.Body
@@ -41,23 +41,23 @@ interface TicketService {
     // New ticket action endpoints
     @POST("api/ticket/accept")
     suspend fun acceptTicket(
-        @Body request: AcceptCancelRejectTicketRequest
+        @Body request: TicketActionRequest
     ): Response<Unit>
     
     @POST("api/ticket/reject-close")
     suspend fun rejectTicketClose(
-        @Body request: AcceptCancelRejectTicketRequest
+        @Body request: TicketActionRequest
 
     ): Response<Unit>
     
     @POST("api/ticket/reject-edit")
     suspend fun rejectTicketEdit(
-        @Body request: AcceptCancelRejectTicketRequest
+        @Body request: TicketActionRequest
     ): Response<Unit>
     
     @POST("api/ticket/cancel")
     suspend fun cancelTicket(
-        @Body request: AcceptCancelRejectTicketRequest
+        @Body request: TicketActionRequest
 
     ): Response<Unit>
 }
