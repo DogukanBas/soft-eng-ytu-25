@@ -1,6 +1,7 @@
 package com.softeng.backend.service.impl;
 
 import com.softeng.backend.dto.TicketDTOs;
+import com.softeng.backend.dto.TicketSummary;
 import com.softeng.backend.exception.ResourceNotFoundException;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
@@ -79,37 +80,37 @@ public class TicketServiceImpl implements TicketService {
     }
     @Override
     public List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo) {
-        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
         return allTickets.stream()
-                .filter(ticket -> ticket.getEmployeeId().equals(personalNo))
-                .map(Ticket::getTicketId)
+                .filter(ticket -> ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
                 .toList();
     }
 
     @Override
     public List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo) {
-        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
         return allTickets.stream()
-                .filter(ticket -> ticket.getEmployeeId().equals(personalNo))
-                .map(Ticket::getTicketId)
+                .filter(ticket -> ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
                 .toList();
     }
 
     @Override
     public List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo) {
-        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus());
         return allTickets.stream()
-                .filter(ticket -> !ticket.getEmployeeId().equals(personalNo))
-                .map(Ticket::getTicketId)
+                .filter(ticket -> !ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
                 .toList();
     }
 
     @Override
     public List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo) {
-        List<Ticket> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus());
         return allTickets.stream()
-                .filter(ticket -> !ticket.getEmployeeId().equals(personalNo))
-                .map(Ticket::getTicketId)
+                .filter(ticket -> !ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
                 .toList();
     }
 
