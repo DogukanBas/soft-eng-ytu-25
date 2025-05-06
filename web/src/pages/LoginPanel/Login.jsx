@@ -27,8 +27,12 @@ function Login(props) {
             console.log(response);
 
             setAuth({ token: response.accessToken, userType: response.userType });
-
-            navigate(response.userType === 'admin' ? '/admin' : '/user');
+            if (response.userType === 'admin') {
+                navigate("/admin")
+            } else if (response.userType === 'accountant') {
+                navigate("/accountant")
+            }
+            
         } catch (err) {
             setError('Login failed. Please check your credentials.');
             console.error(err);

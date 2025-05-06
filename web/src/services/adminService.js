@@ -42,7 +42,7 @@ export const addDepartment = async (deptName) => {
 export const getDepartments = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/api/admin/departments`);
-   
+    console.log(response);
     return response.data.departments;
     
 

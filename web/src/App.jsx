@@ -3,9 +3,10 @@ import Login from './pages/LoginPanel/Login.jsx';
 import Admin from "./pages/AdminPanel/Admin.jsx"
 import AddDepartment from './pages/AdminPanel/AddDepartment.jsx';
 import AddUser from './pages/AdminPanel/AddUser.jsx';
-import User from './pages/UserPanel/User.jsx';
-import { useEffect, useState } from 'react';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import Accountant from './pages/AccountantPanel/Accountant.jsx'
+import ListTickets from './pages/AccountantPanel/ListTickets.jsx'
+import SetBudget from './pages/AccountantPanel/SetBudget.jsx'
 
 
 
@@ -34,8 +35,16 @@ import ProtectedRoute from './ProtectedRoute.jsx';
       },
         
       {   
-        path: "/user",
-        element: <ProtectedRoute requiredRole="user"><User /></ProtectedRoute>
+        path: "/accountant",
+        element: <ProtectedRoute requiredRole="accountant"><Accountant /></ProtectedRoute>
+      },
+      {   
+        path: "/accountant/list-tickets",
+        element: <ProtectedRoute requiredRole="accountant"><ListTickets /></ProtectedRoute>
+      },
+      {   
+        path: "/accountant/set-budget",
+        element: <ProtectedRoute requiredRole="accountant"><SetBudget /></ProtectedRoute>
       },
       
     ]);
