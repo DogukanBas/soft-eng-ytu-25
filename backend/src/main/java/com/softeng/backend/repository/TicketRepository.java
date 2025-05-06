@@ -19,22 +19,29 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findByEmployeeId(String personalNo);
     List<Ticket> findByManagerId(String personalNo);
     @Query("""
-    SELECT DISTINCT new com.softeng.backend.dto.TicketSummary(
+SELECT DISTINCT new com.softeng.backend.dto.TicketSummary(
     ah.ticket.ticketId, ah.ticket.employeeId)
-    FROM ApproveHistory ah
-    WHERE (:includeStatuses = true AND ah.status IN :statuses)
-       OR (:includeStatuses = false AND ah.status NOT IN :statuses)
-      AND EXISTS (
-          SELECT 1
-          FROM ApproveHistory ah_actor_check
-          WHERE ah_actor_check.ticket = ah.ticket
-            AND (
-            ah_actor_check.actor.personalNo = :personalNo
-            OR (:isManager = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_MANAGER)
-            OR (:isAccountant = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_ACCOUNTANT)
-            )
+FROM ApproveHistory ah
+WHERE ah.date = (
+    SELECT MAX(subAh.date)
+    FROM ApproveHistory subAh
+    WHERE subAh.ticket = ah.ticket
+)
+AND (
+    (:includeStatuses = true AND ah.status IN :statuses)
+    OR (:includeStatuses = false AND ah.status NOT IN :statuses)
+)
+AND EXISTS (
+    SELECT 1
+    FROM ApproveHistory ah_actor_check
+    WHERE ah_actor_check.ticket = ah.ticket
+      AND (
+        ah_actor_check.actor.personalNo = :personalNo
+        OR (:isManager = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_MANAGER)
+        OR (:isAccountant = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_ACCOUNTANT)
       )
-    """)
+)
+""")
     List<TicketSummary> findAllTicketsByEmployeeId(
             @Param("personalNo") String personalNo,
             @Param("includeStatuses") boolean includeStatuses,

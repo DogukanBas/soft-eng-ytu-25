@@ -5,7 +5,9 @@ import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
+import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
+import com.example.mobile.remote.dtos.auth.listticket.TicketActionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,11 +29,36 @@ interface TicketService {
 
     @GET("api/ticket/created/closed")
     suspend fun getClosedCreatedTickets(): Response<ListTicketIdResponseList>
+    
     @GET("api/ticket/created/active")
     suspend fun getActiveCreatedTickets(): Response<ListTicketIdResponseList>
+    
     @GET("api/ticket/assigned/closed")
     suspend fun getClosedAssignedTickets(): Response<ListTicketIdResponseList>
+    
     @GET("api/ticket/assigned/active")
     suspend fun getActiveAssignedTickets(): Response<ListTicketIdResponseList>
 
+    // New ticket action endpoints
+    @POST("api/ticket/accept")
+    suspend fun acceptTicket(
+        @Body request: TicketActionRequest
+    ): Response<TicketActionResponse>
+    
+    @POST("api/ticket/reject-close")
+    suspend fun rejectTicketClose(
+        @Body request: TicketActionRequest
+
+    ): Response<TicketActionResponse>
+    
+    @POST("api/ticket/reject-edit")
+    suspend fun rejectTicketEdit(
+        @Body request: TicketActionRequest
+    ): Response<TicketActionResponse>
+    
+    @POST("api/ticket/cancel")
+    suspend fun cancelTicket(
+        @Body request: TicketActionRequest
+
+    ): Response<TicketActionResponse>
 }
