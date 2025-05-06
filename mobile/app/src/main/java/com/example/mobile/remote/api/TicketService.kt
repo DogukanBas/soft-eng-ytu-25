@@ -40,7 +40,7 @@ interface TicketService {
     suspend fun getActiveAssignedTickets(): Response<ListTicketIdResponseList>
 
     // New ticket action endpoints
-    @POST("api/ticket/accept")
+    @POST("api/ticket/approve")
     suspend fun acceptTicket(
         @Body request: TicketActionRequest
     ): Response<TicketActionResponse>
