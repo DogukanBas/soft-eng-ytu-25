@@ -71,6 +71,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
                     requireActivity().supportFragmentManager, "SuccessDialog"
                 )
                 popFragment()
+                popFragment()
             },
             onError = { message ->
                 Log.e(TAG, "Ticket Error: $message")
