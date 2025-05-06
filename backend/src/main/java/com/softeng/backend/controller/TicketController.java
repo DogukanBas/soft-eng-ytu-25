@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -214,8 +215,7 @@ public class TicketController {
                 .body(ticket);
     }
 
-    @GetMapping
-    ("/approve-history")
+    @GetMapping("/approve-history")
     public ResponseEntity<?> getApproveHistoryByTicketId(@RequestParam("ticketId") int ticketId) {
         logger.debug("Fetching approve history for ticket with ID: {}", ticketId);
         List<TicketDTOs.ApproveHistoryResponse> approveHistory = ticketService.getApproveHistoryByTicketId(ticketId);
@@ -225,6 +225,187 @@ public class TicketController {
         }
         return ResponseEntity.ok()
                 .body(approveHistory);
+    }
+
+    @PostMapping("/approve")
+    @Transactional
+    public ResponseEntity<?> approveTicket(@RequestBody TicketDTOs.TicketActionRequest ticketActionRequest, Authentication authentication) {
+        logger.debug("Approving ticket with ID: {}", ticketActionRequest.getTicketId());
+        String personalNo = authentication.getName();
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketActionRequest.getTicketId());
+        if (isManager(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_MANAGER) && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.SENT_TO_ACCOUNTANT,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+                    );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket approved and sent to accountant"));
+
+        }
+        else if (isAccountant(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_ACCOUNTANT)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.CLOSED_AS_APPROVED,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+            );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket approved and closed"));
+        }
+
+        else {
+            return ResponseEntity.status(403)
+                    .header("message",
+                            "Invalid authentication"
+                    )
+                    .build();
+        }
+    }
+
+    @PostMapping("/reject-and-return")
+    @Transactional
+    public ResponseEntity<?> rejectAndReturn(@RequestBody TicketDTOs.TicketActionRequest ticketActionRequest, Authentication authentication) {
+        logger.debug("Rejecting and returning ticket with ID: {}", ticketActionRequest.getTicketId());
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketActionRequest.getTicketId());
+        String personalNo = authentication.getName();
+        if (isManager(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_MANAGER) && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.REJECTED_BY_MANAGER_CAN_BE_FIXED,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+            );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket rejected and returned to employee"));
+        }
+        else if (isAccountant(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_ACCOUNTANT)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+            );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket rejected and returned to employee"));
+        }
+        else {
+            return ResponseEntity.status(403)
+                    .header("message",
+                            "Invalid authentication"
+                    )
+                    .build();
+        }
+
+    }
+
+    @PostMapping("/reject-and-close")
+    @Transactional
+    public ResponseEntity<?> rejectAndClose(@RequestBody TicketDTOs.TicketActionRequest ticketActionRequest, Authentication authentication) {
+        logger.debug("Rejecting and closing ticket with ID: {}", ticketActionRequest.getTicketId());
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketActionRequest.getTicketId());
+        String personalNo = authentication.getName();
+        if (isManager(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_MANAGER) && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.CLOSED_AS_REJECTED_BY_MANAGER,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+            );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket rejected and closed"));
+        }
+        else if (isAccountant(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_ACCOUNTANT)) {
+            ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                    LocalDate.now(),
+                    ApproveHistory.Status.CLOSED_AS_REJECTED_BY_ACCOUNTANT,
+                    ticketActionRequest.getDescription(),
+                    userService.getUserByPersonalNo(authentication.getName())
+            );
+            ticketService.addApproveHistory(approveHistory);
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Ticket rejected and closed"));
+        }
+        else {
+            return ResponseEntity.status(403)
+                    .header("message",
+                            "Invalid authentication"
+                    )
+                    .build();
+        }
+    }
+
+    @PostMapping("/cancel")
+    @Transactional
+    public ResponseEntity<?> cancelTicket(@RequestBody TicketDTOs.TicketActionRequest ticketActionRequest, Authentication authentication) {
+        logger.debug("Canceling ticket with ID: {}", ticketActionRequest.getTicketId());
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketActionRequest.getTicketId());
+        String personalNo = authentication.getName();
+        if (isTeamMember(authentication)) {
+            boolean isCancelable = ApproveHistory.Status.getTeamMemberCancelableStatus().contains(lastApproveHistory.getStatus());
+            if (isCancelable && lastApproveHistory.getTicket().getEmployeeId().equals(personalNo)) {
+                ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                        LocalDate.now(),
+                        ApproveHistory.Status.CANCELED_BY_USER,
+                        ticketActionRequest.getDescription(),
+                        userService.getUserByPersonalNo(authentication.getName())
+                );
+                ticketService.addApproveHistory(approveHistory);
+                return ResponseEntity.ok()
+                        .body(Map.of("message", "Ticket canceled"));
+            }
+            else {
+                return ResponseEntity.status(403)
+                        .header("message",
+                                "Invalid authentication"
+                        )
+                        .build();
+            }
+        }
+        else if (isManager(authentication)) {
+            boolean isCancelable = ApproveHistory.Status.getManagerCancelableStatus().contains(lastApproveHistory.getStatus());
+            if (isCancelable && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+                ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
+                        LocalDate.now(),
+                        ApproveHistory.Status.CANCELED_BY_USER,
+                        ticketActionRequest.getDescription(),
+                        userService.getUserByPersonalNo(authentication.getName())
+                );
+                ticketService.addApproveHistory(approveHistory);
+                return ResponseEntity.ok()
+                        .body(Map.of("message", "Ticket canceled"));
+            }
+            else {
+                return ResponseEntity.status(403)
+                        .header("message",
+                                "Invalid authentication"
+                        )
+                        .build();
+            }
+        }
+        else {
+            return ResponseEntity.status(403)
+                    .header("message",
+                            "Invalid authentication"
+                    )
+                    .build();
+        }
+    }
+
+    @PostMapping("/edit")
+    @Transactional
+
+
+    private boolean isTeamMember(Authentication authentication) {
+        String personalNo = authentication.getName();
+        User currentUser = userService.getUserByPersonalNo(personalNo);
+        return currentUser.getUserType() == User.UserType.team_member;
     }
 
     private boolean isManager(Authentication authentication) {

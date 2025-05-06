@@ -130,4 +130,12 @@ public class TicketServiceImpl implements TicketService {
                 .map(TicketDTOs.ApproveHistoryResponse::new)
                 .toList();
     }
+
+    @Override
+    public ApproveHistory getLastApproveHistoryByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return approveHistoryRepository.findFirstByTicketOrderByDateDesc(ticket)
+                .orElseThrow(() -> new ResourceNotFoundException("Approve history not found for ticket id: " + ticketId));
+    }
 }

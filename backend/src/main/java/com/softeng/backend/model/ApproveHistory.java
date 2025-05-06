@@ -33,6 +33,17 @@ public class ApproveHistory {
     @JoinColumn(name = "actorId", nullable = false, referencedColumnName = "personalNo")
     private User actor;
 
+    public ApproveHistory() {
+    }
+
+    public ApproveHistory(Ticket ticket, LocalDate date, Status status, String description, User actor) {
+        this.ticket = ticket;
+        this.date = date;
+        this.status = status;
+        this.description = description;
+        this.actor = actor;
+    }
+
     @Getter
     public enum Status {
         SENT_TO_MANAGER("SENT_TO_MANAGER"),
@@ -58,5 +69,37 @@ public class ApproveHistory {
                     CANCELED_BY_USER
             );
         }
+
+        public static List<Status> getTeamMemberCancelableStatus() {
+            return List.of(
+                    SENT_TO_MANAGER,
+                    REJECTED_BY_MANAGER_CAN_BE_FIXED,
+                    REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED
+            );
+        }
+
+        public static List<Status> getTeamMemberEditableStatus() {
+            return List.of(
+                    SENT_TO_MANAGER,
+                    REJECTED_BY_MANAGER_CAN_BE_FIXED,
+                    REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED
+            );
+        }
+
+        public static List<Status> getManagerCancelableStatus() {
+            return List.of(
+                    SENT_TO_ACCOUNTANT,
+                    REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED
+            );
+        }
+
+        public static List<Status> getManagerEditableStatus() {
+            return List.of(
+                    SENT_TO_ACCOUNTANT,
+                    REJECTED_BY_ACCOUNTANT_CAN_BE_FIXED
+            );
+        }
+
+
     }
 }

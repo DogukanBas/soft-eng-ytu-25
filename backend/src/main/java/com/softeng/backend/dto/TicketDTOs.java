@@ -214,4 +214,30 @@ public class TicketDTOs {
             this.description = description;
         }
     }
+
+    public static class TicketActionRequest {
+        private int ticketId;
+        private String description;
+
+        public TicketActionRequest(int ticketId, String comment) {
+            this.ticketId = ticketId;
+            this.description = comment;
+        }
+
+        public int getTicketId() {
+            return ticketId;
+        }
+
+        public void setTicketId(int ticketId) {
+            this.ticketId = ticketId;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+    }
 }

@@ -19,4 +19,5 @@ public interface TicketService {
     List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant);
     TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId);
     List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId);
+    ApproveHistory getLastApproveHistoryByTicketId(Integer ticketId);
 }
