@@ -46,97 +46,154 @@ public class TicketController {
         User currentUser = userService.getUserByPersonalNo(personalNo);
 
         if (currentUser.getUserType() == User.UserType.team_member || currentUser.getUserType() == User.UserType.manager) {
-            BigDecimal amount = request.getAmount();
             Department department = employeeService.getEmployeeByPersonalNo(personalNo).getDepartment();
-            if (department.getDeptManager()== null) {
+            if (department.getDeptManager() == null) {
                 return ResponseEntity.status(403)
-                        .header("message",
-                                TicketDTOs.CreateTicketResponse.NO_MANAGER_AVAILABLE.getMessage()
-                        )
+                        .header("message", TicketDTOs.CreateTicketResponse.NO_MANAGER_AVAILABLE.getMessage())
                         .build();
             }
-            BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(request.getCostType());
-            BigDecimal departmentRemainingBudget = department.getRemainingBudget();
-            BigDecimal costTypeRemainingBudget = budgetByCostType.getRemainingBudget();
-            BigDecimal maxCost = budgetByCostType.getMaxCost();
-
-            boolean isEmpty = false;
-            StringJoiner messageJoiner = new StringJoiner("\n");
-            if (departmentRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
-                messageJoiner.add(TicketDTOs.CreateTicketResponse.DEPARTMENT_BUDGET_EMPTY.getMessage());
-                isEmpty = true;
-            }
-
-            if (costTypeRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
-                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_TYPE_BUDGET_EMPTY.getMessage());
-                isEmpty = true;
-            }
-
-            if (isEmpty) {
-                return ResponseEntity.status(403)
-                        .header("message",
-                                messageJoiner.toString()
-                        )
-                        .build();
-            }
-
-            if (amount.compareTo(departmentRemainingBudget) > 0) {
-                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_DEPARTMENT_BUDGET.getMessage());
-            }
-
-            if (amount.compareTo(costTypeRemainingBudget) > 0) {
-                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_COST_TYPE_BUDGET.getMessage());
-            }
-
-            if (amount.compareTo(maxCost) > 0) {
-                messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_MAX_COST.getMessage());
-            }
-
-            BigDecimal minCost = departmentRemainingBudget
-                    .min(costTypeRemainingBudget)
-                    .min(maxCost)
-                    .min(request.getAmount());
 
             Ticket ticket = new Ticket(personalNo,
                     department.getDeptManager().getPersonalNo(),
                     request.getCostType(),
-                    minCost
-
+                    request.getAmount()
             );
-            ticketService.addTicket(ticket);
 
-            Attachment attachment = new Attachment();
-            attachment.setTicket(ticket);
-            byte[] decodedInvoice = Base64.getDecoder().decode(request.getInvoice());
-            attachment.setInvoice(decodedInvoice);
-            ticketService.addAttachment(attachment);
+            ResponseEntity<?> updateResult = processTicketUpdate(ticket, request.getCostType(),
+                request.getAmount(), request.getDescription(), authentication, 
+                currentUser.getUserType() == User.UserType.team_member ? ApproveHistory.Status.SENT_TO_MANAGER : ApproveHistory.Status.SENT_TO_ACCOUNTANT);
 
-            ApproveHistory approveHistory = new ApproveHistory();
-            approveHistory.setTicket(ticket);
-            approveHistory.setActor(currentUser);
-            approveHistory.setDescription(request.getDescription());
-            approveHistory.setDate(request.getDate());
-            if (currentUser.getUserType() == User.UserType.team_member) {
-                approveHistory.setStatus(ApproveHistory.Status.SENT_TO_MANAGER);
-            } else {
-                approveHistory.setStatus(ApproveHistory.Status.SENT_TO_ACCOUNTANT);
+            if (updateResult.getStatusCode().is2xxSuccessful()) {
+                Attachment attachment = new Attachment();
+                attachment.setTicket(ticket);
+                byte[] decodedInvoice = Base64.getDecoder().decode(request.getInvoice());
+                attachment.setInvoice(decodedInvoice);
+                ticketService.addAttachment(attachment);
             }
-            ticketService.addApproveHistory(approveHistory);
 
-            messageJoiner.add(TicketDTOs.CreateTicketResponse.TICKET_CREATED.getMessage());
-            return ResponseEntity.ok()
-                    .body(new TicketDTOs.TicketResponse(
-                            messageJoiner.toString(),
-                            minCost
-                    ));
+            return updateResult;
         }
-        else {
+
+        return ResponseEntity.status(403)
+                .header("message", TicketDTOs.CreateTicketResponse.INVALID_AUTHENTICATION.getMessage())
+                .build();
+    }
+
+    @PostMapping("/edit")
+    @Transactional
+    public ResponseEntity<?> editTicket(@RequestBody TicketDTOs.EditTicketRequest editTicketRequest, Authentication authentication) {
+        logger.debug("Editing ticket with ID: {}", editTicketRequest.getTicketId());
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(editTicketRequest.getTicketId());
+        String personalNo = authentication.getName();
+        if (isTeamMember(authentication)) {
+            boolean isEditable = ApproveHistory.Status.getTeamMemberEditableStatus().contains(lastApproveHistory.getStatus());
+            if (isEditable && lastApproveHistory.getTicket().getEmployeeId().equals(personalNo)) {
+                return processTicketUpdate(lastApproveHistory.getTicket(), editTicketRequest.getCostType(), 
+                    editTicketRequest.getAmount(), editTicketRequest.getDescription(), authentication, ApproveHistory.Status.SENT_TO_MANAGER);
+            }
+        } else if (isManager(authentication)) {
+            boolean isEditable = ApproveHistory.Status.getManagerCancelableStatus().contains(lastApproveHistory.getStatus());
+            if (isEditable && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+                return processTicketUpdate(lastApproveHistory.getTicket(), editTicketRequest.getCostType(), 
+                    editTicketRequest.getAmount(), editTicketRequest.getDescription(), authentication, ApproveHistory.Status.SENT_TO_ACCOUNTANT);
+            }
+        }
+
+        return ResponseEntity.status(403)
+                .header("message", "Invalid authentication")
+                .build();
+    }
+
+    @PostMapping("/edit-cost-type")
+    @Transactional
+    public ResponseEntity<?> editCostType(@RequestParam int ticketId, @RequestParam String costType, Authentication authentication) {
+        logger.debug("Editing cost type: {}", ticketId);
+        String personalNo = authentication.getName();
+        ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketId);
+        if (isAccountant(authentication)) {
+            boolean isEditable = ApproveHistory.Status.getManagerCancelableStatus().contains(lastApproveHistory.getStatus());
+            if (isEditable && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+                return processTicketUpdate(lastApproveHistory.getTicket(), costType, lastApproveHistory.getTicket().getAmount(),
+                    "Cost Type Edited", authentication, ApproveHistory.Status.SENT_TO_ACCOUNTANT);
+            }
+        }
+
+        return ResponseEntity.status(403)
+                .header("message", "Invalid authentication")
+                .build();
+    }
+
+    private ResponseEntity<?> processTicketUpdate(Ticket ticket, String costType, BigDecimal requestedAmount, 
+            String description, Authentication authentication, ApproveHistory.Status nextStatus) {
+        
+        TicketDTOs.BudgetValidationResult validationResult = validateBudget(ticket.getEmployeeId(), costType, requestedAmount);
+        if (!validationResult.isValid()) {
             return ResponseEntity.status(403)
-                    .header("message",
-                            TicketDTOs.CreateTicketResponse.INVALID_AUTHENTICATION.getMessage()
-                    )
+                    .header("message", validationResult.getMessage())
                     .build();
         }
+
+        ticket.setCostType(costType);
+        ticket.setAmount(validationResult.getMinCost());
+        ticketService.addTicket(ticket);
+
+        ApproveHistory approveHistory = new ApproveHistory(ticket,
+                LocalDate.now(),
+                nextStatus,
+                description,
+                userService.getUserByPersonalNo(authentication.getName())
+        );
+        ticketService.addApproveHistory(approveHistory);
+
+        return ResponseEntity.ok()
+                .body(new TicketDTOs.TicketResponse(
+                        validationResult.getMessage(),
+                        validationResult.getMinCost()
+                ));
+    }
+
+    private TicketDTOs.BudgetValidationResult validateBudget(String employeeId, String costType, BigDecimal requestedAmount) {
+        BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(costType);
+        BigDecimal departmentRemainingBudget = employeeService.getEmployeeByPersonalNo(employeeId)
+                .getDepartment().getRemainingBudget();
+        BigDecimal costTypeRemainingBudget = budgetByCostType.getRemainingBudget();
+        BigDecimal maxCost = budgetByCostType.getMaxCost();
+
+        StringJoiner messageJoiner = new StringJoiner("\n");
+        boolean isEmpty = false;
+
+        if (departmentRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.DEPARTMENT_BUDGET_EMPTY.getMessage());
+            isEmpty = true;
+        }
+
+        if (costTypeRemainingBudget.compareTo(BigDecimal.ZERO) <= 0) {
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_TYPE_BUDGET_EMPTY.getMessage());
+            isEmpty = true;
+        }
+
+        if (isEmpty) {
+            return new TicketDTOs.BudgetValidationResult(false, messageJoiner.toString(), BigDecimal.ZERO);
+        }
+
+        if (requestedAmount.compareTo(departmentRemainingBudget) > 0) {
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_DEPARTMENT_BUDGET.getMessage());
+        }
+
+        if (requestedAmount.compareTo(costTypeRemainingBudget) > 0) {
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_COST_TYPE_BUDGET.getMessage());
+        }
+
+        if (requestedAmount.compareTo(maxCost) > 0) {
+            messageJoiner.add(TicketDTOs.CreateTicketResponse.COST_EXCEEDS_MAX_COST.getMessage());
+        }
+
+        BigDecimal minCost = departmentRemainingBudget
+                .min(costTypeRemainingBudget)
+                .min(maxCost)
+                .min(requestedAmount);
+
+        return new TicketDTOs.BudgetValidationResult(true, messageJoiner.toString(), minCost);
     }
 
     @GetMapping("/cost-types")
@@ -397,10 +454,6 @@ public class TicketController {
                     .build();
         }
     }
-
-    @PostMapping("/edit")
-    @Transactional
-
 
     private boolean isTeamMember(Authentication authentication) {
         String personalNo = authentication.getName();

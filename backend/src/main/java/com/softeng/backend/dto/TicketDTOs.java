@@ -76,6 +76,25 @@ public class TicketDTOs {
         }
     }
 
+    public enum EditTicketResponse {
+        TICKET_EDITED("Ticket edited successfully"),
+        COST_EXCEEDS_MAX_COST("Cost exceeds maximum cost that can be claimed"),
+        COST_EXCEEDS_DEPARTMENT_BUDGET("Cost exceeds remaining department budget"),
+        COST_EXCEEDS_COST_TYPE_BUDGET("Cost exceeds remaining cost type budget"),
+        DEPARTMENT_BUDGET_EMPTY("Department has no remaining budget"),
+        COST_TYPE_BUDGET_EMPTY("Cost type has no remaining budget");
+
+        private final String message;
+
+        EditTicketResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
     public static class TicketResponse {
         private String message;
         private BigDecimal budget;
@@ -239,5 +258,60 @@ public class TicketDTOs {
         public void setDescription(String description) {
             this.description = description;
         }
+    }
+
+    public static class EditTicketRequest {
+        private int ticketId;
+        private String costType;
+        private BigDecimal amount;
+        private String description;
+
+        public EditTicketRequest(int ticketId, String costType, BigDecimal amount, String description) {
+            this.ticketId = ticketId;
+            this.costType = costType;
+            this.amount = amount;
+            this.description = description;
+        }
+
+        public int getTicketId() {
+            return ticketId;
+        }
+        public void setTicketId(int ticketId) {
+            this.ticketId = ticketId;
+        }
+        public String getCostType() {
+            return costType;
+        }
+        public void setCostType(String costType) {
+            this.costType = costType;
+        }
+        public BigDecimal getAmount() {
+            return amount;
+        }
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+        public String getDescription() {
+            return description;
+        }
+        public void setDescription(String description) {
+            this.description = description;
+        }
+    }
+
+    public static class BudgetValidationResult {
+        private final boolean isValid;
+        private final String message;
+        private final BigDecimal minCost;
+
+        public BudgetValidationResult(boolean isValid, String message, BigDecimal minCost) {
+            this.isValid = isValid;
+            this.message = message;
+            this.minCost = minCost;
+        }
+
+        public boolean isValid() { return isValid; }
+        public String getMessage() { return message; }
+        public BigDecimal getMinCost() { return minCost; }
     }
 }
