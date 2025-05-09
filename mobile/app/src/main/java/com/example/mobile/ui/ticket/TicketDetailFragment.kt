@@ -260,7 +260,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
             UserType.ACCOUNTANT -> {
                 btnReject.visibility = if (status.equals("SENT_TO_ACCOUNTANT")) View.VISIBLE else View.GONE
                 btnAccept.visibility = btnReject.visibility
-                btnEdit.visibility = View.GONE
+                btnEdit.visibility = if ( status.equals("SENT_TO_ACCOUNTANT"))  View.VISIBLE else View.GONE
                 btnCancel.visibility = View.GONE
             }
             UserType.ADMIN -> {

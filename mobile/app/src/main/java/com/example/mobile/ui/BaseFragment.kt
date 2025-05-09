@@ -1,5 +1,7 @@
 package com.example.mobile.ui
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -25,16 +27,17 @@ abstract class BaseFragment : Fragment() {
     private var loadingDialog: InfoDialog? = null
 
     protected fun showLoading(message: String = "Loading...") {
-        lifecycleScope.launch() {
+        //TODO ASSURE SHOWLOADING FINISHES BEFORE HIDELOADING
+        //lifecycleScope.launch() {
             hideLoading()  // önce eski loading varsa gizle
             loadingDialog = getDialog(DialogType.LOADING, message)
-            val showJob = async {
+            //val showJob = async {
                 loadingDialog?.show(parentFragmentManager, "LoadingDialog")
-                parentFragmentManager.executePendingTransactions()
-            }
-            showJob.await()  
+              //  parentFragmentManager.executePendingTransactions()
+            //}
+            //showJob.await()
             Log.i("BaseFragment", "Loading dialog is shown")
-        }
+      //  }
     }
 //TODO, CHECK OTHER OPTIONS FOR MAKING SHOW LOADING DIALOG ATOMIC
     protected fun <T> observeUiState(
@@ -46,15 +49,24 @@ abstract class BaseFragment : Fragment() {
     ) {
         viewLifecycleOwner.lifecycleScope.launch {
             stateFlow.collect { state ->
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Default) { //TODO REVERTED FROM MAIN ??
                     when (state) {
                         is UiState.Success -> {
-                            hideLoading()
-                            onSuccess(state.data)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                hideLoading()
+                                onSuccess(state.data)
+
+                            }, 200) //DONT USE HANDLER
+
                         }
                         is UiState.Error -> {
-                            hideLoading()
-                            onError(state.message)
+                            //handler delay for 0.5 seconds
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                hideLoading()
+                                onError(state.message)
+
+                            }, 200) //DONT USE HANDLER
+                            //hideLoading()
                         }
                         is UiState.Loading -> {
                             onLoading()
@@ -70,14 +82,16 @@ abstract class BaseFragment : Fragment() {
 
 
     protected fun hideLoading() {
-        lifecycleScope.launch {
-            val hideJob = async {
-                loadingDialog?.dismiss()
-                loadingDialog = null
-            }
-            hideJob.await()  // Dismiss işlemi tamamlanana kadar bekle
+    //    lifecycleScope.launch {
+//            val hideJob = async {
+//                loadingDialog?.dismiss()
+//                loadingDialog = null
+//            }
+//            hideJob.await()  // Dismiss işlemi tamamlanana kadar bekle
+            loadingDialog?.dismiss()
+           loadingDialog = null
             Log.i("BaseFragment", "Loading dialog dismissed")
-        }
+      //  }
     }
 
     protected fun showError(message: String) {

@@ -80,7 +80,7 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
 
 
         setupListeners()
-        observeState()
+        observeState() //TODO even on error fragment shows for a second,
         getItemsOne()
         Log.i(TAG, "getItems() called")
     }

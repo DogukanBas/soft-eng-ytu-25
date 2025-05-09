@@ -29,7 +29,12 @@ class SetDepartmentBudgetsFragment : BaseBudgetFragment<DepartmentBudgetResponse
             onSuccess = { data ->
                 this.items = data.toMutableList()
                 setupSpinner()
+            },
+            onError = {
+                Log.e(TAG, "Error fetching departments: $it")
+                popFragment()
             }
+
         )
         observeUiState(
             viewModel.addDepartmentBudgetState,

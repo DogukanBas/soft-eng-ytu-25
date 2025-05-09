@@ -77,29 +77,20 @@ class AddCostTypeItemFragment: BaseFragment() {
     }
 
     private fun setStateCollectors() {
-        val dialog = getDialog(DialogType.LOADING,"Loading")
-        Log.i(TAG, "setStateCollectors: ")
+         Log.i(TAG, "setStateCollectors: ")
         observeUiState(
             viewModel.addCostTypeBudgetState,
             onSuccess = { data ->
                 Log.i(TAG, "Success: $data")
-                dialog.dismiss()
+
                 getDialog(DialogType.SUCCESS,"Cost Item added successfully")
                     .show(requireActivity().supportFragmentManager, "SuccessDialog")
                 popFragment()
             },
             onError = { message ->
-                Log.e(TAG, "Error: $message")
-                dialog.dismiss()
                 getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
             },
-            onLoading = {
-                Log.i(TAG, "Loading")
-                dialog.show(
-                    requireActivity().supportFragmentManager,
-                    "ProcessingDialog"
-                )
-            },
+
         )
     }
 

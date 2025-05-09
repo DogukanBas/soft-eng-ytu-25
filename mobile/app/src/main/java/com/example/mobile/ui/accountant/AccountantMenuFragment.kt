@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.mobile.MainActivity
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
+import com.example.mobile.ui.manager.ListAssignedTicketsFragment
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
@@ -46,9 +47,10 @@ class AccountantMenuFragment : BaseFragment() {
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
-            "List Tickets") {
+            "List Assigned Tickets") {
+            Log.i(TAG, "List Team Tickets button clicked")
             replaceFragment(
-                ListAccountantTicketsFragment()
+                ListAssignedTicketsFragment()
             )
         })
         menuItems.add(MenuItem(
