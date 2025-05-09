@@ -135,7 +135,7 @@ public class TicketServiceImpl implements TicketService {
     public ApproveHistory getLastApproveHistoryByTicketId(Integer ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
-        return approveHistoryRepository.findFirstByTicketOrderByDateDesc(ticket)
+        return approveHistoryRepository.findFirstByTicketOrderByIdDesc(ticket)
                 .orElseThrow(() -> new ResourceNotFoundException("Approve history not found for ticket id: " + ticketId));
     }
 }

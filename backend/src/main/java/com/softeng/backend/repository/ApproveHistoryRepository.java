@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface ApproveHistoryRepository extends JpaRepository<ApproveHistory, Integer> {
     List<ApproveHistory> findByTicketOrderByDateDesc(Ticket ticket);
     List<ApproveHistory> findByTicket(Ticket ticket);
-    Optional<ApproveHistory> findFirstByTicketOrderByDateDesc(Ticket ticket);
+    Optional<ApproveHistory> findFirstByTicketOrderByIdDesc(Ticket ticket);
+
 }
