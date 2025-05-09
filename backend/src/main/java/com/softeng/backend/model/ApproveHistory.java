@@ -100,6 +100,12 @@ public class ApproveHistory {
             );
         }
 
+        public static List<Status> getAccountantEditableStatus() {
+            return List.of(
+                    SENT_TO_MANAGER
+            );
+        }
+
 
     }
 }

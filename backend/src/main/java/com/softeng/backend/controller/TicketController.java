@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -66,8 +65,7 @@ public class TicketController {
             if (updateResult.getStatusCode().is2xxSuccessful()) {
                 Attachment attachment = new Attachment();
                 attachment.setTicket(ticket);
-                byte[] decodedInvoice = Base64.getDecoder().decode(request.getInvoice());
-                attachment.setInvoice(decodedInvoice);
+                attachment.setInvoice(request.getInvoice());
                 ticketService.addAttachment(attachment);
             }
 
@@ -92,7 +90,7 @@ public class TicketController {
                     editTicketRequest.getAmount(), editTicketRequest.getDescription(), authentication, ApproveHistory.Status.SENT_TO_MANAGER);
             }
         } else if (isManager(authentication)) {
-            boolean isEditable = ApproveHistory.Status.getManagerCancelableStatus().contains(lastApproveHistory.getStatus());
+            boolean isEditable = ApproveHistory.Status.getManagerEditableStatus().contains(lastApproveHistory.getStatus());
             if (isEditable && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
                 return processTicketUpdate(lastApproveHistory.getTicket(), editTicketRequest.getCostType(), 
                     editTicketRequest.getAmount(), editTicketRequest.getDescription(), authentication, ApproveHistory.Status.SENT_TO_ACCOUNTANT);
@@ -111,8 +109,8 @@ public class TicketController {
         String personalNo = authentication.getName();
         ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketId);
         if (isAccountant(authentication)) {
-            boolean isEditable = ApproveHistory.Status.getManagerCancelableStatus().contains(lastApproveHistory.getStatus());
-            if (isEditable && lastApproveHistory.getTicket().getManagerId().equals(personalNo)) {
+            boolean isEditable = ApproveHistory.Status.getAccountantEditableStatus().contains(lastApproveHistory.getStatus());
+            if (isEditable) {
                 return processTicketUpdate(lastApproveHistory.getTicket(), costType, lastApproveHistory.getTicket().getAmount(),
                     "Cost Type Edited", authentication, ApproveHistory.Status.SENT_TO_ACCOUNTANT);
             }
