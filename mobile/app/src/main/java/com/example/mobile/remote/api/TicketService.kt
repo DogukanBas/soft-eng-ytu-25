@@ -46,13 +46,13 @@ interface TicketService {
         @Body request: TicketActionRequest
     ): Response<TicketActionResponse>
     
-    @POST("api/ticket/reject-close")
+    @POST("api/ticket/reject-and-close")
     suspend fun rejectTicketClose(
         @Body request: TicketActionRequest
 
     ): Response<TicketActionResponse>
     
-    @POST("api/ticket/reject-edit")
+    @POST("api/ticket/reject-and-return")
     suspend fun rejectTicketEdit(
         @Body request: TicketActionRequest
     ): Response<TicketActionResponse>
