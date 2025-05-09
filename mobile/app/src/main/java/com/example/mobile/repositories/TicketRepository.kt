@@ -6,6 +6,7 @@ import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.api.TicketService
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
+import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
 import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
@@ -187,6 +188,32 @@ class TicketRepository @Inject constructor(
     suspend fun getApproveHistory(ticketId: Int): Result<List<ApprovalHistoryItem>> {
         return try {
             val response = ticketService.getApproveHistory(ticketId)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Log.i(TAG, "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun editTicket(ticket:EditTicketRequest):Result<CreateTicketResponse>{
+        return try {
+            val response = ticketService.editTicket(ticket)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Log.i(TAG, "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun editCostTypeTicket(ticketId:Int, costType:String):Result<CreateTicketResponse>{
+        return try {
+            val response = ticketService.editCostTypeTicket(ticketId,costType)
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {

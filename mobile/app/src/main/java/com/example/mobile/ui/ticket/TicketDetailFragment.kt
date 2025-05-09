@@ -17,6 +17,7 @@ import com.example.mobile.model.User.UserType
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
+import com.example.mobile.adapters.FragmentBottomSheetAdapter
 import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -104,7 +105,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         btnAccept.visibility = View.GONE
         btnReject.visibility = View.GONE
         btnCancel.visibility = View.GONE
-        btnEdit.visibility = View.GONE
+        btnEdit.visibility = View.VISIBLE
 
 
         // Set up button click listeners (to be implemented later)
@@ -129,8 +130,56 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
 
         btnEdit.setOnClickListener {
             Log.i(TAG, "Edit button clicked for ticket ID: $ticketId")
-            // To be implemented
+
+                showEdit()
+
+            //TODO EDIT TUSUNA IKI KERE USTUSTE BASILDIGINDA EXCEPTION
+            //make edit button invisible
+
         }
+    }
+    private fun showEdit() {
+        viewModel.getCostTypes()
+
+        observeUiState(
+            viewModel.getCostType,
+            onSuccess = { data ->
+                lateinit var myFragment:BaseFragment
+                if(User.userType == UserType.ACCOUNTANT){
+                    myFragment = EditCostTypeBottomSheetFragment(
+                        costTypeList = data,
+                        ticket.costType,
+                        ticketId = ticketId,
+                    )
+                }
+                else{
+
+                    myFragment = EditBottomSheetFragment(
+                        costTypeList = data,
+                        ticket,
+                        ticketId = ticketId,
+                    )
+
+                }
+                val bottomSheet = FragmentBottomSheetAdapter.newInstance(
+                    fragment = myFragment,
+                    fragmentLayoutId = R.layout.fragment_input_list_layout, // Fragment'ı içerecek basit bir layout
+                )
+                bottomSheet.show(requireActivity().supportFragmentManager, "BottomSheetTag")
+
+            },
+            onError = {
+                Log.e(TAG, "Error fetching cost types : $it")
+                popFragment()
+
+            },
+            onLoading = {
+                showLoading()
+            },
+            onIdle = {
+                hideLoading()
+            }
+        )
     }
 
     private fun showRejectBottomSheet() {

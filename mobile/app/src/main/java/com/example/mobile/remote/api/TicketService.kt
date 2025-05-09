@@ -5,6 +5,7 @@ import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
 import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
+import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
 import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
 import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
 import com.example.mobile.remote.dtos.auth.listticket.TicketActionResponse
@@ -61,4 +62,15 @@ interface TicketService {
         @Body request: TicketActionRequest
 
     ): Response<TicketActionResponse>
+
+    @POST("api/ticket/edit")
+    suspend fun editTicket(
+        @Body request: EditTicketRequest
+    ): Response<CreateTicketResponse>
+
+    @POST("api/ticket/edit-cost-type")
+    suspend fun editCostTypeTicket(
+        @Query ("ticketId") ticketId: Int,
+        @Query ("costType") costType: String
+    ): Response<CreateTicketResponse>
 }

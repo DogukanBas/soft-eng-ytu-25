@@ -22,8 +22,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 SELECT DISTINCT new com.softeng.backend.dto.TicketSummary(
     ah.ticket.ticketId, ah.ticket.employeeId)
 FROM ApproveHistory ah
-WHERE ah.date = (
-    SELECT MAX(subAh.date)
+WHERE ah.id = (
+    SELECT MAX(subAh.id)
     FROM ApproveHistory subAh
     WHERE subAh.ticket = ah.ticket
 )

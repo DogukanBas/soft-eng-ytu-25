@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
+import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
+import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
 import com.example.mobile.repositories.TicketRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -246,6 +248,38 @@ class TicketViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _getApproveHistoryState.value = UiState.Error(e.toString())
+            }
+        }
+    }
+
+    fun editTicket(ticket:EditTicketRequest){
+        viewModelScope.launch {
+            _createTicket.value = UiState.Loading
+            try {
+                val result = ticketRepository.editTicket(ticket)
+                if (result.isSuccess) {
+                    _createTicket.value = UiState.Success(result.getOrNull()!!)
+                } else {
+                    _createTicket.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to edit ticket")
+                }
+            } catch (e: Exception) {
+                _createTicket.value = UiState.Error(e.message ?: "Unknown error occurred")
+            }
+        }
+    }
+
+    fun editCostTypeTicket(ticketid:Int,costType:String) {
+        viewModelScope.launch {
+            _createTicket.value = UiState.Loading
+            try {
+                val result = ticketRepository.editCostTypeTicket(ticketid,costType)
+                if (result.isSuccess) {
+                    _createTicket.value = UiState.Success(result.getOrNull()!!)
+                } else {
+                    _createTicket.value = UiState.Error(result.exceptionOrNull()?.message ?: "Failed to edit ticket")
+                }
+            } catch (e: Exception) {
+                _createTicket.value = UiState.Error(e.message ?: "Unknown error occurred")
             }
         }
     }
