@@ -63,6 +63,7 @@ class TicketListFragment (val tickets:List<Int>): BaseFragment() {
 
                 var hasHandledSuccess = false
                 val loadingDialog = getDialog(DialogType.LOADING, "Loading")
+                var isAdded=false
                 viewLifecycleOwner.lifecycleScope.launch {
                     combine(viewModel.getTicketState, viewModel.getApproveHistoryState) { state1, state2 ->
                         state1 to state2
@@ -70,7 +71,9 @@ class TicketListFragment (val tickets:List<Int>): BaseFragment() {
 
                         // Show loading if at least one is loading
                         if (state1 is UiState.Loading || state2 is UiState.Loading) {
-                            if (!loadingDialog.isVisible) {
+                            if (!isAdded && !loadingDialog.isVisible ) {
+                                Log.i(TAG,"Showing loading dialog in ticket list fragment")
+                                isAdded = true
                                 loadingDialog.show(
                                     requireActivity().supportFragmentManager,
                                     "LoadingDialog"
