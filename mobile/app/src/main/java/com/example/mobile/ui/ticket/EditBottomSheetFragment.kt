@@ -69,7 +69,7 @@ class EditBottomSheetFragment(
             onError = { message ->
                 Log.e(TAG, "Error: $message")
                 dialog.dismiss()
-                popFragment()
+               // popFragment()
                 getDialog(DialogType.ERROR,message).show(requireActivity().supportFragmentManager, "ErrorDialog")
             },
             onLoading = {

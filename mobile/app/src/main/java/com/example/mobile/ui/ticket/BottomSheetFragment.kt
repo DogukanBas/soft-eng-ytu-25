@@ -63,7 +63,10 @@ class BottomSheetFragment(
             override fun afterTextChanged(s: Editable?) {
                 val hasText = !s.isNullOrEmpty()
                 btnFirstActionButton.isEnabled = hasText
-                btnFirstActionButton.isEnabled = hasText
+                if(secondActionButtonString != null) {
+                    btnSecondActionButton.isEnabled = hasText
+                }
+
             }
         })
 
