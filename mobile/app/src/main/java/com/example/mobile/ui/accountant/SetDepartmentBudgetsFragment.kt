@@ -39,6 +39,8 @@ class SetDepartmentBudgetsFragment : BaseBudgetFragment<DepartmentBudgetResponse
         observeUiState(
             viewModel.addDepartmentBudgetState,
             onSuccess = {
+                updateItemInList(selectedItem!!)
+                updateUIForSelectedItem(selectedItem!!)
                 Toast.makeText(context, "Budget updated successfully", Toast.LENGTH_SHORT).show()
             },
             onError = {
