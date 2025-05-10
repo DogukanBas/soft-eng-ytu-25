@@ -40,9 +40,11 @@ class TicketViewModel @Inject constructor(
     private val _getApproveHistoryState = MutableStateFlow<UiState<List<ApprovalHistoryItem>>>(UiState.Idle)
     val getApproveHistoryState: StateFlow<UiState<List<ApprovalHistoryItem>>> = _getApproveHistoryState
 
-    // New state flows for ticket actions
     private val _ticketState = MutableStateFlow<UiState<String>>(UiState.Idle)
     val ticketState: StateFlow<UiState<String>> = _ticketState
+
+    private val _getInvoiceState = MutableStateFlow<UiState<String>>(UiState.Idle)
+    val getInvoiceState: StateFlow<UiState<String>> = _getInvoiceState
 
     fun getCostTypes() {
 
@@ -248,6 +250,22 @@ class TicketViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _getApproveHistoryState.value = UiState.Error(e.toString())
+            }
+        }
+    }
+    fun getInvoice(ticketId: Int){
+        viewModelScope.launch {
+            _getInvoiceState.value = UiState.Loading
+            try {
+                val result = ticketRepository.getInvoice(ticketId)
+                if (result.isSuccess) {
+                    val invoice = result.getOrNull()
+                    _getInvoiceState.value = UiState.Success(invoice!!)
+                } else {
+                    _getInvoiceState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _getInvoiceState.value = UiState.Error(e.toString())
             }
         }
     }

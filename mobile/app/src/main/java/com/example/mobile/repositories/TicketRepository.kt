@@ -198,6 +198,21 @@ class TicketRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun getInvoice(ticketId : Int) : Result<String> {
+        return try {
+            val response = ticketService.getTicketInvoice(ticketId)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.invoice)
+            } else {
+                Log.i(TAG, "Error: ${response.headers().get("message")}, ")
+                Result.failure(Exception(response.headers().get("message")))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun editTicket(ticket:EditTicketRequest):Result<CreateTicketResponse>{
         return try {
             val response = ticketService.editTicket(ticket)

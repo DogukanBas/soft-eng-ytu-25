@@ -1,6 +1,7 @@
 package com.example.mobile.remote.api
 
 import com.example.mobile.models.ApprovalHistoryItem
+import com.example.mobile.remote.dtos.auth.InvoiceResponse
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
 import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
@@ -39,6 +40,9 @@ interface TicketService {
     
     @GET("api/ticket/assigned/active")
     suspend fun getActiveAssignedTickets(): Response<ListTicketIdResponseList>
+
+    @GET("api/ticket/invoice")
+    suspend fun getTicketInvoice(@Query("ticketId") ticketId: Int): Response<InvoiceResponse>
 
     // New ticket action endpoints
     @POST("api/ticket/approve")

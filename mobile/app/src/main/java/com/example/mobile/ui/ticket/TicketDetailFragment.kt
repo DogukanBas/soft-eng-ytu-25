@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.adapters.ApprovalHistoryAdapter
+import com.example.mobile.adapters.FragmentBottomSheetAdapter
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
 import com.example.mobile.models.ApprovalHistoryItem
 import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.adapters.FragmentBottomSheetAdapter
 import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -33,6 +33,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     private lateinit var ticketStatus: TextView
     private lateinit var recyclerView: RecyclerView
 
+    private lateinit var btnInvoice: TextView
     // Action buttons
     private lateinit var btnAccept: Button
     private lateinit var btnReject: Button
@@ -60,6 +61,20 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         displayTicketDetails(ticket)
         displayApprovalHistory()
         setupStateObservers()
+        setupInvoiceObserver()
+    }
+
+    private fun setupInvoiceObserver() {
+        observeUiState(
+            viewModel.getInvoiceState,
+            onSuccess = { invoice ->
+                Log.i(TAG, "Invoice Success")
+                val dialog = InvoiceDialogFragment(invoice)
+                dialog.show(
+                    requireActivity().supportFragmentManager, "InvoiceDialog"
+                )
+            }
+        )
     }
 
     private fun setupStateObservers() {
@@ -90,6 +105,8 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         ticketEmployeeId = view.findViewById(R.id.ticket_employee_id)
         ticketManagerId = view.findViewById(R.id.ticket_manager_id)
         ticketStatus = view.findViewById(R.id.ticket_status)
+
+        btnInvoice = view.findViewById(R.id.invoice)
 
         // RecyclerView for approval history
         recyclerView = view.findViewById(R.id.approval_history_recyclerview)
@@ -130,14 +147,22 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
 
         btnEdit.setOnClickListener {
             Log.i(TAG, "Edit button clicked for ticket ID: $ticketId")
-
-                showEdit()
+            showEdit()
 
             //TODO EDIT TUSUNA IKI KERE USTUSTE BASILDIGINDA EXCEPTION
             //make edit button invisible
 
         }
+
+        btnInvoice.setOnClickListener {
+            Log.i(TAG, "Show Invoice button clicked for ticket ID: $ticketId")
+            showInvoice()
+        }
     }
+    private fun showInvoice() {
+        viewModel.getInvoice(ticketId)
+    }
+
     private fun showEdit() {
         viewModel.getCostTypes()
 
@@ -181,6 +206,8 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
             }
         )
     }
+
+
 
     private fun showRejectBottomSheet() {
         val bottomSheet = BottomSheetFragment(
