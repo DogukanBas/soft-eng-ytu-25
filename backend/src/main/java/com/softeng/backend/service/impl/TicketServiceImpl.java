@@ -138,4 +138,12 @@ public class TicketServiceImpl implements TicketService {
         return approveHistoryRepository.findFirstByTicketOrderByIdDesc(ticket)
                 .orElseThrow(() -> new ResourceNotFoundException("Approve history not found for ticket id: " + ticketId));
     }
+
+    @Override
+    public Attachment getAttachmentByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return attachmentRepository.findByTicket(ticket)
+                .orElseThrow(() -> new ResourceNotFoundException("Attachment not found for ticket id: " + ticketId));
+    }
 }

@@ -20,4 +20,6 @@ public interface TicketService {
     TicketDTOs.TicketWithoutInvoiceResponse getTicketById(Integer ticketId);
     List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId);
     ApproveHistory getLastApproveHistoryByTicketId(Integer ticketId);
+    Attachment getAttachmentByTicketId(Integer ticketId);
+
 }

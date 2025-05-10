@@ -11,7 +11,7 @@ public class Attachment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "ticketId", nullable = false)
     private Ticket ticket;
 

@@ -453,6 +453,31 @@ public class TicketController {
         }
     }
 
+    @GetMapping("/invoice")
+    public ResponseEntity<?> getInvoice(@RequestParam int ticketId, Authentication authentication) {
+        logger.debug("Fetching invoice for ticket with ID: {}", ticketId);
+        String personalNo = authentication.getName();
+        TicketDTOs.TicketWithoutInvoiceResponse ticket = ticketService.getTicketById(ticketId);
+        if ( isAccountant(authentication)
+            || isManager(authentication) && (personalNo.equals(ticket.getEmployeeId()) || personalNo.equals(ticket.getManagerId()))
+            || isTeamMember(authentication) && personalNo.equals(ticket.getEmployeeId())) {
+            Attachment attachment = ticketService.getAttachmentByTicketId(ticketId);
+            if (attachment != null) {
+                return ResponseEntity.ok()
+                        .body(Map.of("invoice", attachment.getInvoice()));
+            } else {
+                return ResponseEntity.status(404)
+                        .header("message", "Invoice not found").build();
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .header("message",
+                            "Invalid authentication"
+                    )
+                    .build();
+        }
+    }
+
     private boolean isTeamMember(Authentication authentication) {
         String personalNo = authentication.getName();
         User currentUser = userService.getUserByPersonalNo(personalNo);
