@@ -301,15 +301,29 @@ public class TicketController {
 
         }
         else if (isAccountant(authentication) && lastApproveHistory.getStatus().equals(ApproveHistory.Status.SENT_TO_ACCOUNTANT)) {
+            TicketDTOs.TicketWithoutInvoiceResponse ticket = ticketService.getTicketById(ticketActionRequest.getTicketId());
+            TicketDTOs.BudgetValidationResult validationResult = validateBudget(ticket.getEmployeeId(), ticket.getCostType(), ticket.getAmount());
+            String description = ticketActionRequest.getDescription() + "\n" +
+                    "Afforded Amount: " + validationResult.getMinCost() + "\n";
+
+            if (validationResult.isValid()) {
+                Department department = employeeService.getEmployeeByPersonalNo(ticket.getEmployeeId()).getDepartment();
+                department.setRemainingBudget(department.getRemainingBudget().subtract(validationResult.getMinCost()));
+
+                BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(ticket.getCostType());
+                budgetByCostType.setRemainingBudget(budgetByCostType.getRemainingBudget().subtract(validationResult.getMinCost()));
+            }
+
             ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
                     LocalDate.now(),
                     ApproveHistory.Status.CLOSED_AS_APPROVED,
-                    ticketActionRequest.getDescription(),
+                    description,
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
             return ResponseEntity.ok()
-                    .body(Map.of("message", "Ticket approved and closed"));
+                    .body(Map.of("message", "Ticket approved and closed\n" +
+                            "Afforded Amount: " + validationResult.getMinCost()));
         }
 
         else {

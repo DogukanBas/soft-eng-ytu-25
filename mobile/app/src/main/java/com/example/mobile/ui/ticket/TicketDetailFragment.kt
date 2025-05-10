@@ -228,11 +228,11 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     }
     private fun showAcceptBottomSheet(){
         val bottomSheet = BottomSheetFragment(
-            "Accept Ticket",
+            "Approve Ticket",
             "Enter Description for Approval",
             "Approve And Close",
             onFirstAction = { reason ->
-                Log.i(TAG, "Rejecting and closing ticket with reason: $reason")
+                Log.i(TAG, "Approving and closing ticket with reason: $reason")
                 viewModel.acceptTicket(ticketId, reason)
             }
         )
