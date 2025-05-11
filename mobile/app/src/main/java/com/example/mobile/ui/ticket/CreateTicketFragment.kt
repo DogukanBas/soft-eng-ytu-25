@@ -175,7 +175,7 @@ class CreateTicketFragment(private val costTypes: List<String>) : BaseFragment()
     @SuppressLint("SimpleDateFormat")
     private fun setMenu(): InputListFragment {
         val inputList: MutableList<CustomInputFormat> = mutableListOf()
-        inputList.add(CustomInputFormat("Select Account Type", EditTextInputType.MenuList, null, null,
+        inputList.add(CustomInputFormat("Select Cost Type", EditTextInputType.MenuList, null, null,
             { input -> input.text.isNotEmpty() }).apply {
             singleSelectionListItems = costTypes
             text = singleSelectionListItems[0]
