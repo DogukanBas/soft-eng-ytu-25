@@ -87,6 +87,11 @@ class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : BaseFragme
                 "Accountant"
             )
             text = singleSelectionListItems[0]
+            setValidator {
+                    input: CustomInputFormat ->
+                input.text.toString().isNotEmpty()
+            }
+
 
         })
 
@@ -127,6 +132,11 @@ class AddUserFragment(val ListOfAdmins :List<String> = emptyList()) : BaseFragme
         inputList.add(CustomInputFormat("Department", EditTextInputType.MenuList,null,null,null).apply {
             singleSelectionListItems = ListOfAdmins
             text= singleSelectionListItems[0]
+            setValidator {
+                    input: CustomInputFormat ->
+                input.text.toString().isNotEmpty()
+            }
+
         })
         return inputList
     }
