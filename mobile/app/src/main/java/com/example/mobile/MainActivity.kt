@@ -7,13 +7,17 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mobile.databinding.ActivityMainBinding
+import com.example.mobile.ui.dialog.IpDialogFragment
 import com.example.mobile.ui.login.LoginFragment
+import com.example.mobile.utils.PrefsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var prefsUtil: PrefsUtil
+
     companion object {
         const val TAG = "MainActivity"
     }
@@ -29,11 +33,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hideSystemUI()
+        
+        prefsUtil = PrefsUtil(this)
+        showIpDialog()
+    }
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, LoginFragment())
-            commit()
+    private fun showIpDialog() {
+        val dialog = IpDialogFragment()
+        dialog.setOnIpSelectedListener { ip ->
+            prefsUtil.saveIpAddress(ip)
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.fragment_container, LoginFragment())
+                commit()
+            }
         }
+        dialog.show(supportFragmentManager, "IpDialog")
     }
 
     private fun hideSystemUI() {

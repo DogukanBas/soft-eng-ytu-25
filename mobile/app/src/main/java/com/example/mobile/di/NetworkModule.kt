@@ -1,5 +1,6 @@
 package com.example.mobile.di
 
+import com.example.mobile.remote.RetrofitClient
 import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService

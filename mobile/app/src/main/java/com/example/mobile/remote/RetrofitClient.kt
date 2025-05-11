@@ -1,3 +1,5 @@
+package com.example.mobile.remote
+
 import android.util.Log
 import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
@@ -12,7 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // Emulator için localhost
+    private var baseUrl = "http://10.0.2.2:8080/"
+    private var retrofit: Retrofit? = null
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -26,29 +29,33 @@ object RetrofitClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    val instance: Retrofit by lazy {
-        Log.i("RetrofitClient", "Creating Retrofit instance #{System.currentTimeMillis()}")
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
+    fun updateBaseUrl(ip: String) {
+        baseUrl = "http://$ip:8080/"
+        retrofit = null
+    }
+
+    private fun getRetrofit(): Retrofit {
+        return retrofit ?: Retrofit.Builder()
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            .build().also { retrofit = it }
     }
 
     val authService: AuthService by lazy {
-        instance.create(AuthService::class.java)
+        getRetrofit().create(AuthService::class.java)
     }
     val adminService: AdminService by lazy {
-        instance.create(AdminService::class.java)
+        getRetrofit().create(AdminService::class.java)
     }
     val departmentService: DepartmentService by lazy {
-        instance.create(DepartmentService::class.java)
+        getRetrofit().create(DepartmentService::class.java)
     }
     val costTypeService: CostTypeService by lazy {
-        instance.create(CostTypeService::class.java)
+        getRetrofit().create(CostTypeService::class.java)
     }
     val ticketService: TicketService by lazy {
-        instance.create(TicketService::class.java)
+        getRetrofit().create(TicketService::class.java)
     }
 
 }
