@@ -37,7 +37,7 @@ AND EXISTS (
     WHERE ah_actor_check.ticket = ah.ticket
       AND (
         ah_actor_check.actor.personalNo = :personalNo
-        OR (:isManager = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_MANAGER)
+        OR (:isManager = true AND ah.ticket.managerId = :personalNo AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_MANAGER)
         OR (:isAccountant = true AND ah_actor_check.status = com.softeng.backend.model.ApproveHistory.Status.SENT_TO_ACCOUNTANT)
       )
 )
