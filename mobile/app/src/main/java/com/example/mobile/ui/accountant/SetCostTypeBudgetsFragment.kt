@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.remote.dtos.auth.CostTypeBudgetResponse
 import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
+import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,9 +51,22 @@ class SetCostTypeBudgetsFragment : BaseBudgetFragment<CostTypeBudgetResponse>() 
         observeUiState(
             viewModel.costTypeBudgetState,
             onSuccess = {data->
-                //assign the data to the items list
-                this.items = data.toMutableList()
-                setupSpinner()
+                if(data.isEmpty()){
+                    this.items = mutableListOf()
+                    getDialog(
+                        DialogType.ERROR,
+                        "No Cost Type found",
+                        ){
+                        popFragment()
+                    }.show(
+                        childFragmentManager,
+                        "ErrorDialog"
+                    )
+                }
+                else{
+                    this.items = data.toMutableList()
+                    setupSpinner()
+                }
 
             },
             onError = {

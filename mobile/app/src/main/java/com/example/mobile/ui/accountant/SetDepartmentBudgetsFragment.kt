@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
+import com.example.mobile.utils.DialogType
 
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,8 +28,23 @@ class SetDepartmentBudgetsFragment : BaseBudgetFragment<DepartmentBudgetResponse
         observeUiState(
             viewModel.departmentBudgetState,
             onSuccess = { data ->
-                this.items = data.toMutableList()
-                setupSpinner()
+                if(data.isEmpty()){
+                    this.items = mutableListOf()
+                    getDialog(
+                        DialogType.ERROR,
+                        "No departments found",
+
+                    ){
+                        popFragment()
+                    }.show(
+                        childFragmentManager,
+                        "ErrorDialog"
+                    )
+                }
+                else{
+                    this.items = data.toMutableList()
+                    setupSpinner()
+                }
             },
             onError = {
                 Log.e(TAG, "Error fetching departments: $it")

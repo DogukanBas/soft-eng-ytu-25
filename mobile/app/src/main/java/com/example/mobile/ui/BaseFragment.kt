@@ -15,6 +15,7 @@ import com.example.mobile.utils.UiState
 import com.token.uicomponents.components330.dialog_box_fullscreen.DialogBoxFullScreen330
 import com.token.uicomponents.components330.dialog_box_info.DialogBoxInfo330
 import com.token.uicomponents.infodialog.InfoDialog
+import com.token.uicomponents.infodialog.InfoDialogListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
@@ -121,7 +122,7 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    fun getDialog(dialogType: DialogType, message:String ): InfoDialog {
+    fun getDialog(dialogType: DialogType, message:String, validator:(()-> Unit)? = null ): InfoDialog {
         Log.i(MainActivity.TAG, "getDialog called with type: $dialogType")
         val dialog = when (dialogType) {
             DialogType.LOADING -> DialogBoxFullScreen330(
@@ -130,11 +131,23 @@ abstract class BaseFragment : Fragment() {
                 isCancelable = false)
             DialogType.ERROR -> DialogBoxInfo330(
                 "Error",
+                object: InfoDialogListener{
+                    override fun confirmed(arg:Int) {
+                        Log.i(TAG, "Error dialog confirmed")
+                        validator?.invoke()
+                    }
+
+                    override fun canceled(p0: Int) {
+                        TODO("Not yet implemented")
+                    }
+
+                },
                 isCancelable= true,
                 info = message,
                 infoDialogButtons = InfoDialog.InfoDialogButtons.Confirm
 
             )
+
             DialogType.SUCCESS ->
                 DialogBoxInfo330(
                     "Success",
