@@ -1,24 +1,31 @@
 package com.example.mobile
 
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.mobile.databinding.ActivityMainBinding
+import com.example.mobile.ui.dialog.IpDialogFragment
 import com.example.mobile.ui.login.LoginFragment
-import com.example.mobile.utils.DialogType
-import com.token.uicomponents.components330.dialog_box_fullscreen.DialogBoxFullScreen330
-import com.token.uicomponents.components330.dialog_box_info.DialogBoxInfo330
-import com.token.uicomponents.infodialog.InfoDialog
+import com.example.mobile.utils.PrefsUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var prefsUtil: PrefsUtil
+
     companion object {
         const val TAG = "MainActivity"
+    }
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        Log.i(TAG, "Camera permission result: $isGranted")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,12 +33,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hideSystemUI()
+        
+        prefsUtil = PrefsUtil(this)
+        showIpDialog()
+    }
 
-         supportFragmentManager.beginTransaction().apply{
-            replace(R.id.fragment_container, LoginFragment())
-            commit()
+    private fun showIpDialog() {
+        val dialog = IpDialogFragment()
+        dialog.setOnIpSelectedListener { ip ->
+            prefsUtil.saveIpAddress(ip)
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.fragment_container, LoginFragment())
+                commit()
+            }
         }
-
+        dialog.show(supportFragmentManager, "IpDialog")
     }
 
     private fun hideSystemUI() {
@@ -45,4 +61,7 @@ class MainActivity : AppCompatActivity() {
                 )
     }
 
+    fun requestPermissions() {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
 }

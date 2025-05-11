@@ -29,11 +29,18 @@ class SetDepartmentBudgetsFragment : BaseBudgetFragment<DepartmentBudgetResponse
             onSuccess = { data ->
                 this.items = data.toMutableList()
                 setupSpinner()
+            },
+            onError = {
+                Log.e(TAG, "Error fetching departments: $it")
+                popFragment()
             }
+
         )
         observeUiState(
             viewModel.addDepartmentBudgetState,
             onSuccess = {
+                updateItemInList(selectedItem!!)
+                updateUIForSelectedItem(selectedItem!!)
                 Toast.makeText(context, "Budget updated successfully", Toast.LENGTH_SHORT).show()
             },
             onError = {

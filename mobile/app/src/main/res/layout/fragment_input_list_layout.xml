@@ -3,7 +3,8 @@
 
     android:id="@+id/input_menu_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:minHeight="300dp">
 
 
 </FrameLayout>

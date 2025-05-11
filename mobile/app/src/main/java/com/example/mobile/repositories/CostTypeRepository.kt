@@ -1,7 +1,7 @@
-package com.example.mobile.remote.repository
+package com.example.mobile.repositories
 
-import RetrofitClient.costTypeService
 import android.util.Log
+import com.example.mobile.remote.RetrofitClient.costTypeService
 import com.example.mobile.remote.dtos.auth.CostTypeBudgetResponse
 import javax.inject.Inject
 

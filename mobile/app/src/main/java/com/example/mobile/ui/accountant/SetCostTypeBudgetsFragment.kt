@@ -21,7 +21,7 @@ class SetCostTypeBudgetsFragment : BaseBudgetFragment<CostTypeBudgetResponse>() 
             )
         }
         btnSetmaxCost.setOnClickListener{
-            val input = etmaxCostValue.text.toString()
+            val input = etmaxCostValue.text.toString().replace(",", ".")
             val item = selectedItem ?: return@setOnClickListener
             input.toDoubleOrNull()?.let { newValue ->
                 selectedItem = updateItemBudget(item, initial = null, remaining = null , maxCost = newValue)

@@ -1,28 +1,28 @@
-package com.example.mobile.ui.accountant
+package com.example.mobile.ui.manager
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
+import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.ui.manager.ListAssignedTicketsFragment
+import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.ticket.CreateTicketFragment
+import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AccountantMenuFragment : BaseFragment() {
+class ManagerMenuFragment : BaseFragment() {
 
     companion object {
-        val TAG = "AccountantMenuFragment"
+        val TAG = "TeamMemberMenuFragment"
     }
+    private val ticketViewModel: TicketViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +46,38 @@ class AccountantMenuFragment : BaseFragment() {
 
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
+        //TODO this item is duplicating as in team_member, either create a factory, or  move observeui state  to inside createticketfragmetn with a pop fragment on error
+        menuItems.add(MenuItem(
+            "Create Ticket") {
+            Log.i(TAG, "Create Ticket button clicked")
+            ticketViewModel.getCostTypes()
+
+            observeUiState(
+                ticketViewModel.getCostType,
+                onSuccess = { data ->
+                    replaceFragment(
+                        CreateTicketFragment(data)
+                    )
+                },
+                onError = {
+                    Log.e(TAG, "Error fetching team members: $it")
+                    popFragment()
+                },
+                onLoading = {
+                    showLoading()
+                },
+                onIdle = {
+                    hideLoading()
+                }
+            )
+
+        })
+        menuItems.add(MenuItem(
+            "List Created Tickets") {
+            replaceFragment(
+                TicketListMenuFragment()
+            )
+        })
         menuItems.add(MenuItem(
             "List Assigned Tickets") {
             Log.i(TAG, "List Team Tickets button clicked")
@@ -53,36 +85,10 @@ class AccountantMenuFragment : BaseFragment() {
                 ListAssignedTicketsFragment()
             )
         })
-        menuItems.add(MenuItem(
-            "Set Budgets") {
-                val newMenuItems = mutableListOf<IListMenuItem>()
-                newMenuItems.add(MenuItem(
-                    "Set Department Budgets") {
-                    replaceFragment(
-                        SetDepartmentBudgetsFragment()
-                    )
-                })
 
-                newMenuItems.add(MenuItem(
-                    "Set Cost Type Budgets") {
-                    replaceFragment(
-                        SetCostTypeBudgetsFragment()
-                    )
-                })
-
-                replaceFragment(
-                    NavigationListFragment(
-                        "Set Budgets",
-                        true,
-                        newMenuItems,
-                        headerImage= getLogo(),
-                    )
-                )
-             }
-        )
 
         return NavigationListFragment(
-            "Accountant Menu",
+            "Manager Menu",
             true,
             menuItems,
             headerImage= getLogo(),

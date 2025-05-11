@@ -1,5 +1,4 @@
 package com.example.mobile.ui.login
-import com.example.mobile.utils.MenuItem
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,8 +12,9 @@ import com.example.mobile.ui.BaseFragment
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
 import com.example.mobile.ui.accountant.AccountantMenuFragment
-import com.example.mobile.ui.accountant.TeamMemberMenuFragment
+import com.example.mobile.ui.team_member.TeamMemberMenuFragment
 import com.example.mobile.ui.admin.AdminMenuFragment
+import com.example.mobile.ui.manager.ManagerMenuFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,18 +67,19 @@ class LoginFragment : BaseFragment() {
                         replaceFragment(AdminMenuFragment(), false)
                     }
                     UserType.MANAGER -> {
+                        replaceFragment(ManagerMenuFragment(),false)
 
 
                     }
                     UserType.TEAM_MEMBER -> {
                         replaceFragment(
-                            TeamMemberMenuFragment()
+                            TeamMemberMenuFragment(),false
                         )
 
                         }
                         UserType.ACCOUNTANT -> {
                             replaceFragment(
-                                AccountantMenuFragment()
+                                AccountantMenuFragment(),false
                             )
 
                     }

@@ -1,10 +1,10 @@
 package com.softeng.backend.service.impl;
 
 import com.softeng.backend.dto.TicketDTOs;
+import com.softeng.backend.dto.TicketSummary;
 import com.softeng.backend.exception.ResourceNotFoundException;
 import com.softeng.backend.model.ApproveHistory;
 import com.softeng.backend.model.Attachment;
-import com.softeng.backend.model.Employee;
 import com.softeng.backend.model.Ticket;
 import com.softeng.backend.repository.ApproveHistoryRepository;
 import com.softeng.backend.repository.AttachmentRepository;
@@ -79,8 +79,40 @@ public class TicketServiceImpl implements TicketService {
         }
     }
     @Override
-    public List<Integer> getClosedTicketIdsByEmployeeId(String personalNo) {
-        return ticketRepository.findAllClosedTicketsByEmployeeId(personalNo);
+    public List<Integer> getCreatedClosedTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus(),isManager,isAccountant);
+        return allTickets.stream()
+                .filter(ticket -> ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getCreatedActiveTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
+        return allTickets.stream()
+                .filter(ticket -> ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getAssignedClosedTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, true,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
+        return allTickets.stream()
+                .filter(ticket -> !ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getAssignedActiveTicketIdsByPersonalNo(String personalNo, boolean isManager, boolean isAccountant) {
+        List<TicketSummary> allTickets = ticketRepository.findAllTicketsByEmployeeId(personalNo, false,ApproveHistory.Status.getClosedStatus(), isManager,isAccountant);
+
+        return allTickets.stream()
+                .filter(ticket -> !ticket.employeeId().equals(personalNo))
+                .map(TicketSummary::ticketId)
+                .toList();
     }
 
     @Override
@@ -89,6 +121,29 @@ public class TicketServiceImpl implements TicketService {
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
     }
 
+    @Override
+    public List<TicketDTOs.ApproveHistoryResponse> getApproveHistoryByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return approveHistoryRepository.findByTicket(ticket).stream().toList()
+                .stream()
+                .map(TicketDTOs.ApproveHistoryResponse::new)
+                .toList();
+    }
 
+    @Override
+    public ApproveHistory getLastApproveHistoryByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return approveHistoryRepository.findFirstByTicketOrderByIdDesc(ticket)
+                .orElseThrow(() -> new ResourceNotFoundException("Approve history not found for ticket id: " + ticketId));
+    }
 
+    @Override
+    public Attachment getAttachmentByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticket id : " + ticketId));
+        return attachmentRepository.findByTicket(ticket)
+                .orElseThrow(() -> new ResourceNotFoundException("Attachment not found for ticket id: " + ticketId));
+    }
 }
