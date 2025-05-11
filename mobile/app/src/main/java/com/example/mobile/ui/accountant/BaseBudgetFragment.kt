@@ -1,4 +1,3 @@
-
 package com.example.mobile.ui.accountant
 import android.os.Bundle
 import android.util.Log
@@ -107,7 +106,7 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
 
     private fun setupListeners() {
         btnSetInitialBudget.setOnClickListener {
-            val input = etInitialBudgetValue.text.toString()
+            val input = etInitialBudgetValue.text.toString().replace(",", ".")
             val item = selectedItem ?: return@setOnClickListener
             input.toDoubleOrNull()?.let { newValue ->
                 selectedItem = updateItemBudget(item, initial = newValue, remaining = null)
@@ -119,7 +118,7 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
         }
 
         btnSetRemainingBudget.setOnClickListener {
-            val input = etRemainingBudgetValue.text.toString()
+            val input = etRemainingBudgetValue.text.toString().replace(",", ".")
             val item = selectedItem ?: return@setOnClickListener
             input.toDoubleOrNull()?.let { newValue ->
                 selectedItem = updateItemBudget(item, initial = null, remaining = newValue)
@@ -132,9 +131,8 @@ abstract class BaseBudgetFragment<T> : BaseFragment() {
 
         btnResetToInitial.setOnClickListener {
             val item = selectedItem ?: return@setOnClickListener
-            selectedItem = updateItemBudget(item, initial = null, remaining = etInitialBudgetValue.hint.toString().toDouble())
+            selectedItem = updateItemBudget(item, initial = null, remaining = etInitialBudgetValue.hint.toString().replace(",", ".").toDouble())
             resetRemainingBudget(item)
-
         }
     }
 }
