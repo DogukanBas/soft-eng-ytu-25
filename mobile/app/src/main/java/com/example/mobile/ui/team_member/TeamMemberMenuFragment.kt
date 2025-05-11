@@ -11,6 +11,7 @@ import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
 import com.example.mobile.ui.ticket.CreateTicketFragment
 import com.example.mobile.ui.ticket.TicketViewModel
+import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
@@ -54,9 +55,19 @@ class TeamMemberMenuFragment : BaseFragment() {
                 observeUiState(
                     ticketViewModel.getCostType,
                     onSuccess = { data ->
+                        if(data.isEmpty()){
+                            getDialog(
+                                DialogType.ERROR,
+                                "No cost types found"
+                            ).show(
+                                childFragmentManager,
+                                "ErrorDialog"
+                            )
+                        }
+                        else{
                         replaceFragment(
                             CreateTicketFragment(data)
-                        )
+                        )}
                     },
                     onError = {
                         Log.e(TAG, "Error fetching team members: $it")

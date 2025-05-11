@@ -48,11 +48,23 @@ class AdminMenuFragment : BaseFragment() {
             viewModel.getDepartmentsState,
             onSuccess = { departments ->
                 Log.i(TAG, "Success: $departments")
-                replaceFragment(
-                    AddUserFragment(departments)
-                )
-                viewModel.setGetDepartmentsState(UiState.Idle)
-            },
+                if(departments.isEmpty()){
+                    getDialog(
+                        DialogType.ERROR,
+                        "No departments found"
+                    ).show(
+                        childFragmentManager,
+                        "ErrorDialog"
+                    )
+                }
+                else{
+                    replaceFragment(
+                        AddUserFragment(departments)
+                    )
+                    viewModel.setGetDepartmentsState(UiState.Idle)
+                }
+
+                    },
             onError = {
                 getDialog(
                     DialogType.ERROR,
