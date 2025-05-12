@@ -43,4 +43,11 @@ object NetworkModule {
     fun provideTicketService(): TicketService {
         return RetrofitClient.ticketService
     }
+
+    @Provides
+    @Singleton
+    fun provideNotificationService(): com.example.mobile.remote.api.NotificationService {
+        return RetrofitClient.notificationService
+    }
+
 }
