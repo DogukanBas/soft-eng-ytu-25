@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.notification.NotificationFragment
+import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.ui.ticket.CreateTicketFragment
 import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.DialogType
@@ -24,6 +26,7 @@ class TeamMemberMenuFragment : BaseFragment() {
         val TAG = "TeamMemberMenuFragment"
     }
     private val ticketViewModel: TicketViewModel by viewModels()
+    private val notificationViewModel: NotificationViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,6 +88,27 @@ class TeamMemberMenuFragment : BaseFragment() {
             replaceFragment(
                 TicketListMenuFragment()
             )
+        })
+        menuItems.add(MenuItem(
+            "Notifications") {
+            Log.i(TAG, "Notifications button clicked")
+            notificationViewModel.getUserNotification()
+                observeUiState(
+                    notificationViewModel.notificationState,
+                    onSuccess = { data ->
+                        replaceFragment(NotificationFragment(data))
+                    },
+                    onError = {
+                        Log.e(TAG, "Error fetching team members: $it")
+                        popFragment()
+                    },
+                    onLoading = {
+                        showLoading()
+                    },
+                    onIdle = {
+                        hideLoading()
+                    }
+                )
         })
 
         return NavigationListFragment(

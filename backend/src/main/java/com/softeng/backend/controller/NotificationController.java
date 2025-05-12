@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @SecurityRequirement(name = "BearerAuth")
-@RequestMapping("/api/notifications")
+@RequestMapping("/api/notification")
 public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
