@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.notification.NotificationFragment
+import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.ui.ticket.CreateTicketFragment
 import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.DialogType
@@ -24,6 +26,7 @@ class TeamMemberMenuFragment : BaseFragment() {
         val TAG = "TeamMemberMenuFragment"
     }
     private val ticketViewModel: TicketViewModel by viewModels()
+    private val notificationViewModel: NotificationViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,10 +51,9 @@ class TeamMemberMenuFragment : BaseFragment() {
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
-            "Create com.example.mobile.model.Ticket.Ticket") {
-            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button clicked")
+            "Create Ticket") {
+            Log.i(TAG, "Create Ticket button clicked")
             ticketViewModel.getCostTypes()
-
                 observeUiState(
                     ticketViewModel.getCostType,
                     onSuccess = { data ->
@@ -80,7 +82,6 @@ class TeamMemberMenuFragment : BaseFragment() {
                         hideLoading()
                     }
                 )
-
         })
         menuItems.add(MenuItem(
             "List Tickets") {
@@ -88,7 +89,27 @@ class TeamMemberMenuFragment : BaseFragment() {
                 TicketListMenuFragment()
             )
         })
-
+        menuItems.add(MenuItem(
+            "Notifications") {
+            Log.i(TAG, "Notifications button clicked")
+            notificationViewModel.getUserNotification()
+                observeUiState(
+                    notificationViewModel.notificationState,
+                    onSuccess = { data ->
+                        replaceFragment(NotificationFragment(data))
+                    },
+                    onError = {
+                        Log.e(TAG, "Error fetching team members: $it")
+                        popFragment()
+                    },
+                    onLoading = {
+                        showLoading()
+                    },
+                    onIdle = {
+                        hideLoading()
+                    }
+                )
+        })
 
         return NavigationListFragment(
             "Team-Member Menu",

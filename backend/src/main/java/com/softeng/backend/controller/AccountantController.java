@@ -1,9 +1,11 @@
 package com.softeng.backend.controller;
 
 import com.softeng.backend.dto.AccountantDTOs;
+import com.softeng.backend.model.Notification;
 import com.softeng.backend.model.User;
 import com.softeng.backend.service.BudgetByCostTypeService;
 import com.softeng.backend.service.DepartmentService;
+import com.softeng.backend.service.NotificationService;
 import com.softeng.backend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -27,12 +29,14 @@ public class AccountantController {
     private final DepartmentService departmentService;
     private final BudgetByCostTypeService budgetByCostTypeService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public AccountantController(DepartmentService departmentService, BudgetByCostTypeService budgetByCostTypeService, UserService userService) {
+    public AccountantController(DepartmentService departmentService, BudgetByCostTypeService budgetByCostTypeService, UserService userService, NotificationService notificationService) {
         this.departmentService = departmentService;
         this.budgetByCostTypeService = budgetByCostTypeService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/departments/set-initial-budget")
@@ -49,6 +53,9 @@ public class AccountantController {
                     .build();
         }
         departmentService.setDepartmentInitialBudget(deptName, initialBudget);
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Initial budget set for department: " + deptName + " with amount: " + initialBudget,
+                deptName);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -68,6 +75,9 @@ public class AccountantController {
                     .build();
         }
         departmentService.setDepartmentRemainingBudget(deptName, remainingBudget);
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Remaining budget set for department: " + deptName + " with amount: " + remainingBudget,
+                deptName);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -87,6 +97,9 @@ public class AccountantController {
                     .build();
         }
         departmentService.resetDepartmentBudget(deptName);
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Budget reset for department: " + deptName + " with amount: " + departmentService.getDepartmentByName(deptName).getInitialBudget(),
+                deptName);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -106,6 +119,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.addBudgetByCostType(costTypeName, initialBudget, maxCost);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "New cost type added: " + costTypeName + "\n",
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.AddCostTypeResponse.COST_TYPE_ADDED.getMessage())
                 .build();
@@ -125,6 +141,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setInitialBudgetByTypeName(typeName, initialBudget);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Initial budget set for cost type: " + typeName + " with amount: " + initialBudget,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -144,6 +163,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setRemainingBudgetByTypeName(typeName, remainingBudget);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Remaining budget set for cost type: " + typeName + " with amount: " + remainingBudget,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -163,6 +185,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.resetBudgetByTypeName(typeName);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Budget reset for cost type: " + typeName + " with amount: " + budgetByCostTypeService.getByTypeName(typeName).getRemainingBudget(),
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -182,6 +207,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setMaxCostByTypeName(typeName, maxCost);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Max cost set for cost type: " + typeName + " with amount: " + maxCost,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();

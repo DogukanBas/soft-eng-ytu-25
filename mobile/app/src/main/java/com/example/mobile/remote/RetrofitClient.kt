@@ -4,6 +4,7 @@ import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService
 import com.example.mobile.remote.api.DepartmentService
+import com.example.mobile.remote.api.NotificationService
 import com.example.mobile.remote.api.TicketService
 import com.example.mobile.utils.AuthInterceptor
 import okhttp3.OkHttpClient
@@ -55,6 +56,9 @@ object RetrofitClient {
     }
     val ticketService: TicketService by lazy {
         getRetrofit().create(TicketService::class.java)
+    }
+    val notificationService: NotificationService by lazy {
+        getRetrofit().create(NotificationService::class.java)
     }
 
 }

@@ -231,7 +231,7 @@ class CreateTicketFragment(private val costTypes: List<String>) : BaseFragment()
         )
 
         return InputMenuFragment330(inputList, { outputList ->
-            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button triggered")
+            Log.i(TAG, "Create Ticket button triggered")
             val costType = outputList[0].toString()
             val amount = outputList[1].toString().toDoubleOrNull()
 
@@ -254,7 +254,7 @@ class CreateTicketFragment(private val costTypes: List<String>) : BaseFragment()
             )
 
             showImageSelectionDialog()
-        }, "Create com.example.mobile.model.Ticket.Ticket")
+        }, "Create Ticket")
     }
 }
 

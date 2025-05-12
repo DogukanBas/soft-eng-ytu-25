@@ -1,4 +1,3 @@
-
 # Cost Management System – Database Schema
 
 This represents the database architecture.
@@ -66,7 +65,6 @@ Logs each status change of a ticket over time.
 ### `status` Options
 
 - `sent to manager`  
-- `approved by manager`  
 - `rejected by manager - can be fixed`  
 - `closed as rejected by manager`  
 - `approved by manager - waiting for invoice`  
@@ -92,6 +90,20 @@ attachments(ticketid, invoice)
 ```
 
 Stores uploaded invoice documents linked to tickets.
+
+## Notifications
+
+```sql
+notifications(id, type, message, targetId, createdAt)
+```
+
+Stores system notifications for users.
+
+- `id`: Unique notification identifier
+- `type`: Type of notification (`ALL`, `DEPARTMENT`, `EMPLOYEE`)
+- `message`: Notification message content
+- `targetId`: Target identifier (null for ALL, departmentId for DEPARTMENT, personalNo for EMPLOYEE)
+- `createdAt`: Creation timestamp
 
 ---
 
