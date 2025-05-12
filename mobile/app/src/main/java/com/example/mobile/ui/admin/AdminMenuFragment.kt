@@ -76,6 +76,7 @@ class AdminMenuFragment : BaseFragment() {
             }
         )
     }
+
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(

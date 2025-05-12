@@ -166,7 +166,7 @@ abstract class BaseFragment : Fragment() {
                 onSuccess = { data ->
                     Log.i(TAG, "Success: $data")
                     val ticketList = data
-                    Log.i(TAG, "com.example.mobile.model.Ticket.Ticket List: $ticketList")
+                    Log.i(TAG, "Ticket List: $ticketList")
                     System.out.print("hi")
                     val ticketListFragment = TicketListFragment(ticketList)
                     replaceFragment(ticketListFragment)
@@ -183,7 +183,6 @@ abstract class BaseFragment : Fragment() {
                     hideLoading()
                 }
             )
-
     }
 }
 
