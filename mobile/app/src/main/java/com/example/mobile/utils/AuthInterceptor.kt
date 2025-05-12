@@ -1,5 +1,5 @@
 // AuthInterceptor.kt
-package com.example.mobile.util
+package com.example.mobile.utils
 
 import com.example.mobile.model.User.User
 import okhttp3.Interceptor

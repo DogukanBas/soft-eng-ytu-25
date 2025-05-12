@@ -1,7 +1,4 @@
-package com.example.mobile.remote.dtos.auth
-
-import com.example.mobile.model.User.Employee
-import com.example.mobile.model.User.User
+package com.example.mobile.remote.dtos.Accountant
 
 data class DepartmentBudgetResponse (
     val name:String,

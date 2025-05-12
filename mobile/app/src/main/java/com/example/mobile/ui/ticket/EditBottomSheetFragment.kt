@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.adapters.FragmentBottomSheetAdapter
-import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
-import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
+import com.example.mobile.remote.dtos.Ticket.TicketWithoutInvoice
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.EditTicketRequest
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.utils.DialogType
 import com.token.uicomponents.CustomInput.CustomInputFormat
@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class EditBottomSheetFragment(
     private val costTypeList: List<String>,
-    private val ticket:TicketWithoutInvoice,
+    private val ticket: TicketWithoutInvoice,
     private val ticketId:Int
 ) : BaseFragment() {
     private val viewModel: TicketViewModel by viewModels()
@@ -115,7 +115,7 @@ class EditBottomSheetFragment(
 
 
         return InputMenuFragment330(inputList,  { outputList ->
-            Log.i(TAG, "Edit Ticket button triggered")
+            Log.i(TAG, "Edit com.example.mobile.model.Ticket.Ticket button triggered")
             val costType = outputList[0].toString()
             val amount = outputList[1].toString().toDoubleOrNull()
 
@@ -124,7 +124,7 @@ class EditBottomSheetFragment(
             viewModel.editTicket(EditTicketRequest(ticketId,costType,amount!!,description))
 
 
-        }, "Edit Ticket")
+        }, "Edit com.example.mobile.model.Ticket.Ticket")
 
 
     }

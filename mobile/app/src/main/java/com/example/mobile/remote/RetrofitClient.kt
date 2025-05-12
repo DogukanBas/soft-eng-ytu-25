@@ -1,12 +1,11 @@
 package com.example.mobile.remote
 
-import android.util.Log
 import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService
 import com.example.mobile.remote.api.DepartmentService
 import com.example.mobile.remote.api.TicketService
-import com.example.mobile.util.AuthInterceptor
+import com.example.mobile.utils.AuthInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -3,9 +3,7 @@ package com.example.mobile.ui.accountant
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponseList
+import com.example.mobile.remote.dtos.Accountant.DepartmentBudgetResponse
 import com.example.mobile.repositories.DepartmentRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

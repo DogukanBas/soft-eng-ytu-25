@@ -1,8 +1,8 @@
 package com.example.mobile.repositories
 import android.util.Log
 import com.example.mobile.remote.api.AuthService
-import com.example.mobile.remote.dtos.auth.LoginRequest
-import com.example.mobile.remote.dtos.auth.LoginResponse
+import com.example.mobile.remote.dtos.Login.LoginRequest
+import com.example.mobile.remote.dtos.Login.LoginResponse
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(

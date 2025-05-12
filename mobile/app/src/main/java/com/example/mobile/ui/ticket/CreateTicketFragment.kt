@@ -1,6 +1,6 @@
 package com.example.mobile.ui.ticket
 
-import Ticket
+import com.example.mobile.model.Ticket.Ticket
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -231,7 +231,7 @@ class CreateTicketFragment(private val costTypes: List<String>) : BaseFragment()
         )
 
         return InputMenuFragment330(inputList, { outputList ->
-            Log.i(TAG, "Create Ticket button triggered")
+            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button triggered")
             val costType = outputList[0].toString()
             val amount = outputList[1].toString().toDoubleOrNull()
 
@@ -254,7 +254,7 @@ class CreateTicketFragment(private val costTypes: List<String>) : BaseFragment()
             )
 
             showImageSelectionDialog()
-        }, "Create Ticket")
+        }, "Create com.example.mobile.model.Ticket.Ticket")
     }
 }
 

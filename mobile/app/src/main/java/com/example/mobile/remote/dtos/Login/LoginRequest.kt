@@ -1,4 +1,4 @@
-package com.example.mobile.remote.dtos.auth
+package com.example.mobile.remote.dtos.Login
 
 data class LoginRequest (
     val personalNoOrEmail:String,

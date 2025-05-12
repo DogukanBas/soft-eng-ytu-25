@@ -1,9 +1,9 @@
 package com.example.mobile.remote.api
 
-import com.example.mobile.remote.dtos.auth.AddDepartmentRequest
-import com.example.mobile.remote.dtos.auth.AddUserRequest
-import com.example.mobile.remote.dtos.auth.AddUserResponse
-import com.example.mobile.remote.dtos.auth.DepartmentsResponse
+import com.example.mobile.remote.dtos.Admin.AddDepartmentRequest
+import com.example.mobile.remote.dtos.Admin.AddUserRequest
+import com.example.mobile.remote.dtos.Admin.AddUserResponse
+import com.example.mobile.remote.dtos.DepartmentsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,9 +1,9 @@
 package com.example.mobile.utils
 
-import Ticket
+import com.example.mobile.model.Ticket.Ticket
 import com.example.mobile.model.User.Employee
-import com.example.mobile.remote.dtos.auth.AddUserRequest
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
+import com.example.mobile.remote.dtos.Admin.AddUserRequest
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.CreateTicketRequest
 
 fun Employee.toDto(): AddUserRequest {
     return AddUserRequest(

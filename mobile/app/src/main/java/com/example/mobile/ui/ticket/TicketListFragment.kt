@@ -56,8 +56,8 @@ class TicketListFragment (val tickets:List<Int>): BaseFragment() {
     private fun setMenu(): NavigationListFragment {
         val menuItemsList = mutableListOf<IListMenuItem>()
         for (ticket in tickets){
-            menuItemsList.add(MenuItem("Ticket ID: $ticket") {
-                Log.i(TAG, "Ticket ID: $ticket button clicked")
+            menuItemsList.add(MenuItem("com.example.mobile.model.Ticket.Ticket ID: $ticket") {
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket ID: $ticket button clicked")
                 viewModel.getTicketDetails(ticket)
                 viewModel.getApproveHistory(ticket)
 

@@ -48,8 +48,8 @@ class ManagerMenuFragment : BaseFragment() {
         val menuItems = mutableListOf<IListMenuItem>()
         //TODO this item is duplicating as in team_member, either create a factory, or  move observeui state  to inside createticketfragmetn with a pop fragment on error
         menuItems.add(MenuItem(
-            "Create Ticket") {
-            Log.i(TAG, "Create Ticket button clicked")
+            "Create com.example.mobile.model.Ticket.Ticket") {
+            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button clicked")
             ticketViewModel.getCostTypes()
 
             observeUiState(

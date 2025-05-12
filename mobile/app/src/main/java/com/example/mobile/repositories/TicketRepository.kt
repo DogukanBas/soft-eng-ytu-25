@@ -1,13 +1,13 @@
 package com.example.mobile.repositories
 
-import Ticket
+import com.example.mobile.model.Ticket.Ticket
 import android.util.Log
-import com.example.mobile.models.ApprovalHistoryItem
+import com.example.mobile.model.Ticket.ApprovalHistoryItem
 import com.example.mobile.remote.api.TicketService
-import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
-import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
-import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
+import com.example.mobile.remote.dtos.Ticket.TicketWithoutInvoice
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.CreateTicketResponse
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.EditTicketRequest
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.TicketActionRequest
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ class TicketRepository @Inject constructor(
         return try {
             val response = ticketService.acceptTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
-                Log.i(TAG, "Ticket $ticketId accepted successfully")
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket $ticketId accepted successfully")
                 Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error accepting ticket $ticketId: ${response.headers().get("message")}")
@@ -72,7 +72,7 @@ class TicketRepository @Inject constructor(
         return try {
             val response = ticketService.rejectTicketClose(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
-                Log.i(TAG, "Ticket $ticketId rejected and closed successfully")
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket $ticketId rejected and closed successfully")
                 Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error rejecting ticket $ticketId: ${response.headers().get("message")}")
@@ -88,7 +88,7 @@ class TicketRepository @Inject constructor(
         return try {
             val response = ticketService.rejectTicketEdit(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
-                Log.i(TAG, "Ticket $ticketId rejected and sent for edit successfully")
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket $ticketId rejected and sent for edit successfully")
                 Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error rejecting ticket $ticketId: ${response.headers().get("message")}")
@@ -104,7 +104,7 @@ class TicketRepository @Inject constructor(
         return try {
             val response = ticketService.cancelTicket(TicketActionRequest(ticketId, reason))
             if (response.isSuccessful) {
-                Log.i(TAG, "Ticket $ticketId cancelled successfully")
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket $ticketId cancelled successfully")
                 Result.success(response.body()!!.message)
             } else {
                 Log.e(TAG, "Error cancelling ticket $ticketId: ${response.headers().get("message")}")
@@ -213,7 +213,7 @@ class TicketRepository @Inject constructor(
         }
     }
 
-    suspend fun editTicket(ticket:EditTicketRequest):Result<CreateTicketResponse>{
+    suspend fun editTicket(ticket: EditTicketRequest):Result<CreateTicketResponse>{
         return try {
             val response = ticketService.editTicket(ticket)
             if (response.isSuccessful && response.body() != null) {

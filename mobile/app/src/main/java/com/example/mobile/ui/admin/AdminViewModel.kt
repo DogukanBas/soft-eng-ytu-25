@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile.model.User.Employee
-import com.example.mobile.remote.dtos.auth.AddUserResponse
+import com.example.mobile.remote.dtos.Admin.AddUserResponse
 import com.example.mobile.repositories.AdminRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

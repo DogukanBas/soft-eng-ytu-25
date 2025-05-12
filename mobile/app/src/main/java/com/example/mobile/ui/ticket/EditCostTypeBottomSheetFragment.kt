@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.adapters.FragmentBottomSheetAdapter
-import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.utils.DialogType
 import com.token.uicomponents.CustomInput.CustomInputFormat

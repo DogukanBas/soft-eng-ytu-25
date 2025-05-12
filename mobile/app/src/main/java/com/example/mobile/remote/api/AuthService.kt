@@ -1,7 +1,7 @@
 package com.example.mobile.remote.api
 
-import com.example.mobile.remote.dtos.auth.LoginRequest
-import com.example.mobile.remote.dtos.auth.LoginResponse
+import com.example.mobile.remote.dtos.Login.LoginRequest
+import com.example.mobile.remote.dtos.Login.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
