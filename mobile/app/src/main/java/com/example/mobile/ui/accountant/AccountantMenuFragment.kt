@@ -5,20 +5,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.mobile.MainActivity
+import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.manager.ListAssignedTicketsFragment
+import com.example.mobile.ui.notification.NotificationFragment
+import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AccountantMenuFragment : BaseFragment() {
+    private val notificationViewModel: NotificationViewModel by viewModels()
 
     companion object {
         val TAG = "AccountantMenuFragment"
@@ -80,6 +80,28 @@ class AccountantMenuFragment : BaseFragment() {
                 )
              }
         )
+
+        menuItems.add(MenuItem(
+            "Notifications") {
+            Log.i(TAG, "Notifications button clicked")
+            notificationViewModel.getUserNotification()
+            observeUiState(
+                notificationViewModel.notificationState,
+                onSuccess = { data ->
+                    replaceFragment(NotificationFragment(data))
+                },
+                onError = {
+                    Log.e(TAG, "Error fetching team members: $it")
+                    popFragment()
+                },
+                onLoading = {
+                    showLoading()
+                },
+                onIdle = {
+                    hideLoading()
+                }
+            )
+        })
 
         return NavigationListFragment(
             "Accountant Menu",
