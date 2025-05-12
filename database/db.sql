@@ -70,5 +70,13 @@ CREATE TABLE attachments (
     invoice oid NOT NULL
 );
 
+-- NOTIFICATIONS
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(20) CHECK (type IN ('ALL', 'DEPARTMENT', 'EMPLOYEE')) NOT NULL,
+    message TEXT NOT NULL,
+    targetId VARCHAR(20),
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 INSERT INTO users (personalNo,passwordHash,email,userType) VALUES('25200402','$2a$10$yhfUwYUG1ustinefmnVCA.vD.yCMdahFEIXe52Dj2r5yzkiYi1oGm','admin@costms.com','admin');
