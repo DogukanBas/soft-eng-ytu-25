@@ -3,8 +3,8 @@ package com.example.mobile.repositories
 import android.util.Log
 import com.example.mobile.model.User.Employee
 import com.example.mobile.remote.api.AdminService
-import com.example.mobile.remote.dtos.auth.AddDepartmentRequest
-import com.example.mobile.remote.dtos.auth.AddUserResponse
+import com.example.mobile.remote.dtos.Admin.AddDepartmentRequest
+import com.example.mobile.remote.dtos.Admin.AddUserResponse
 import com.example.mobile.utils.toDto
 import javax.inject.Inject
 

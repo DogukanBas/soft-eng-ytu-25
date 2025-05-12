@@ -1,4 +1,4 @@
-package com.example.mobile.remote.dtos.auth
+package com.example.mobile.remote.dtos.Login
 
 
 //todo add surname and name

@@ -1,11 +1,13 @@
 package com.example.mobile.repositories
 
 import android.util.Log
-import com.example.mobile.remote.RetrofitClient.costTypeService
-import com.example.mobile.remote.dtos.auth.CostTypeBudgetResponse
+import com.example.mobile.remote.api.CostTypeService
+import com.example.mobile.remote.dtos.Accountant.CostTypeBudgetResponse
 import javax.inject.Inject
 
-class CostTypeRepository @Inject constructor() {
+class CostTypeRepository @Inject constructor(
+    private val costTypeService: CostTypeService
+) {
     companion object {
         private const val TAG = "CostTypeRepository"
     }

@@ -1,15 +1,15 @@
 package com.example.mobile.remote.api
 
-import com.example.mobile.models.ApprovalHistoryItem
-import com.example.mobile.remote.dtos.auth.InvoiceResponse
-import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
-import com.example.mobile.remote.dtos.auth.createticket.TeamMemberCostTypeResponseList
-import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
-import com.example.mobile.remote.dtos.auth.listticket.TicketActionRequest
-import com.example.mobile.remote.dtos.auth.listticket.ListTicketIdResponseList
-import com.example.mobile.remote.dtos.auth.listticket.TicketActionResponse
+import com.example.mobile.model.Ticket.ApprovalHistoryItem
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.InvoiceResponse
+import com.example.mobile.remote.dtos.Ticket.TicketWithoutInvoice
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.CreateTicketRequest
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.CreateTicketResponse
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.TeamMemberCostTypeResponseList
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.EditTicketRequest
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.TicketActionRequest
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.ListTicketIdResponseList
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.TicketActionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

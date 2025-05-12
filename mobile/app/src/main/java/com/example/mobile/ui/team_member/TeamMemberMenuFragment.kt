@@ -48,8 +48,8 @@ class TeamMemberMenuFragment : BaseFragment() {
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
-            "Create Ticket") {
-            Log.i(TAG, "Create Ticket button clicked")
+            "Create com.example.mobile.model.Ticket.Ticket") {
+            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button clicked")
             ticketViewModel.getCostTypes()
 
                 observeUiState(

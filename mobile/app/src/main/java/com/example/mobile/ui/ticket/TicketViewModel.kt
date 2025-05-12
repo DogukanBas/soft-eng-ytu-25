@@ -1,14 +1,13 @@
 package com.example.mobile.ui.ticket
 
-import Ticket
+import com.example.mobile.model.Ticket.Ticket
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mobile.models.ApprovalHistoryItem
-import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketRequest
-import com.example.mobile.remote.dtos.auth.createticket.CreateTicketResponse
-import com.example.mobile.remote.dtos.auth.listticket.EditTicketRequest
+import com.example.mobile.model.Ticket.ApprovalHistoryItem
+import com.example.mobile.remote.dtos.Ticket.TicketWithoutInvoice
+import com.example.mobile.remote.dtos.Ticket.Create_Ticket.CreateTicketResponse
+import com.example.mobile.remote.dtos.Ticket.List_Ticket.EditTicketRequest
 import com.example.mobile.repositories.TicketRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -270,7 +269,7 @@ class TicketViewModel @Inject constructor(
         }
     }
 
-    fun editTicket(ticket:EditTicketRequest){
+    fun editTicket(ticket: EditTicketRequest){
         viewModelScope.launch {
             _createTicket.value = UiState.Loading
             try {

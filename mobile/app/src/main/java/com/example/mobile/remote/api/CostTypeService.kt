@@ -1,12 +1,7 @@
 package com.example.mobile.remote.api
 
-import com.example.mobile.remote.dtos.auth.CostTypeBudgetResponseList
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponseList
-import com.example.mobile.remote.dtos.auth.LoginRequest
-import com.example.mobile.remote.dtos.auth.LoginResponse
+import com.example.mobile.remote.dtos.Accountant.CostTypeBudgetResponseList
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query

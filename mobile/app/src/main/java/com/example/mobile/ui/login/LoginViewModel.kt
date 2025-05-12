@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
-import com.example.mobile.remote.dtos.auth.LoginResponse
+import com.example.mobile.remote.dtos.Login.LoginResponse
 import com.example.mobile.repositories.AuthRepository
 import com.example.mobile.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

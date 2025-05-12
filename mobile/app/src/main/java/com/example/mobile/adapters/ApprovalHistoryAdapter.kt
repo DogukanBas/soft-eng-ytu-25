@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
-import com.example.mobile.models.ApprovalHistoryItem
+import com.example.mobile.model.Ticket.ApprovalHistoryItem
 import java.time.format.DateTimeFormatter
 
 class ApprovalHistoryAdapter(

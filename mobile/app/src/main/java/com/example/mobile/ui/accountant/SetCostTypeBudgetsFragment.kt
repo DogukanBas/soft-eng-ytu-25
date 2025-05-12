@@ -3,12 +3,10 @@ package com.example.mobile.ui.accountant
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
-import com.example.mobile.remote.dtos.auth.CostTypeBudgetResponse
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
+import com.example.mobile.remote.dtos.Accountant.CostTypeBudgetResponse
 import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
 

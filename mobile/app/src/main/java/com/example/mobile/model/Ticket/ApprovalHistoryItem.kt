@@ -1,6 +1,4 @@
-package com.example.mobile.models
-
-import java.time.LocalDate
+package com.example.mobile.model.Ticket
 
 /**
  * Data class representing an entry in the approval history timeline of a ticket

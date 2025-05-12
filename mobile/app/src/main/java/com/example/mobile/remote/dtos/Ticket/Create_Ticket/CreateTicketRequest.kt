@@ -1,4 +1,4 @@
-package com.example.mobile.remote.dtos.auth.createticket
+package com.example.mobile.remote.dtos.Ticket.Create_Ticket
 
 data class CreateTicketRequest (
     val costType : String,

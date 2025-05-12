@@ -15,8 +15,8 @@ import com.example.mobile.adapters.ApprovalHistoryAdapter
 import com.example.mobile.adapters.FragmentBottomSheetAdapter
 import com.example.mobile.model.User.User
 import com.example.mobile.model.User.UserType
-import com.example.mobile.models.ApprovalHistoryItem
-import com.example.mobile.remote.dtos.auth.TicketWithoutInvoice
+import com.example.mobile.model.Ticket.ApprovalHistoryItem
+import com.example.mobile.remote.dtos.Ticket.TicketWithoutInvoice
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.utils.DialogType
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,7 +82,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
             viewModel.ticketState,
             onSuccess = { message ->
 
-                Log.i(TAG, "Ticket Success $message")
+                Log.i(TAG, "com.example.mobile.model.Ticket.Ticket Success $message")
                 getDialog(DialogType.SUCCESS, message).show(
                     requireActivity().supportFragmentManager, "SuccessDialog"
                 )
@@ -90,7 +90,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
                 popFragment()
             },
             onError = { message ->
-                Log.e(TAG, "Ticket Error: $message")
+                Log.e(TAG, "com.example.mobile.model.Ticket.Ticket Error: $message")
                 getDialog(DialogType.ERROR, message).show(
                     requireActivity().supportFragmentManager, "ErrorDialog"
                 )
@@ -99,7 +99,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     }
 
     private fun initViews(view: View) {
-        // Ticket info views
+        // com.example.mobile.model.Ticket.Ticket info views
         ticketCostType = view.findViewById(R.id.ticket_cost_type)
         ticketAmount = view.findViewById(R.id.ticket_amount)
         ticketEmployeeId = view.findViewById(R.id.ticket_employee_id)
@@ -211,7 +211,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
 
     private fun showRejectBottomSheet() {
         val bottomSheet = BottomSheetFragment(
-            "Reject Ticket",
+            "Reject com.example.mobile.model.Ticket.Ticket",
             "Enter Your Reason To Reject",
             "Reject And Close",
             "Reject And Send For Edit",
@@ -228,7 +228,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     }
     private fun showAcceptBottomSheet(){
         val bottomSheet = BottomSheetFragment(
-            "Approve Ticket",
+            "Approve com.example.mobile.model.Ticket.Ticket",
             "Enter Description for Approval",
             "Approve And Close",
             onFirstAction = { reason ->
@@ -240,11 +240,11 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
     }
     private fun showCancelBottomSheet() {
         val bottomSheet = BottomSheetFragment(
-            "Cancel Ticket",
+            "Cancel com.example.mobile.model.Ticket.Ticket",
             "Enter Your Reason To Cancel",
-            "Cancel Ticket",
+            "Cancel com.example.mobile.model.Ticket.Ticket",
             onFirstAction = { reason ->
-                Log.i(TAG, "Closing With Ticket $reason")
+                Log.i(TAG, "Closing With com.example.mobile.model.Ticket.Ticket $reason")
                 viewModel.cancelTicket(ticketId, reason)
             }
         )

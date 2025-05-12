@@ -1,12 +1,7 @@
 package com.example.mobile.repositories
 import android.util.Log
-import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.DepartmentService
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponse
-import com.example.mobile.remote.dtos.auth.DepartmentBudgetResponseList
-import com.example.mobile.remote.dtos.auth.DepartmentsResponse
-import com.example.mobile.remote.dtos.auth.LoginRequest
-import com.example.mobile.remote.dtos.auth.LoginResponse
+import com.example.mobile.remote.dtos.Accountant.DepartmentBudgetResponse
 import javax.inject.Inject
 
 
