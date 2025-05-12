@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- com.example.mobile.model.Ticket.Ticket information card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/ticket_info_card"
         android:layout_width="match_parent"

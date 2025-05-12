@@ -48,10 +48,9 @@ class TeamMemberMenuFragment : BaseFragment() {
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
         menuItems.add(MenuItem(
-            "Create com.example.mobile.model.Ticket.Ticket") {
-            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button clicked")
+            "Create Ticket") {
+            Log.i(TAG, "Create Ticket button clicked")
             ticketViewModel.getCostTypes()
-
                 observeUiState(
                     ticketViewModel.getCostType,
                     onSuccess = { data ->
@@ -80,7 +79,6 @@ class TeamMemberMenuFragment : BaseFragment() {
                         hideLoading()
                     }
                 )
-
         })
         menuItems.add(MenuItem(
             "List Tickets") {
@@ -88,7 +86,6 @@ class TeamMemberMenuFragment : BaseFragment() {
                 TicketListMenuFragment()
             )
         })
-
 
         return NavigationListFragment(
             "Team-Member Menu",
