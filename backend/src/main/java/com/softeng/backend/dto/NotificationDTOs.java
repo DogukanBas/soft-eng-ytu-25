@@ -1,7 +1,7 @@
 package com.softeng.backend.dto;
 
 import com.softeng.backend.model.Notification;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class NotificationDTOs {
     public static class CreateNotificationRequest {
@@ -21,13 +21,13 @@ public class NotificationDTOs {
         private Integer id;
         private String type;
         private String message;
-        private LocalDateTime createdAt;
+        private LocalDate createdAt;
 
         public NotificationResponse(Notification notification) {
             this.id = notification.getId();
             this.type = notification.getType().name();
             this.message = notification.getMessage();
-            this.createdAt = notification.getCreatedAt();
+            this.createdAt = notification.getCreatedAt().toLocalDate();
         }
 
         public Integer getId() { return id; }
@@ -36,8 +36,8 @@ public class NotificationDTOs {
         public void setType(String type) { this.type = type; }
         public String getMessage() { return message; }
         public void setMessage(String message) { this.message = message; }
-        public LocalDateTime getCreatedAt() { return createdAt; }
-        public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+        public LocalDate getCreatedAt() { return createdAt; }
+        public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt; }
     }
 
     public enum NotificationResponseStatus {
