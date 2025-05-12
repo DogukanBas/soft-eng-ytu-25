@@ -3,9 +3,11 @@ package com.softeng.backend.controller;
 import com.softeng.backend.dto.AdminDTOs;
 import com.softeng.backend.model.Department;
 import com.softeng.backend.model.Employee;
+import com.softeng.backend.model.Notification;
 import com.softeng.backend.model.User;
 import com.softeng.backend.service.DepartmentService;
 import com.softeng.backend.service.EmployeeService;
+import com.softeng.backend.service.NotificationService;
 import com.softeng.backend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
@@ -28,12 +30,14 @@ public class AdminController {
     private final UserService userService;
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public AdminController(UserService userService, EmployeeService employeeService, DepartmentService departmentService) {
+    public AdminController(UserService userService, EmployeeService employeeService, DepartmentService departmentService, NotificationService notificationService) {
         this.userService = userService;
         this.employeeService = employeeService;
         this.departmentService = departmentService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -77,6 +81,10 @@ public class AdminController {
                         employee.getPersonalNo());
             }
 
+            notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                    "New employee added to department! Welcome to the team " + employee.getName() + " " + employee.getSurname(),
+                    employee.getDepartment().getDeptId().toString());
+
             logger.info("Employee added successfully: {}", employee);
 
         } catch (Exception e) {
@@ -108,6 +116,13 @@ public class AdminController {
 
         try {
             departmentService.addDepartment(new Department(request.getDeptName()));
+
+            notificationService.createNotification(Notification.NotificationType.ACCOUNTANT,
+                    "New department added: " + request.getDeptName() + "\n" +
+                            "Please set budgets for the new department",
+                    null);
+
+
             logger.info("Department added successfully: {}", request.getDeptName());
         } catch (Exception e) {
             logger.error("Error while adding department: {}", e.getMessage());

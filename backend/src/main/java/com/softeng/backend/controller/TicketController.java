@@ -28,13 +28,15 @@ public class TicketController {
     private final DepartmentService departmentService;
     private final EmployeeService employeeService;
     private final UserService userService;
+    private final NotificationService notificationService;
     @Autowired
-    public TicketController(TicketService ticketService, BudgetByCostTypeService budgetByCostTypeService, DepartmentService departmentService, EmployeeService employeeService, UserService userService) {
+    public TicketController(TicketService ticketService, BudgetByCostTypeService budgetByCostTypeService, DepartmentService departmentService, EmployeeService employeeService, UserService userService, NotificationService notificationService) {
         this.ticketService = ticketService;
         this.budgetByCostTypeService = budgetByCostTypeService;
         this.departmentService = departmentService;
         this.employeeService = employeeService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -67,6 +69,17 @@ public class TicketController {
                 attachment.setTicket(ticket);
                 attachment.setInvoice(request.getInvoice());
                 ticketService.addAttachment(attachment);
+            }
+
+            if (currentUser.getUserType() == User.UserType.team_member) {
+                notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                        "New ticket created by " + personalNo,
+                        department.getDeptManager().getPersonalNo());
+            } else {
+                notificationService.createNotification(Notification.NotificationType.ACCOUNTANT,
+                        "New ticket created by " + personalNo,
+                        null);
+
             }
 
             return updateResult;
@@ -106,7 +119,6 @@ public class TicketController {
     @Transactional
     public ResponseEntity<?> editCostType(@RequestParam int ticketId, @RequestParam String costType, Authentication authentication) {
         logger.debug("Editing cost type: {}", ticketId);
-        String personalNo = authentication.getName();
         ApproveHistory lastApproveHistory = ticketService.getLastApproveHistoryByTicketId(ticketId);
         if (isAccountant(authentication)) {
             boolean isEditable = ApproveHistory.Status.getAccountantEditableStatus().contains(lastApproveHistory.getStatus());
@@ -296,6 +308,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
                     );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket approved by manager: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket approved and sent to accountant"));
 
@@ -312,6 +328,18 @@ public class TicketController {
 
                 BudgetByCostType budgetByCostType = budgetByCostTypeService.getByTypeName(ticket.getCostType());
                 budgetByCostType.setRemainingBudget(budgetByCostType.getRemainingBudget().subtract(validationResult.getMinCost()));
+
+                if (budgetByCostType.getRemainingBudget().compareTo(BigDecimal.ZERO) <= 0) {
+                    notificationService.createNotification(Notification.NotificationType.ALL,
+                            "No remaining budget for cost type: " + ticket.getCostType(),
+                            null);
+                }
+
+                if (department.getRemainingBudget().compareTo(BigDecimal.ZERO) <= 0) {
+                    notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                            "No remaining budget for department: " + department.getDeptname(),
+                            department.getDeptId().toString());
+                }
             }
 
             ApproveHistory approveHistory = new ApproveHistory(lastApproveHistory.getTicket(),
@@ -321,6 +349,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket approved by accountant: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket approved and closed\n" +
                             "Afforded Amount: " + validationResult.getMinCost()));
@@ -349,6 +381,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket rejected and returned to fix by manager: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket rejected and returned to employee"));
         }
@@ -360,6 +396,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket rejected and returned to fix by accountant: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket rejected and returned to employee"));
         }
@@ -387,6 +427,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket rejected and closed by manager: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket rejected and closed"));
         }
@@ -398,6 +442,10 @@ public class TicketController {
                     userService.getUserByPersonalNo(authentication.getName())
             );
             ticketService.addApproveHistory(approveHistory);
+            notificationService.createNotification(Notification.NotificationType.EMPLOYEE,
+                    "Ticket rejected and closed by accountant: " + employeeService.getEmployeeByPersonalNo(personalNo).getName() + " " +
+                            employeeService.getEmployeeByPersonalNo(personalNo).getSurname(),
+                    lastApproveHistory.getTicket().getEmployeeId());
             return ResponseEntity.ok()
                     .body(Map.of("message", "Ticket rejected and closed"));
         }
