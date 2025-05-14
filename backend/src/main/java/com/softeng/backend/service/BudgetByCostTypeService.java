@@ -15,5 +15,5 @@ public interface BudgetByCostTypeService {
     void setRemainingBudgetByTypeName(String typeName, Double remainingBudget);
     void setMaxCostByTypeName(String typeName, Double maxCost);
     void resetBudgetByTypeName(String typeName);
-
+    BudgetByCostType getById(Integer id);
 }

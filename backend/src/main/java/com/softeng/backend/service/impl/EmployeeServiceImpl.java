@@ -40,4 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
+
+    @Override
+    public boolean existsByPersonalNo(String personalNo) {
+        return employeeRepository.findByPersonalNo(personalNo).isPresent();
+    }
 }
