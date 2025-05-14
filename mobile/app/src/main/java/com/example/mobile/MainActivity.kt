@@ -1,5 +1,6 @@
 package com.example.mobile
 
+import GenerateReportFragment
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
@@ -39,15 +40,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showIpDialog() {
-        val dialog = IpDialogFragment()
-        dialog.setOnIpSelectedListener { ip ->
-            prefsUtil.saveIpAddress(ip)
+        //val dialog = IpDialogFragment()
+       // dialog.setOnIpSelectedListener { ip ->
+            //prefsUtil.saveIpAddress(ip)
             supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_container, LoginFragment())
+                replace(R.id.fragment_container, GenerateReportFragment(
+                    listOf("2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05"),
+                    listOf(10.5f, 20.0f, 15.0f, 25.0f, 30.0f)
+                ))
                 commit()
             }
-        }
-        dialog.show(supportFragmentManager, "IpDialog")
+        //}
+        //dialog.show(supportFragmentManager, "IpDialog")
     }
 
     private fun hideSystemUI() {

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
+import com.example.mobile.ui.accountant.Report.GenerateDepartmentReportsFragment
 import com.example.mobile.ui.manager.ListAssignedTicketsFragment
 import com.example.mobile.ui.notification.NotificationFragment
 import com.example.mobile.ui.notification.NotificationViewModel
@@ -79,6 +80,17 @@ class AccountantMenuFragment : BaseFragment() {
                     )
                 )
              }
+        )
+        menuItems.add(MenuItem(
+            "Generate Reports") {
+            val newMenuItems = mutableListOf<IListMenuItem>()
+            newMenuItems.add(MenuItem(
+                "Generate Department Reports") {
+                replaceFragment(
+                    GenerateDepartmentReportsFragment()
+                )
+            })
+        }
         )
 
         menuItems.add(MenuItem(
