@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.notification.NotificationFragment
+import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.ui.ticket.CreateTicketFragment
 import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.MenuItem
@@ -18,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ManagerMenuFragment : BaseFragment() {
+
+    private val notificationViewModel: NotificationViewModel by viewModels()
 
     companion object {
         val TAG = "TeamMemberMenuFragment"
@@ -82,6 +86,27 @@ class ManagerMenuFragment : BaseFragment() {
             Log.i(TAG, "List Team Tickets button clicked")
             replaceFragment(
                 ListAssignedTicketsFragment()
+            )
+        })
+        menuItems.add(MenuItem(
+            "Notifications") {
+            Log.i(TAG, "Notifications button clicked")
+            notificationViewModel.getUserNotification()
+            observeUiState(
+                notificationViewModel.notificationState,
+                onSuccess = { data ->
+                    replaceFragment(NotificationFragment(data))
+                },
+                onError = {
+                    Log.e(TAG, "Error fetching team members: $it")
+                    popFragment()
+                },
+                onLoading = {
+                    showLoading()
+                },
+                onIdle = {
+                    hideLoading()
+                }
             )
         })
 
