@@ -27,7 +27,7 @@ class ReportRepository @Inject constructor(
         return try {
             val response = notificationService.getReport(type,id)
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!.reports)
+                Result.success(response.body()!!.stats)
             } else {
                 Result.failure(Exception("Getting Report Failed: ${response.headers().get("message")}"))
             }
