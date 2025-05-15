@@ -54,10 +54,11 @@ public class AccountantController {
                     .header("message", AccountantDTOs.SetBudgetResponse.INVALID_AUTHENTICATION.getMessage())
                     .build();
         }
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
         departmentService.setDepartmentInitialBudget(deptName, initialBudget);
         notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
                 "Initial budget set for department: " + deptName + " with amount: " + initialBudget,
-                deptName);
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -77,9 +78,10 @@ public class AccountantController {
                     .build();
         }
         departmentService.setDepartmentRemainingBudget(deptName, remainingBudget);
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
         notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
                 "Remaining budget set for department: " + deptName + " with amount: " + remainingBudget,
-                deptName);
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -99,9 +101,10 @@ public class AccountantController {
                     .build();
         }
         departmentService.resetDepartmentBudget(deptName);
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
         notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
                 "Budget reset for department: " + deptName + " with amount: " + departmentService.getDepartmentByName(deptName).getInitialBudget(),
-                deptName);
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
