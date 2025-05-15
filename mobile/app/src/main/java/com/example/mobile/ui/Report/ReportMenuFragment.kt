@@ -40,14 +40,21 @@ class ReportMenuFragment: BaseFragment() {
           viewModel.getEntity,
           onSuccess = {data ->
               Log.i("ON success for get entitiy list", data.toString())
-                replaceFragment(
+              viewModel.resetEntitityListUiState()
+
+              replaceFragment(
                     ListEntitiesFragment(
                         type,
                         data,
-                        type+"Entities",
+                        type+" Entities",
                     )
                 )
-          }
+          },
+            onError = {error ->
+                Log.i("ON error for get entitiy list", error.toString())
+                viewModel.resetEntitityListUiState()
+                showError(error)
+            },
       )
     }
 

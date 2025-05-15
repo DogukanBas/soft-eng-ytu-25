@@ -20,6 +20,13 @@ class ReportViewModel @Inject constructor(
 
     private val _getReportUiState = MutableStateFlow<UiState<List<ReportResponse>>>(UiState.Idle)
     val getReportUiState: StateFlow<UiState<List<ReportResponse>>> = _getReportUiState
+
+    fun resetEntitityListUiState() {
+        _getEntityListUiState.value = UiState.Idle
+    }
+    fun resetReportUiState() {
+        _getReportUiState.value = UiState.Idle
+    }
     fun getEntities(type: String) {
         viewModelScope.launch{
             _getEntityListUiState.value = UiState.Loading

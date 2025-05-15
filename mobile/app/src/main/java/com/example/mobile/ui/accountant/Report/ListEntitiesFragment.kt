@@ -2,6 +2,7 @@ package com.example.mobile.ui.accountant.Report
 
 import GenerateReportFragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,10 +34,38 @@ class ListEntitiesFragment(
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setStateObservers()
         val menuFragment = setMenu()
         childFragmentManager.beginTransaction()
             .replace(R.id.input_menu_container, menuFragment)
             .commit()
+    }
+    private fun setStateObservers(){
+
+        observeUiState(
+            viewModel.getReportUiState,
+            onSuccess = {data ->
+                Log.i("ON success for get report", data.toString())
+                val xValues :List<String > = data.map { it.date }
+                val yValues :List<Float > = data.map { it.amount }
+                viewModel.resetReportUiState()
+
+                replaceFragment(
+                    GenerateReportFragment(
+                        xValues,
+                        yValues
+
+                    )
+                )
+
+            },
+            onError = {
+                Log.i("ON error for get report", it)
+                viewModel.resetReportUiState()
+
+                showError(it)
+            }
+        )
     }
     private fun setMenu(): NavigationListFragment {
         val menuItems = mutableListOf<IListMenuItem>()
