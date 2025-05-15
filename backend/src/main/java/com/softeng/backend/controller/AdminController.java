@@ -64,6 +64,13 @@ public class AdminController {
         }
 
         try {
+            if (request.getUserType() == User.UserType.manager) {
+                if (departmentService.getDepartmentByName(request.getDeptName()).getDeptManager() != null) {
+                    return ResponseEntity.status(409)
+                            .header("message", AdminDTOs.AddEmployeeResponse.THERE_IS_ALREADY_MANAGER.getMessage())
+                            .build();
+                }
+            }
             User user = new User(request.getPersonalNo(),
                     request.getEmail(),
                     request.getUserType());

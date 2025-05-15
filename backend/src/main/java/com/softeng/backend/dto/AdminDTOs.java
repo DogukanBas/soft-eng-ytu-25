@@ -32,7 +32,8 @@ public class AdminDTOs {
     public enum AddEmployeeResponse {
         EMPLOYEE_ADDED("Employee added successfully"),
         EMPLOYEE_ALREADY_EXISTS("Employee already exists"),
-        INVALID_AUTHENTICATION("Invalid authentication");
+        INVALID_AUTHENTICATION("Invalid authentication"),
+        THERE_IS_ALREADY_MANAGER("There is already a manager in this department");
 
         private final String message;
 
