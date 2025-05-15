@@ -10,10 +10,8 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.remote.dtos.Report.EntityResponse
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.ui.Report.ReportViewModel
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
-import com.token.uicomponents.components330.input_menu_fragment.InputMenuFragment330
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment
 import dagger.hilt.android.AndroidEntryPoint
 

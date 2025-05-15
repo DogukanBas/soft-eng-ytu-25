@@ -1,4 +1,4 @@
-package com.example.mobile.ui.Report
+package com.example.mobile.ui.accountant.Report
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
-import com.example.mobile.ui.accountant.Report.ListEntitiesFragment
 import com.example.mobile.utils.MenuItem
 import com.token.uicomponents.ListMenuFragment.IListMenuItem
 import com.token.uicomponents.components330.navigation_list_fragment.NavigationListFragment

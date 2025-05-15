@@ -1,4 +1,4 @@
-package com.example.mobile.ui.Report
+package com.example.mobile.ui.accountant.Report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
