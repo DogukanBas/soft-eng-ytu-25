@@ -50,7 +50,7 @@ public interface ApproveHistoryRepository extends JpaRepository<ApproveHistory, 
             "CAST(ah.date AS string), " +
             "SUM(CAST(ah.ticket.amount AS double))) " +
             "FROM ApproveHistory ah " +
-            "JOIN BudgetByCostType bct ON ah.ticket.costType = bct.typename " +
+            "JOIN BudgetByCostType bct ON ah.ticket.costType = bct.typeName " +
             "WHERE bct.id = :costTypeId " +
             "AND ah.status = com.softeng.backend.model.ApproveHistory.Status.CLOSED_AS_APPROVED " +
             "GROUP BY ah.date")
