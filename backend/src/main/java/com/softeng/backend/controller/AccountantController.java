@@ -337,12 +337,21 @@ public class AccountantController {
                 break;
                 
             case "costtype":
-                if (!budgetByCostTypeService.existsByTypeName(id)) {
-                    return ResponseEntity.status(404)
-                            .header("message", "Cost type not found")
+                Integer costTypeId;
+                try {
+                    costTypeId = Integer.parseInt(id);
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(400)
+                            .header("message", "Invalid cost type ID format")
                             .build();
                 }
-                stats = approveHistoryService.getApprovedExpensesByCostType(id);
+
+                if (!budgetByCostTypeService.existsById(costTypeId)) {
+                    return ResponseEntity.status(404)
+                            .header("message", "Cost type not found, $id"+ id )
+                            .build();
+                }
+                stats = approveHistoryService.getApprovedExpensesByCostType(costTypeId);
                 break;
                 
             default:

@@ -28,7 +28,7 @@ public class ApproveHistoryServiceImpl implements ApproveHistoryService {
     }
 
     @Override
-    public List<AccountantDTOs.StatEntry> getApprovedExpensesByCostType(String costType) {
-        return approveHistoryRepository.findApprovedByCostType(costType);
+    public List<AccountantDTOs.StatEntry> getApprovedExpensesByCostType(Integer id) {
+        return approveHistoryRepository.findApprovedById(id);
     }
 }

@@ -45,6 +45,12 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     public boolean existsByTypeName(String typeName) {
         return budgetByCostTypeRepository.existsByTypeName(typeName);
     }
+    @Override
+    public boolean existsById(Integer id){
+        return budgetByCostTypeRepository.existsById(id);
+
+
+    }
 
     @Override
     @Transactional

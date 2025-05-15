@@ -16,6 +16,7 @@ public interface BudgetByCostTypeRepository  extends JpaRepository<BudgetByCostT
     Optional<BudgetByCostType> findByTypeName(String typeName);
 
     boolean existsByTypeName(String typeName);
+    boolean existsById(Integer id);
 
     @Query("SELECT b.typeName FROM BudgetByCostType b")
     List<String> findAllTypeNames();

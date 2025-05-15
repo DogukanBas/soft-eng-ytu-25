@@ -44,4 +44,16 @@ public interface ApproveHistoryRepository extends JpaRepository<ApproveHistory, 
            "AND ah.status = com.softeng.backend.model.ApproveHistory.Status.CLOSED_AS_APPROVED " +
            "GROUP BY ah.date")
     List<AccountantDTOs.StatEntry> findApprovedByCostType(@Param("costType") String costType);
+
+
+    @Query("SELECT NEW com.softeng.backend.dto.AccountantDTOs$StatEntry(" +
+            "CAST(ah.date AS string), " +
+            "SUM(CAST(ah.ticket.amount AS double))) " +
+            "FROM ApproveHistory ah " +
+            "JOIN BudgetByCostType bct ON ah.ticket.costType = bct.typename " +
+            "WHERE bct.id = :costTypeId " +
+            "AND ah.status = com.softeng.backend.model.ApproveHistory.Status.CLOSED_AS_APPROVED " +
+            "GROUP BY ah.date")
+    List<AccountantDTOs.StatEntry> findApprovedById(@Param("id") Integer id);
+
 }
