@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,7 +20,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/select_start_date"
-            android:textSize="16sp"
+            android:textSize="12sp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:cornerRadius="28dp"
             android:textAllCaps="false"
@@ -36,7 +37,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/select_end_date"
-            android:textSize="16sp"
+            android:textSize="12sp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:cornerRadius="28dp"
             android:textAllCaps="false"
@@ -46,23 +47,25 @@
             android:textColor="@color/button_secondary"
             app:rippleColor="@color/button_secondary"
             android:layout_marginStart="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/updateButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/update_chart"
+            android:textSize="12sp"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="28dp"
+            android:textAllCaps="false"
+            android:letterSpacing="0.01"
+            app:backgroundTint="@color/button_primary"
+            app:rippleColor="@color/button_primary_dark"
+            android:textColor="@color/button_text_color"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/updateButton"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/update_chart"
-        android:textSize="16sp"
-        style="@style/Widget.MaterialComponents.Button"
-        app:cornerRadius="28dp"
-        android:textAllCaps="false"
-        android:letterSpacing="0.01"
-        app:backgroundTint="@color/button_primary"
-        app:rippleColor="@color/button_primary_dark"
-        android:textColor="@color/button_text_color"
-        android:elevation="4dp"
-        android:layout_marginBottom="12dp"/>
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
