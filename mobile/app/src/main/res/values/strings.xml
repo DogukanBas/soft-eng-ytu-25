@@ -37,4 +37,11 @@
     <string name="reset_to_initial_button">Reset Remaining to Initial</string>
     <string name="add_button">Add</string>
     <string name="max_budget_label"> Max Budget</string>
+    <string name="hint">0.00</string>
+    <string name="add_cost_type">+</string>
+
+    <!-- Date Picker Strings -->
+    <string name="select_start_date">Select Start Date</string>
+    <string name="select_end_date">Select End Date</string>
+    <string name="update_chart">Update Chart</string>
 </resources>

@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/set_budget_title"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.01"
+        android:layout_marginBottom="24dp"/>
 
-    <!-- Item Spinner with Add Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tv_item_label"
@@ -27,132 +30,204 @@
             android:layout_height="wrap_content"
             android:text="@string/item_label"
             android:textSize="16sp"
-            android:layout_gravity="center_vertical"/>
+            android:fontFamily="sans-serif-medium"/>
 
         <Spinner
             android:id="@+id/spinner_item"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="16dp"
+            android:background="@drawable/bottom_sheet_background"/>
 
         <Button
             android:id="@+id/btn_add_item"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="+"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="@string/add_cost_type"
             android:textSize="18sp"
-            android:layout_marginStart="8dp"
-            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="@color/button_secondary"
+            app:strokeWidth="2dp"
+            android:textColor="@color/button_secondary"
             android:visibility="gone"/>
     </LinearLayout>
 
-    <!-- Initial Budget -->
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxStrokeWidth="2dp">
 
-        <TextView
-            android:id="@+id/tv_initial_budget_label"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/initial_budget_label"
-            android:textSize="16sp"
-            android:layout_gravity="center_vertical"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <EditText
-            android:id="@+id/et_initial_budget_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="numberDecimal"
-            android:hint="$0.00"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"/>
+            <TextView
+                android:id="@+id/tv_initial_budget_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/initial_budget_label"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"/>
 
-        <Button
-            android:id="@+id/btn_set_initial_budget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/set_button"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+            <EditText
+                android:id="@+id/et_initial_budget_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+                android:hint="@string/hint"
+                android:layout_marginStart="16dp"
+                android:padding="16dp"
+                android:background="@null"/>
 
-    <!-- Remaining Budget -->
-    <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_set_initial_budget"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/set_button"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="24dp"
+                android:layout_marginStart="16dp"
+                app:backgroundTint="@color/button_primary"
+                app:rippleColor="@color/button_primary_dark"
+                android:textColor="@color/button_text_color"
+                android:elevation="4dp"
+                android:textAllCaps="false"
+                android:letterSpacing="0.01"/>
+        </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxStrokeWidth="2dp">
 
-        <TextView
-            android:id="@+id/tv_remaining_budget_label"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/remaining_budget_label"
-            android:textSize="16sp"
-            android:layout_gravity="center_vertical"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <EditText
-            android:id="@+id/et_remaining_budget_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="numberDecimal"
-            android:hint="$0.00"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"/>
+            <TextView
+                android:id="@+id/tv_remaining_budget_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/remaining_budget_label"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"/>
 
-        <Button
-            android:id="@+id/btn_set_remaining_budget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/set_button"
-            android:layout_gravity="center_vertical"/>
+            <EditText
+                android:id="@+id/et_remaining_budget_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+                android:hint="@string/hint"
+                android:layout_marginStart="16dp"
+                android:padding="16dp"
+                android:background="@null"/>
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_set_remaining_budget"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/set_button"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="24dp"
+                android:layout_marginStart="16dp"
+                app:backgroundTint="@color/button_primary"
+                app:rippleColor="@color/button_primary_dark"
+                android:textColor="@color/button_text_color"
+                android:elevation="4dp"
+                android:textAllCaps="false"
+                android:letterSpacing="0.01"/>
+        </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="32dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxStrokeWidth="2dp">
 
-        <TextView
-            android:id="@+id/tv_max_budget_label"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/max_budget_label"
-            android:visibility="gone"
-            android:textSize="16sp"
-            android:layout_gravity="center_vertical"/>
-        <EditText
-            android:id="@+id/et_max_budget_value"
-            android:layout_width="0dp"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="numberDecimal"
-            android:hint="$0.00"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/btn_set_max_budget_value"
-            android:visibility="gone"
-            
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/set_button"
-            android:layout_gravity="center_vertical"/>
+            <TextView
+                android:id="@+id/tv_max_budget_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/max_budget_label"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"/>
 
-    </LinearLayout>
-    <!-- Reset Button -->
-    <Button
+            <EditText
+                android:id="@+id/et_max_budget_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:inputType="numberDecimal"
+                android:hint="$0.00"
+                android:layout_marginStart="16dp"
+                android:padding="16dp"
+                android:background="@null"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_set_max_budget_value"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:visibility="gone"
+                android:text="@string/set_button"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="24dp"
+                android:layout_marginStart="16dp"
+                app:backgroundTint="@color/button_primary"
+                app:rippleColor="@color/button_primary_dark"
+                android:textColor="@color/button_text_color"
+                android:elevation="4dp"
+                android:textAllCaps="false"
+                android:letterSpacing="0.01"/>
+        </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_reset_to_initial"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/reset_to_initial_button"/>
+        android:layout_height="56dp"
+        android:text="@string/reset_to_initial_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="28dp"
+        android:textAllCaps="false"
+        android:letterSpacing="0.01"
+        android:textSize="16sp"
+        app:strokeColor="@color/button_secondary"
+        app:strokeWidth="2dp"
+        android:textColor="@color/button_secondary"
+        app:rippleColor="@color/button_secondary_dark"/>
 </LinearLayout>
