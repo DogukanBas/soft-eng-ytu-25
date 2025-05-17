@@ -42,10 +42,10 @@ class ReportMenuFragment: BaseFragment() {
               viewModel.resetEntitityListUiState()
 
               replaceFragment(
-                    ListEntitiesFragment(
+                    ListEntitiesFragment.newInstance(
                         type,
-                        data,
-                        type+" Entities",
+                        ArrayList(data),
+                        type+" Entities"
                     )
                 )
           },

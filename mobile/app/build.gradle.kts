@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.dagger.hilt.android") // ✅ Apply without version here
     id("kotlin-kapt") // ✅ Needed for annotation processing
+    id("kotlin-parcelize") // ✅ Needed for @Parcelize
 }
 
 android {

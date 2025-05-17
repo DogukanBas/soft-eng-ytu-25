@@ -16,13 +16,37 @@ import com.token.uicomponents.components330.navigation_list_fragment.NavigationL
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ListEntitiesFragment(
-    private val type:String,
-    private val data:List<EntityResponse>,
-    private val title:String
-
-): BaseFragment() {
+class ListEntitiesFragment : BaseFragment() {
     private val viewModel : ReportViewModel by viewModels()
+
+    private var type: String = ""
+    private var data: List<EntityResponse> = listOf()
+    private var title: String = ""
+
+    companion object {
+        private const val ARG_TYPE = "type"
+        private const val ARG_DATA = "data"
+        private const val ARG_TITLE = "title"
+
+        fun newInstance(type: String, data: ArrayList<EntityResponse>, title: String): ListEntitiesFragment {
+            val fragment = ListEntitiesFragment()
+            val args = Bundle()
+            args.putString(ARG_TYPE, type)
+            args.putParcelableArrayList(ARG_DATA, data)
+            args.putString(ARG_TITLE, title)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { args ->
+            type = args.getString(ARG_TYPE, "")
+            data = args.getParcelableArrayList(ARG_DATA) ?: listOf()
+            title = args.getString(ARG_TITLE, "")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,28 +63,24 @@ class ListEntitiesFragment(
             .commit()
     }
     private fun setStateObservers(){
-
         observeUiState(
             viewModel.getReportUiState,
             onSuccess = {data ->
                 Log.i("ON success for get report", data.toString())
-                val xValues :List<String > = data.map { it.date }
-                val yValues :List<Float > = data.map { it.amount }
+                val xValues :ArrayList<String> = ArrayList(data.map { it.date })
+                val yValues :FloatArray = data.map { it.amount }.toFloatArray()
                 viewModel.resetReportUiState()
 
                 replaceFragment(
-                    GenerateReportFragment(
+                    GenerateReportFragment.newInstance(
                         xValues,
                         yValues
-
                     )
                 )
-
             },
             onError = {
                 Log.i("ON error for get report", it)
                 viewModel.resetReportUiState()
-
                 showError(it)
             }
         )
@@ -73,7 +93,7 @@ class ListEntitiesFragment(
                 it.name
 
             ) {
-
+                Log.i("ListEntitiesFragment", "Clicked on ${it.name} with id $id")
                 viewModel.getReport(type,id)
             })
         }

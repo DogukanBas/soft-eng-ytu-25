@@ -1,4 +1,5 @@
 // GenerateReportFragment.kt
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,25 @@ import com.example.mobile.ui.BaseFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GenerateReportFragment(
-    private val xAxisLabels: List<String>,
-    private val yAxisValues: List<Float>
-) : BaseFragment() {
+class GenerateReportFragment : BaseFragment() {
+
+    companion object {
+        private const val ARG_X_LABELS = "x_labels"
+        private const val ARG_Y_VALUES = "y_values"
+
+        fun newInstance(xAxisLabels: ArrayList<String>, yAxisValues: FloatArray): GenerateReportFragment {
+            val fragment = GenerateReportFragment()
+            val args = Bundle()
+            args.putStringArrayList(ARG_X_LABELS, xAxisLabels)
+            args.putFloatArray(ARG_Y_VALUES, yAxisValues)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    // Fragment içerisinde kullanılacak değişkenleri tanımlıyoruz
+    private var xAxisLabels: List<String> = listOf() // Bu "dd-MM-yyyy" formatını saklayacak
+    private var yAxisValues: List<Float> = listOf()
 
     private lateinit var lineChart: LineChart
     private lateinit var startDateButton: Button
@@ -28,6 +44,30 @@ class GenerateReportFragment(
     private lateinit var updateButton: Button
     private var startDate: Date? = null
     private var endDate: Date? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { args ->
+            val originalXAxisLabels = args.getStringArrayList(ARG_X_LABELS) ?: listOf()
+            // Gelen "yyyy-MM-dd" formatını "dd-MM-yyyy" formatına çevir
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            xAxisLabels = originalXAxisLabels.mapNotNull { label ->
+                try {
+                    val date = inputFormat.parse(label)
+                    date?.let { outputFormat.format(it) } ?: label // Parse edilemezse orijinali kullan
+                } catch (e: Exception) {
+                    label // Hata durumunda orijinali kullan
+                }
+            }
+
+            val yArray = args.getFloatArray(ARG_Y_VALUES)
+            yAxisValues = yArray?.toList() ?: listOf()
+        } ?: run {
+            xAxisLabels = listOf()
+            yAxisValues = listOf()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,19 +84,22 @@ class GenerateReportFragment(
         endDateButton = view.findViewById(R.id.endDateButton)
         updateButton = view.findViewById(R.id.updateButton)
 
-        setupLineChart()
+        // Veri varsa grafiği çiz
+        if (xAxisLabels.isNotEmpty() && yAxisValues.isNotEmpty()) {
+            setupLineChart()
+        }
 
         startDateButton.setOnClickListener {
             showDatePicker { date ->
                 startDate = date
-                startDateButton.text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+                startDateButton.text = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date)
             }
         }
 
         endDateButton.setOnClickListener {
             showDatePicker { date ->
                 endDate = date
-                endDateButton.text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+                endDateButton.text = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date)
             }
         }
 
@@ -65,6 +108,16 @@ class GenerateReportFragment(
                 updateChartForDateRange(startDate!!, endDate!!)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
     private fun setupLineChart() {
@@ -87,10 +140,37 @@ class GenerateReportFragment(
                 position = XAxis.XAxisPosition.BOTTOM
                 granularity = 1f
                 setDrawGridLines(false)
+                labelRotationAngle = -45f // X eksenindeki tarihlerin açısını ayarla
+                textSize = 10f // Metin boyutunu küçült
+                labelCount = calculateOptimalLabelCount(xAxisLabels.size) // Optimal etiket sayısını hesapla
+                setAvoidFirstLastClipping(true) // İlk ve son etiketlerin kırpılmasını önle
             }
 
+            // Y ekseni ayarlamaları
+            axisLeft.apply {
+                setDrawGridLines(true)
+                granularity = 1f
+            }
             axisRight.isEnabled = false
+
+            // Ekstra alan bırak
+            setExtraOffsets(15f, 10f, 15f, 20f)
+
+            // Grafik içi ayarları
+            legend.textSize = 12f
+            setVisibleXRangeMaximum(12f) // Bir seferde en fazla 12 etiket göster
+
             invalidate()
+        }
+    }
+
+    private fun calculateOptimalLabelCount(size: Int): Int {
+        // Etiket sayısını ekran genişliğine göre optimize et
+        return when {
+            size <= 7 -> size
+            size <= 14 -> size / 2
+            size <= 30 -> size / 3
+            else -> size / 4
         }
     }
 
@@ -111,21 +191,72 @@ class GenerateReportFragment(
     }
 
     private fun updateChartForDateRange(startDate: Date, endDate: Date) {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val filteredEntries = xAxisLabels.mapIndexedNotNull { index, label ->
-            val date = sdf.parse(label)
-            if (date != null && date in startDate..endDate) {
-                Entry(index.toFloat(), yAxisValues[index])
-            } else null
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+        // Tarih aralığını kontrol et
+        if (endDate.before(startDate)) {
+            // Hata durumunda kullanıcıyı bilgilendir
+            return
         }
 
-        val lineDataSet = LineDataSet(filteredEntries, "Filtered Data").apply {
-            setDrawFilled(true)
-            fillDrawable = resources.getDrawable(R.drawable.gradient_fill, null)
-            color = resources.getColor(R.color.teal_700, null)
-        }
+        try {
+            // Create a list of indices and labels that are within the date range
+            val filteredData = xAxisLabels.mapIndexedNotNull { index, label ->
+                try {
+                    val date = sdf.parse(label)
+                    if (date != null && !date.before(startDate) && !date.after(endDate)) {
+                        Pair(index, label)
+                    } else null
+                } catch (e: Exception) {
+                    null // Tarih formatı geçersizse bu etiketi atla
+                }
+            }
 
-        lineChart.data = LineData(lineDataSet)
-        lineChart.invalidate()
+            // Filtrelenmiş veri yoksa kullanıcıyı bilgilendir ve işlemi iptal et
+            if (filteredData.isEmpty()) {
+                return
+            }
+
+            // Extract filtered indices and labels
+            val filteredIndices = filteredData.map { it.first }
+            val filteredLabels = filteredData.map { it.second }
+
+            // Yeni grafiği oluşturmak için filtrelenmiş değerleri kullan
+            val filteredYValues = filteredIndices.map { yAxisValues[it] }
+
+            // Create new entries with consecutive x values (0, 1, 2...) instead of original indices
+            val filteredEntries = filteredYValues.mapIndexed { index, value ->
+                Entry(index.toFloat(), value)
+            }
+
+            val lineDataSet = LineDataSet(filteredEntries, "Filtered Data").apply {
+                setDrawFilled(true)
+                fillDrawable = resources.getDrawable(R.drawable.gradient_fill, null)
+                color = resources.getColor(R.color.teal_700, null)
+            }
+
+            lineChart.apply {
+                data = LineData(lineDataSet)
+
+                // Update the x-axis with filtered labels
+                xAxis.apply {
+                    valueFormatter = IndexAxisValueFormatter(filteredLabels)
+                    labelCount = calculateOptimalLabelCount(filteredLabels.size)
+                }
+
+                // Adjust x-axis bounds if needed
+                if (filteredLabels.isNotEmpty()) {
+                    xAxis.axisMinimum = -0.5f // Biraz ekstra alan bırak
+                    xAxis.axisMaximum = (filteredLabels.size - 0.5f) // Biraz ekstra alan bırak
+                }
+
+                // Görünümü yenile
+                notifyDataSetChanged()
+                invalidate()
+            }
+        } catch (e: Exception) {
+            // Hata durumunda orijinal grafiği göster
+            setupLineChart()
+        }
     }
 }
