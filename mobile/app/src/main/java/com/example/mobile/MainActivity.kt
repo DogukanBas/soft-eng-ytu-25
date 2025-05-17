@@ -40,15 +40,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showIpDialog() {
-       // val dialog = IpDialogFragment()
-        //dialog.setOnIpSelectedListener { ip ->
+        val dialog = IpDialogFragment()
+        dialog.setOnIpSelectedListener { ip ->
             prefsUtil.saveIpAddress("10.0.2.2")
             supportFragmentManager.beginTransaction().apply {
                 replace(R.id.fragment_container, LoginFragment())
                 commit()
             }
-        //}
-        //dialog.show(supportFragmentManager, "IpDialog")
+        }
+        dialog.show(supportFragmentManager, "IpDialog")
     }
 
     private fun hideSystemUI() {
