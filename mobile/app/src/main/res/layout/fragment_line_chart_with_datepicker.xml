@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/startDateButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/select_start_date"
             android:textSize="16sp"
@@ -33,7 +33,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/endDateButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/select_end_date"
             android:textSize="16sp"
@@ -51,7 +51,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updateButton"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:text="@string/update_chart"
         android:textSize="16sp"
         style="@style/Widget.MaterialComponents.Button"
@@ -62,12 +62,86 @@
         app:rippleColor="@color/button_primary_dark"
         android:textColor="@color/button_text_color"
         android:elevation="4dp"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="12dp"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:text="Predictions"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:gravity="left"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/daily_average"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+            <TextView
+                android:id="@+id/tv_daily_average"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/monthly_average"
+
+                android:textSize="16sp"
+                android:padding="8dp"/>
+            <TextView
+                android:id="@+id/tv_monthly_average"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="N/A"
+
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/yearly_average"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+            <TextView
+                android:id="@+id/tv_yearly_average"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+            
+
+        </LinearLayout>
+
+
 
 </LinearLayout>
