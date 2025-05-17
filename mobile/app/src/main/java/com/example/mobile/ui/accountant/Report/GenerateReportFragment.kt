@@ -1,4 +1,5 @@
 // GenerateReportFragment.kt
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.app.DatePickerDialog
-import androidx.fragment.app.Fragment
+import android.util.Log
+import android.widget.TextView
 import com.example.mobile.R
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -16,7 +18,10 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.example.mobile.ui.BaseFragment
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.min
 
 class GenerateReportFragment : BaseFragment() {
 
@@ -34,14 +39,18 @@ class GenerateReportFragment : BaseFragment() {
         }
     }
 
-    // Fragment içerisinde kullanılacak değişkenleri tanımlıyoruz
-    private var xAxisLabels: List<String> = listOf() // Bu "dd-MM-yyyy" formatını saklayacak
+    private var xAxisLabels: List<String> = listOf()
     private var yAxisValues: List<Float> = listOf()
 
     private lateinit var lineChart: LineChart
     private lateinit var startDateButton: Button
     private lateinit var endDateButton: Button
     private lateinit var updateButton: Button
+
+    private lateinit var dailyAverage: TextView
+    private lateinit var monthlyAverage: TextView
+    private lateinit var yearlyAverage: TextView
+
     private var startDate: Date? = null
     private var endDate: Date? = null
 
@@ -49,15 +58,14 @@ class GenerateReportFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let { args ->
             val originalXAxisLabels = args.getStringArrayList(ARG_X_LABELS) ?: listOf()
-            // Gelen "yyyy-MM-dd" formatını "dd-MM-yyyy" formatına çevir
             val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
             xAxisLabels = originalXAxisLabels.mapNotNull { label ->
                 try {
                     val date = inputFormat.parse(label)
-                    date?.let { outputFormat.format(it) } ?: label // Parse edilemezse orijinali kullan
+                    date?.let { outputFormat.format(it) } ?: label
                 } catch (e: Exception) {
-                    label // Hata durumunda orijinali kullan
+                    label
                 }
             }
 
@@ -84,9 +92,13 @@ class GenerateReportFragment : BaseFragment() {
         endDateButton = view.findViewById(R.id.endDateButton)
         updateButton = view.findViewById(R.id.updateButton)
 
-        // Veri varsa grafiği çiz
+        dailyAverage = view.findViewById(R.id.tv_daily_average)
+        monthlyAverage = view.findViewById(R.id.tv_monthly_average)
+        yearlyAverage = view.findViewById(R.id.tv_yearly_average)
+
         if (xAxisLabels.isNotEmpty() && yAxisValues.isNotEmpty()) {
             setupLineChart()
+            calculateAssumptions()
         }
 
         startDateButton.setOnClickListener {
@@ -140,28 +152,115 @@ class GenerateReportFragment : BaseFragment() {
                 position = XAxis.XAxisPosition.BOTTOM
                 granularity = 1f
                 setDrawGridLines(false)
-                labelRotationAngle = -45f // X eksenindeki tarihlerin açısını ayarla
-                textSize = 10f // Metin boyutunu küçült
-                labelCount = calculateOptimalLabelCount(xAxisLabels.size) // Optimal etiket sayısını hesapla
-                setAvoidFirstLastClipping(true) // İlk ve son etiketlerin kırpılmasını önle
+                labelRotationAngle = -45f
+                textSize = 10f
+                labelCount = calculateOptimalLabelCount(xAxisLabels.size)
+                setAvoidFirstLastClipping(true)
             }
 
-            // Y ekseni ayarlamaları
             axisLeft.apply {
                 setDrawGridLines(true)
                 granularity = 1f
             }
             axisRight.isEnabled = false
 
-            // Ekstra alan bırak
             setExtraOffsets(15f, 10f, 15f, 20f)
 
-            // Grafik içi ayarları
             legend.textSize = 12f
-            setVisibleXRangeMaximum(12f) // Bir seferde en fazla 12 etiket göster
+            setVisibleXRangeMaximum(12f)
 
             invalidate()
         }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun calculateAssumptions() {
+        val sum_per_month = calculateSumPerMonth()
+        val sum_per_year = calulateSumPerYear()
+
+        Log.i("TAG", "Averages per month: $sum_per_month")
+        Log.i("TAG", "Averages per year: $sum_per_year")
+
+        val last_day = xAxisLabels[xAxisLabels.size - 1].split("-")[0].toInt()
+        val last_month = xAxisLabels[xAxisLabels.size - 1].split("-")[1].toInt()
+        val last_year = xAxisLabels[xAxisLabels.size - 1].split("-")[2].toInt()
+
+        val day_diff = xAxisLabels[xAxisLabels.size - 1].split("-")[0].toInt() - xAxisLabels[0].split("-")[0].toInt() + 1
+        val month_diff = xAxisLabels[xAxisLabels.size - 1].split("-")[1].toInt() - xAxisLabels[0].split("-")[1].toInt() + 1
+        val year_diff = xAxisLabels[xAxisLabels.size - 1].split("-")[2].toInt() - xAxisLabels[0].split("-")[2].toInt() + 1
+
+        val n_day = min(day_diff, 5)
+        val n_month = min(month_diff, 5)
+        val n_year = min(year_diff, 5)
+
+        Log.i(TAG,"last_day: $last_day, last_month: $last_month, last_year: $last_year")
+        Log.i(TAG,"n_day: $n_day, n_month: $n_month, n_year: $n_year")
+
+        var daily_average = 0f
+        var monthly_average = 0f
+        var yearly_average = 0f
+
+        var dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val endDate = LocalDate.of(last_year, last_month, last_day)
+        for (offset in 0 until n_day) {
+            val currentDate = endDate.minusDays(offset.toLong())
+            val dateString = currentDate.format(dateFormatter)
+            val index = xAxisLabels.indexOf(dateString)
+            if (index != -1) {
+                if (index < yAxisValues.size) {
+                    daily_average += yAxisValues[index]
+                }
+            }
+        }
+        daily_average /= n_day.toFloat()
+
+        dateFormatter = DateTimeFormatter.ofPattern("MM-yyyy")
+        for (offset in 0 until n_month) {
+            val currentDate = endDate.minusMonths(offset.toLong())
+            val dateString = currentDate.format(dateFormatter)
+            if (dateString in sum_per_month) {
+                monthly_average += sum_per_month[dateString] ?: 0f
+            }
+        }
+        monthly_average /= n_month.toFloat()
+
+        dateFormatter = DateTimeFormatter.ofPattern("yyyy")
+        for (offset in 0 until n_year) {
+            val currentDate = endDate.minusYears(offset.toLong())
+            val dateString = currentDate.format(dateFormatter)
+            if (dateString in sum_per_year) {
+                yearly_average += sum_per_year[dateString] ?: 0f
+            }
+        }
+        yearly_average /= n_year.toFloat()
+
+        Log.i(TAG,"Daily average: $daily_average")
+        Log.i(TAG,"Monthly average: $monthly_average")
+        Log.i(TAG,"Yearly average: $yearly_average")
+
+        dailyAverage.text = String.format("Daily Average: %.2f", daily_average)
+        monthlyAverage.text = String.format("Monthly Average: %.2f", monthly_average)
+        yearlyAverage.text = String.format("Yearly Average: %.2f", yearly_average)
+    }
+
+    private fun calculateSumPerMonth(): Map<String, Float> {
+        val monthValues = mutableMapOf<String, MutableList<Float>>()
+        for (i in xAxisLabels.indices) {
+            val dateParts = xAxisLabels[i].split("-")
+            val monthKey = "${dateParts[1]}-${dateParts[2]}"
+            monthValues.getOrPut(monthKey) { mutableListOf() }.add(yAxisValues[i])
+        }
+        return monthValues.mapValues { it.value.sum() }
+    }
+
+    private fun calulateSumPerYear(): Map<String, Float> {
+        val yearValues = mutableMapOf<String, MutableList<Float>>()
+        for (i in xAxisLabels.indices) {
+            val dateParts = xAxisLabels[i].split("-")
+            val yearKey = dateParts[2]
+            yearValues.getOrPut(yearKey) { mutableListOf() }.add(yAxisValues[i])
+        }
+        return yearValues.mapValues { it.value.sum() }
     }
 
     private fun calculateOptimalLabelCount(size: Int): Int {
@@ -192,15 +291,11 @@ class GenerateReportFragment : BaseFragment() {
 
     private fun updateChartForDateRange(startDate: Date, endDate: Date) {
         val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-
-        // Tarih aralığını kontrol et
         if (endDate.before(startDate)) {
-            // Hata durumunda kullanıcıyı bilgilendir
             return
         }
 
         try {
-            // Create a list of indices and labels that are within the date range
             val filteredData = xAxisLabels.mapIndexedNotNull { index, label ->
                 try {
                     val date = sdf.parse(label)
@@ -208,27 +303,19 @@ class GenerateReportFragment : BaseFragment() {
                         Pair(index, label)
                     } else null
                 } catch (e: Exception) {
-                    null // Tarih formatı geçersizse bu etiketi atla
+                    null
                 }
             }
-
-            // Filtrelenmiş veri yoksa kullanıcıyı bilgilendir ve işlemi iptal et
             if (filteredData.isEmpty()) {
                 return
             }
 
-            // Extract filtered indices and labels
             val filteredIndices = filteredData.map { it.first }
             val filteredLabels = filteredData.map { it.second }
-
-            // Yeni grafiği oluşturmak için filtrelenmiş değerleri kullan
             val filteredYValues = filteredIndices.map { yAxisValues[it] }
-
-            // Create new entries with consecutive x values (0, 1, 2...) instead of original indices
             val filteredEntries = filteredYValues.mapIndexed { index, value ->
                 Entry(index.toFloat(), value)
             }
-
             val lineDataSet = LineDataSet(filteredEntries, "Filtered Data").apply {
                 setDrawFilled(true)
                 fillDrawable = resources.getDrawable(R.drawable.gradient_fill, null)
@@ -237,25 +324,20 @@ class GenerateReportFragment : BaseFragment() {
 
             lineChart.apply {
                 data = LineData(lineDataSet)
-
-                // Update the x-axis with filtered labels
                 xAxis.apply {
                     valueFormatter = IndexAxisValueFormatter(filteredLabels)
                     labelCount = calculateOptimalLabelCount(filteredLabels.size)
                 }
 
-                // Adjust x-axis bounds if needed
                 if (filteredLabels.isNotEmpty()) {
-                    xAxis.axisMinimum = -0.5f // Biraz ekstra alan bırak
-                    xAxis.axisMaximum = (filteredLabels.size - 0.5f) // Biraz ekstra alan bırak
+                    xAxis.axisMinimum = -0.5f
+                    xAxis.axisMaximum = (filteredLabels.size - 0.5f)
                 }
 
-                // Görünümü yenile
                 notifyDataSetChanged()
                 invalidate()
             }
         } catch (e: Exception) {
-            // Hata durumunda orijinal grafiği göster
             setupLineChart()
         }
     }
