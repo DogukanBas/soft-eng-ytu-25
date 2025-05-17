@@ -1,9 +1,14 @@
 <resources>
-    <string name="app_name">mobile</string>
+    <string name="app_name">Cost MS</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
+    <!-- Login Strings -->
+    <string name="login_title">Login</string>
+    <string name="description">YTU Software Engineering Project</string>
+    <string name="personalno_or_email">Personal No or E-mail</string>
+    <string name="password">Password</string>
 
     <!-- Department Budget Strings -->
     <string name="set_department_budget_title">Set Department Budget</string>
