@@ -10,6 +10,14 @@
     <string name="personalno_or_email">Personal No or E-mail</string>
     <string name="password">Password</string>
 
+    <!-- Bottom Sheet Strings -->
+    <string name="bottom_sheet_title">Title</string>
+    <string name="bottom_sheet_reason">Reason</string>
+    <string name="bottom_sheet_button_1">Button-1</string>
+    <string name="bottom_sheet_button_2">Button-2</string>
+    <string name="bottom_sheet_cancel">Cancel</string>
+
+
     <!-- Department Budget Strings -->
     <string name="set_department_budget_title">Set Department Budget</string>
     <string name="department_label">Department:</string>

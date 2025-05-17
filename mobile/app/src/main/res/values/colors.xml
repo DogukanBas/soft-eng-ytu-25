@@ -16,8 +16,13 @@
 
     <color name="navigation_bar_color">#FFFFFF</color>
 
-    <color name="button_text_color">#000000</color>
+    <color name="button_text_color">#FFFFFF</color>
     <color name="button_background_color">#6200EE</color>
+    <color name="button_primary">#1976D2</color>
+    <color name="button_primary_dark">#1565C0</color>
+    <color name="button_secondary">#78909C</color>
+    <color name="button_secondary_dark">#546E7A</color>
+    <color name="button_disabled">#BDBDBD</color>
 
     <color name="default_color">#000000</color>
 
