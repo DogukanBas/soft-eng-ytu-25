@@ -70,12 +70,15 @@ class EditCostTypeBottomSheetFragment (val costTypeList: List<String>, val curre
             singleSelectionListItems = costTypeList
             text = currentCostType
         })
-        return InputMenuFragment330(inputList,  { outputList ->
+        val menu =  InputMenuFragment330(inputList,  { outputList ->
             val costType = outputList[0].toString()
             viewModel.editCostTypeTicket(ticketId,costType)
 
-
         }, "Edit Cost Type ")
+        menu.setActionLayout(title = null,
+            hasBackButton = false,
+            imageLogo = null)
+        return menu
     }
 
 

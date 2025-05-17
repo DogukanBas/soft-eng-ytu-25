@@ -114,7 +114,7 @@ class EditBottomSheetFragment(
         })
 
 
-        return InputMenuFragment330(inputList,  { outputList ->
+        val menu = InputMenuFragment330(inputList,  { outputList ->
             Log.i(TAG, "Edit Ticket button triggered")
             val costType = outputList[0].toString()
             val amount = outputList[1].toString().toDoubleOrNull()
@@ -122,10 +122,10 @@ class EditBottomSheetFragment(
             val description = outputList[2].toString()
 
             viewModel.editTicket(EditTicketRequest(ticketId,costType,amount!!,description))
-
-
-        }, "Edit FTicket")
-
-
+        }, "Edit Ticket")
+        menu.setActionLayout(title = null,
+            hasBackButton = false,
+            imageLogo = null)
+        return menu
     }
 }
