@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.notification.NotificationFragment
+import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.ui.ticket.CreateTicketFragment
 import com.example.mobile.ui.ticket.TicketViewModel
 import com.example.mobile.utils.MenuItem
@@ -18,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ManagerMenuFragment : BaseFragment() {
+
+    private val notificationViewModel: NotificationViewModel by viewModels()
 
     companion object {
         val TAG = "TeamMemberMenuFragment"
@@ -48,8 +52,8 @@ class ManagerMenuFragment : BaseFragment() {
         val menuItems = mutableListOf<IListMenuItem>()
         //TODO this item is duplicating as in team_member, either create a factory, or  move observeui state  to inside createticketfragmetn with a pop fragment on error
         menuItems.add(MenuItem(
-            "Create com.example.mobile.model.Ticket.Ticket") {
-            Log.i(TAG, "Create com.example.mobile.model.Ticket.Ticket button clicked")
+            "Create Ticket") {
+            Log.i(TAG, "Create Ticket button clicked")
             ticketViewModel.getCostTypes()
 
             observeUiState(
@@ -70,7 +74,6 @@ class ManagerMenuFragment : BaseFragment() {
                     hideLoading()
                 }
             )
-
         })
         menuItems.add(MenuItem(
             "List Created Tickets") {
@@ -83,6 +86,27 @@ class ManagerMenuFragment : BaseFragment() {
             Log.i(TAG, "List Team Tickets button clicked")
             replaceFragment(
                 ListAssignedTicketsFragment()
+            )
+        })
+        menuItems.add(MenuItem(
+            "Notifications") {
+            Log.i(TAG, "Notifications button clicked")
+            notificationViewModel.getUserNotification()
+            observeUiState(
+                notificationViewModel.notificationState,
+                onSuccess = { data ->
+                    replaceFragment(NotificationFragment(data))
+                },
+                onError = {
+                    Log.e(TAG, "Error fetching team members: $it")
+                    popFragment()
+                },
+                onLoading = {
+                    showLoading()
+                },
+                onIdle = {
+                    hideLoading()
+                }
             )
         })
 

@@ -1,5 +1,6 @@
 package com.softeng.backend.service.impl;
 
+import com.softeng.backend.exception.ResourceNotFoundException;
 import com.softeng.backend.model.BudgetByCostType;
 import com.softeng.backend.repository.BudgetByCostTypeRepository;
 import com.softeng.backend.service.BudgetByCostTypeService;
@@ -44,6 +45,12 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     public boolean existsByTypeName(String typeName) {
         return budgetByCostTypeRepository.existsByTypeName(typeName);
     }
+    @Override
+    public boolean existsById(Integer id){
+        return budgetByCostTypeRepository.existsById(id);
+
+
+    }
 
     @Override
     @Transactional
@@ -67,6 +74,12 @@ public class BudgetByCostTypeServiceImpl implements BudgetByCostTypeService {
     @Transactional
     public void resetBudgetByTypeName(String typeName) {
         budgetByCostTypeRepository.resetBudgetByTypeName(typeName);
+    }
+
+    @Override
+    public BudgetByCostType getById(Integer id) {
+        return budgetByCostTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Budget not found with id: " + id));
     }
 }
 

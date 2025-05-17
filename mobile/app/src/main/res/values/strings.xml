@@ -1,8 +1,21 @@
 <resources>
-    <string name="app_name">mobile</string>
+    <string name="app_name">Cost MS</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <!-- Login Strings -->
+    <string name="login_title">Login</string>
+    <string name="description">YTU Software Engineering Project</string>
+    <string name="personalno_or_email">Personal No or E-mail</string>
+    <string name="password">Password</string>
+
+    <!-- Bottom Sheet Strings -->
+    <string name="bottom_sheet_title">Title</string>
+    <string name="bottom_sheet_reason">Reason</string>
+    <string name="bottom_sheet_button_1">Button-1</string>
+    <string name="bottom_sheet_button_2">Button-2</string>
+    <string name="bottom_sheet_cancel">Cancel</string>
 
 
     <!-- Department Budget Strings -->
@@ -24,4 +37,11 @@
     <string name="reset_to_initial_button">Reset Remaining to Initial</string>
     <string name="add_button">Add</string>
     <string name="max_budget_label"> Max Budget</string>
+    <string name="hint">0.00</string>
+    <string name="add_cost_type">+</string>
+
+    <!-- Date Picker Strings -->
+    <string name="select_start_date">Select Start Date</string>
+    <string name="select_end_date">Select End Date</string>
+    <string name="update_chart">Update Chart</string>
 </resources>

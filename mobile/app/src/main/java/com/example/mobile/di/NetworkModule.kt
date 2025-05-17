@@ -5,6 +5,8 @@ import com.example.mobile.remote.api.AdminService
 import com.example.mobile.remote.api.AuthService
 import com.example.mobile.remote.api.CostTypeService
 import com.example.mobile.remote.api.DepartmentService
+import com.example.mobile.remote.api.NotificationService
+import com.example.mobile.remote.api.ReportService
 import com.example.mobile.remote.api.TicketService
 import dagger.Module
 import dagger.Provides
@@ -43,4 +45,19 @@ object NetworkModule {
     fun provideTicketService(): TicketService {
         return RetrofitClient.ticketService
     }
+
+    @Provides
+    @Singleton
+    fun provideNotificationService(): NotificationService {
+        return RetrofitClient.notificationService
+    }
+
+    @Provides
+    @Singleton
+    fun provideReportService(): ReportService {
+        return RetrofitClient.reportService
+    }
+
+
+
 }

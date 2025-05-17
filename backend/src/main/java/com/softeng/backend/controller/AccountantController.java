@@ -1,10 +1,9 @@
 package com.softeng.backend.controller;
 
 import com.softeng.backend.dto.AccountantDTOs;
+import com.softeng.backend.model.Notification;
 import com.softeng.backend.model.User;
-import com.softeng.backend.service.BudgetByCostTypeService;
-import com.softeng.backend.service.DepartmentService;
-import com.softeng.backend.service.UserService;
+import com.softeng.backend.service.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +25,20 @@ import java.util.stream.Collectors;
 public class AccountantController {
     private static final Logger logger = LoggerFactory.getLogger(AccountantController.class);
     private final DepartmentService departmentService;
+    private final EmployeeService employeeService;
     private final BudgetByCostTypeService budgetByCostTypeService;
     private final UserService userService;
+    private final NotificationService notificationService;
+    private final ApproveHistoryService approveHistoryService;
 
     @Autowired
-    public AccountantController(DepartmentService departmentService, BudgetByCostTypeService budgetByCostTypeService, UserService userService) {
+    public AccountantController(DepartmentService departmentService, EmployeeService employeeService, BudgetByCostTypeService budgetByCostTypeService, UserService userService, NotificationService notificationService, ApproveHistoryService approveHistoryService) {
         this.departmentService = departmentService;
+        this.employeeService = employeeService;
         this.budgetByCostTypeService = budgetByCostTypeService;
         this.userService = userService;
+        this.notificationService = notificationService;
+        this.approveHistoryService = approveHistoryService;
     }
 
     @PostMapping("/departments/set-initial-budget")
@@ -48,7 +54,11 @@ public class AccountantController {
                     .header("message", AccountantDTOs.SetBudgetResponse.INVALID_AUTHENTICATION.getMessage())
                     .build();
         }
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
         departmentService.setDepartmentInitialBudget(deptName, initialBudget);
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Initial budget set for department: " + deptName + " with amount: " + initialBudget,
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -68,6 +78,10 @@ public class AccountantController {
                     .build();
         }
         departmentService.setDepartmentRemainingBudget(deptName, remainingBudget);
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Remaining budget set for department: " + deptName + " with amount: " + remainingBudget,
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -87,6 +101,10 @@ public class AccountantController {
                     .build();
         }
         departmentService.resetDepartmentBudget(deptName);
+        String deptId = departmentService.getDepartmentByName(deptName).getDeptId().toString();
+        notificationService.createNotification(Notification.NotificationType.DEPARTMENT,
+                "Budget reset for department: " + deptName + " with amount: " + departmentService.getDepartmentByName(deptName).getInitialBudget(),
+                deptId);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -106,6 +124,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.addBudgetByCostType(costTypeName, initialBudget, maxCost);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "New cost type added: " + costTypeName + "\n",
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.AddCostTypeResponse.COST_TYPE_ADDED.getMessage())
                 .build();
@@ -125,6 +146,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setInitialBudgetByTypeName(typeName, initialBudget);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Initial budget set for cost type: " + typeName + " with amount: " + initialBudget,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -144,6 +168,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setRemainingBudgetByTypeName(typeName, remainingBudget);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Remaining budget set for cost type: " + typeName + " with amount: " + remainingBudget,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -163,6 +190,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.resetBudgetByTypeName(typeName);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Budget reset for cost type: " + typeName + " with amount: " + budgetByCostTypeService.getByTypeName(typeName).getRemainingBudget(),
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -182,6 +212,9 @@ public class AccountantController {
                     .build();
         }
         budgetByCostTypeService.setMaxCostByTypeName(typeName, maxCost);
+        notificationService.createNotification(Notification.NotificationType.ALL,
+                "Max cost set for cost type: " + typeName + " with amount: " + maxCost,
+                null);
         return ResponseEntity.ok()
                 .header("message", AccountantDTOs.SetBudgetResponse.BUDGET_SET.getMessage())
                 .build();
@@ -222,6 +255,114 @@ public class AccountantController {
         return ResponseEntity.ok(Map.of("departments",
                 budgetResponses
         ));
+    }
+
+    @GetMapping("/entities")
+    public ResponseEntity<?> getEntities(@RequestParam String query, Authentication authentication) {
+        logger.debug("Getting entities for query: {}", query);
+        if (!isAuthenticated(authentication)) {
+            return ResponseEntity.status(403)
+                    .header("message", AccountantDTOs.GetBudgetResponse.INVALID_AUTHENTICATION.getMessage())
+                    .build();
+        }
+
+        List<AccountantDTOs.EntityResponse> responses;
+        switch (query.toLowerCase()) {
+            case "employee":
+                responses = employeeService.getAllEmployees().stream()
+                    .map(emp -> new AccountantDTOs.EntityResponse(
+                        emp.getPersonalNo(),
+                        emp.getName() + " " + emp.getSurname()
+                    ))
+                    .collect(Collectors.toList());
+                break;
+            case "department":
+                responses = departmentService.getAllDepartments().stream()
+                    .map(dept -> new AccountantDTOs.EntityResponse(
+                        dept.getDeptId().toString(),
+                        dept.getDeptname()
+                    ))
+                    .collect(Collectors.toList());
+                break;
+            case "costtype":
+                responses = budgetByCostTypeService.getAllCostTypes().stream()
+                    .map(cost -> new AccountantDTOs.EntityResponse(
+                        cost.getId().toString(),
+                        cost.getTypeName()
+                    ))
+                    .collect(Collectors.toList());
+                break;
+            default:
+                return ResponseEntity.status(400)
+                    .header("message", "Invalid query type. Must be one of: Employee, Department, Costtype")
+                    .build();
+        }
+
+        return ResponseEntity.ok(Map.of("entities", responses));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStats(@RequestParam String type, @RequestParam String id, Authentication authentication) {
+        logger.debug("Getting stats for type: {} and id: {}", type, id);
+        if (!isAuthenticated(authentication)) {
+            return ResponseEntity.status(403)
+                    .header("message", AccountantDTOs.GetBudgetResponse.INVALID_AUTHENTICATION.getMessage())
+                    .build();
+        }
+
+        List<AccountantDTOs.StatEntry> stats;
+        switch (type.toLowerCase()) {
+            case "employee":
+                if (!employeeService.existsByPersonalNo(id)) {
+                    return ResponseEntity.status(404)
+                            .header("message", "Employee not found")
+                            .build();
+                }
+                stats = approveHistoryService.getApprovedExpensesByEmployee(id);
+                break;
+                
+            case "department":
+                Integer deptId;
+                try {
+                    deptId = Integer.parseInt(id);
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(400)
+                            .header("message", "Invalid department ID format")
+                            .build();
+                }
+                
+                if (!departmentService.existsByDeptId(deptId)) {
+                    return ResponseEntity.status(404)
+                            .header("message", "Department not found")
+                            .build();
+                }
+                stats = approveHistoryService.getApprovedExpensesByDepartment(deptId);
+                break;
+                
+            case "costtype":
+                Integer costTypeId;
+                try {
+                    costTypeId = Integer.parseInt(id);
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(400)
+                            .header("message", "Invalid cost type ID format")
+                            .build();
+                }
+
+                if (!budgetByCostTypeService.existsById(costTypeId)) {
+                    return ResponseEntity.status(404)
+                            .header("message", "Cost type not found, $id"+ id )
+                            .build();
+                }
+                stats = approveHistoryService.getApprovedExpensesByCostType(costTypeId);
+                break;
+                
+            default:
+                return ResponseEntity.status(400)
+                    .header("message", "Invalid type. Must be one of: Employee, Department, Costtype")
+                    .build();
+        }
+        return ResponseEntity.ok(Map.of("stats", stats));
     }
 
     private boolean isAuthenticated(Authentication authentication) {

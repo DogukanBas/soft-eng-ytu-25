@@ -52,7 +52,7 @@
                 android:id="@+id/history_actor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="John Doe (Manager)" />
+                tools:text="Berkan (Manager)" />
         </LinearLayout>
 
         <LinearLayout

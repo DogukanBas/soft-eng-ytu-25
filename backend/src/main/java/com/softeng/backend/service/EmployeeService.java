@@ -7,5 +7,5 @@ public interface EmployeeService {
     void addEmployee(Employee employee);
     Employee getEmployeeByPersonalNo(String personalNo);
     List<Employee> getAllEmployees();
-
+    boolean existsByPersonalNo(String personalNo);
 }

@@ -11,9 +11,10 @@ public interface BudgetByCostTypeService {
     List<String> getAllCostTypeNames();
     BudgetByCostType getByTypeName(String typeName);
     boolean existsByTypeName(String typeName);
+    boolean existsById(Integer id );
     void setInitialBudgetByTypeName(String typeName, Double initialBudget);
     void setRemainingBudgetByTypeName(String typeName, Double remainingBudget);
     void setMaxCostByTypeName(String typeName, Double maxCost);
     void resetBudgetByTypeName(String typeName);
-
+    BudgetByCostType getById(Integer id);
 }
