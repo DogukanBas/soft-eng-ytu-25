@@ -1,5 +1,3 @@
-% filepath: deneme.tex
-% ...existing code...
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{array} % For advanced column formatting
@@ -10,14 +8,13 @@
 
 \begin{document}
 
-\section*{İzlenebilirlik Matrisi (Sadece Entityler, Employee Dahil, Enumlar ve Paket Sütunu Hariç)}
+\section*{Traceability Matrix}
 
 \begin{footnotesize} % Make the font a bit smaller for the table
 \begin{longtable}{|l| *{8}{c|}} 
-\caption{Sistem Entityleri (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ve Gereksinim İzlenebilirlik Matrisi}\\
+\caption{Traceability Matrix}\\
 \hline
-\textbf{Gereksinim} & 
-% --- Sütun Başlıkları (Sistem Entityleri - Employee Dahil, Enumlar ve Paket Sütunu Hariç) ---
+\textbf{Requirement} & 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Ticket (Entity)}}} &
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{ApproveHistory (Entity)}}} &
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{User (Entity)}}} &
@@ -28,9 +25,9 @@
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Attachment (Entity)}}} \\
 \hline
 \endfirsthead
-\caption[]{(Devam) Sistem Entityleri (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ve Gereksinim İzlenebilirlik Matrisi}\\
+\caption[]{(Continued) Traceability Matrix}\\
 \hline
-\textbf{Gereksinim} & 
+\textbf{Requirement} & 
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{Ticket (Entity)}}} &
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{ApproveHistory (Entity)}}} &
 \multicolumn{1}{c|}{\rotatebox{90}{\textbf{User (Entity)}}} &
@@ -42,29 +39,27 @@
 \hline
 \endhead
 % Corrected multicolumn span for the footer
-\hline \multicolumn{9}{r}{{Devamı sonraki sayfada}} \\ \hline 
+\hline \multicolumn{9}{r}{{Continued on next page}} \\ \hline 
 \endfoot
 \hline
 \endlastfoot
 
-% --- Birleştirilmiş Gereksinimler (G) - Sadece Entityler için (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ---
-% G1: Kullanıcı Kimlik Doğrulama ve Yetkilendirme
-\textbf{G1.1} Kullanıcı Girişi & & & X & X & & & & \\ \hline
-\textbf{G1.2} Kullanıcı Rolleri & & & X & X & & & & \\ \hline
-% G2: Harcama Talebi (Bilet) Yönetimi
-\textbf{G2.1} Talep Oluşturma & X & & X & X & X & & & X \\ \hline
-\textbf{G2.2} Onay Süreci & X & X & X & X & X & & & \\ \hline
-\textbf{G2.3} Durum Takibi & X & X & X & X & & & & \\ \hline
-\textbf{G2.5} Talep İptali & X & X & X & X & & & & \\ \hline
-% G3: Departman ve Bütçe Yönetimi
-\textbf{G3.1} Departman Bütçesi & & & X & X & X & X & & \\ \hline
-\textbf{G3.2} Maliyet Türü Bütçesi & & & X & X & & X & & \\ \hline
-\textbf{G3.3} Bütçeden Düşme & X & & X & X & X & X & & \\ \hline
-\textbf{G3.4} Bütçe Aşımı Kontrolü & X & & X & X & X & X & & \\ \hline
-% G4: Bildirim Sistemi
-\textbf{G4.1} Talep Bildirimleri & X & X & X & X & & & X & \\ \hline
-\textbf{G4.2} Bütçe Bildirimleri & & & X & X & X & X & X & \\ \hline
-% ...existing code...
+% G1: User Authentication and Authorization
+\textbf{G1.1} User Login & & & X & X & & & & \\ \hline
+\textbf{G1.2} User Roles & & & X & X & & & & \\ \hline
+% G2: Expense Request (Ticket) Management
+\textbf{G2.1} Create Ticket Request & X & & X & X & X & & & X \\ \hline
+\textbf{G2.2} Approval Process & X & X & X & X & X & & & \\ \hline
+\textbf{G2.3} Status Tracking & X & X & X & X & & & & \\ \hline
+\textbf{G2.5} Request Cancellation & X & X & X & X & & & & \\ \hline
+% G3: Department and Budget Management
+\textbf{G3.1} Department Budget & & & X & X & X & X & & \\ \hline
+\textbf{G3.2} Cost Type Budget & & & X & X & & X & & \\ \hline
+\textbf{G3.3} Budget Deduction & X & & X & X & X & X & & \\ \hline
+\textbf{G3.4} Budget Overrun Control & X & & X & X & X & X & & \\ \hline
+% G4: Notification System
+\textbf{G4.1} Request Notifications & X & X & X & X & & & X & \\ \hline
+\textbf{G4.2} Budget Notifications & & & X & X & X & X & X & \\ \hline
 \end{longtable}
 \end{footnotesize}
 
