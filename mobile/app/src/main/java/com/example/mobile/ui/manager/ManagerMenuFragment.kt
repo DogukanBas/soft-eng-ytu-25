@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
 import com.example.mobile.ui.accountant.TicketListMenuFragment
+import com.example.mobile.ui.login.LoginFragment
 import com.example.mobile.ui.notification.NotificationFragment
 import com.example.mobile.ui.notification.NotificationViewModel
 import com.example.mobile.ui.ticket.CreateTicketFragment
@@ -107,6 +108,15 @@ class ManagerMenuFragment : BaseFragment() {
                 onIdle = {
                     hideLoading()
                 }
+            )
+        })
+
+        menuItems.add(MenuItem(
+            "Log Out") {
+            Log.i(TAG, "Log Out button clicked")
+            replaceFragment(
+                LoginFragment(),
+                addToBackStack = false
             )
         })
 

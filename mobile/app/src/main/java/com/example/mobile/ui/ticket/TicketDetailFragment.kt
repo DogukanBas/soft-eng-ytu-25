@@ -62,6 +62,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         displayApprovalHistory()
         setupStateObservers()
         setupInvoiceObserver()
+        setupEditObserver()
     }
 
     private fun setupInvoiceObserver() {
@@ -147,7 +148,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
 
         btnEdit.setOnClickListener {
             Log.i(TAG, "Edit button clicked for ticket ID: $ticketId")
-            showEdit()
+            viewModel.getCostTypes()
 
             //TODO EDIT TUSUNA IKI KERE USTUSTE BASILDIGINDA EXCEPTION
             //make edit button invisible
@@ -163,9 +164,7 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
         viewModel.getInvoice(ticketId)
     }
 
-    private fun showEdit() {
-        viewModel.getCostTypes()
-
+    private fun setupEditObserver() {
         observeUiState(
             viewModel.getCostType,
             onSuccess = { data ->
@@ -178,7 +177,6 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
                     )
                 }
                 else{
-
                     myFragment = EditBottomSheetFragment(
                         costTypeList = data,
                         ticket,
@@ -197,12 +195,6 @@ class TicketDetailFragment(private val ticket: TicketWithoutInvoice, private val
                 Log.e(TAG, "Error fetching cost types : $it")
                 popFragment()
 
-            },
-            onLoading = {
-                showLoading()
-            },
-            onIdle = {
-                hideLoading()
             }
         )
     }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.mobile.R
 import com.example.mobile.ui.BaseFragment
+import com.example.mobile.ui.login.LoginFragment
 import com.example.mobile.utils.DialogType
 import com.example.mobile.utils.MenuItem
 import com.example.mobile.utils.UiState
@@ -89,6 +90,14 @@ class AdminMenuFragment : BaseFragment() {
             { Log.i(TAG,"add department init")
                replaceFragment(AddDepartmentFragment()) }
         ))
+        menuItems.add(MenuItem(
+            "Log Out") {
+            Log.i(TAG, "Log Out button clicked")
+            replaceFragment(
+                LoginFragment(),
+                addToBackStack = false
+            )
+        })
         return NavigationListFragment(
             "Admin Menu",
             true,
