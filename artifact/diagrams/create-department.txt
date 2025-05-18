@@ -1,0 +1,26 @@
+Start
+  |
+  v
+[Admin is logged in]
+  |
+  v
+[Click "Create Department" button]
+  |
+  v
+[Enter department name]
+  |
+  v
+[Check for department conflict]
+  |
+  +--------------------+
+  |                    |
+  No                   Yes
+  |                    |
+  v                    v
+[Create department]  (End - department not created)
+  |
+  v
+[Send notification to accountant]
+  |
+  v
+End

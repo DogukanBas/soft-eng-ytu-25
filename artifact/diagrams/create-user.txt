@@ -1,0 +1,23 @@
+Start
+  |
+  v
+[Admin is logged in]
+  |
+  v
+[Select "Create User" option]
+  |
+  v
+[Enter user information]
+  |
+  v
+[Check for email conflict]
+  |
+  +--------------------+
+  |                    |
+  No                   Yes
+  |                    |
+  v                    v
+[Create user]       (End - user not created)
+  |
+  v
+End

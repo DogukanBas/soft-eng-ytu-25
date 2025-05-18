@@ -1,0 +1,29 @@
+Start
+  |
+  v
+[Accountant logs into the system]
+  |
+  v
+[Select "Edit Budget" option]
+  |
+  v
+[Adjust budget for departments and cost items]
+  |
+  +-------------------+
+  |                   |
+  |               [New Cost Item?] --Yes--> [Create new cost item]
+  |                      |                        |
+  |                      No                       v
+  |                      |                 [Save budget for new cost item]
+  |                      |                        |
+  +----------------------+                        v
+  |                                             (Join)
+  +---------------------------------------------+
+  |
+  v
+[Save adjusted budget]
+  |
+  v
+End
+
+
