@@ -1,0 +1,71 @@
+% filepath: deneme.tex
+% ...existing code...
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{array} % For advanced column formatting
+\usepackage{longtable} % For tables that span multiple pages
+\usepackage{graphicx} % For \rotatebox
+\usepackage{geometry} % For page layout adjustments
+\geometry{a4paper, landscape, margin=0.5in} % Adjusted margins for potentially wide table
+
+\begin{document}
+
+\section*{İzlenebilirlik Matrisi (Sadece Entityler, Employee Dahil, Enumlar ve Paket Sütunu Hariç)}
+
+\begin{footnotesize} % Make the font a bit smaller for the table
+\begin{longtable}{|l| *{8}{c|}} 
+\caption{Sistem Entityleri (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ve Gereksinim İzlenebilirlik Matrisi}\\
+\hline
+\textbf{Gereksinim} & 
+% --- Sütun Başlıkları (Sistem Entityleri - Employee Dahil, Enumlar ve Paket Sütunu Hariç) ---
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Ticket (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{ApproveHistory (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{User (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Employee (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Department (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{BudgetByCostType (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Notification (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Attachment (Entity)}}} \\
+\hline
+\endfirsthead
+\caption[]{(Devam) Sistem Entityleri (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ve Gereksinim İzlenebilirlik Matrisi}\\
+\hline
+\textbf{Gereksinim} & 
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Ticket (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{ApproveHistory (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{User (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Employee (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Department (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{BudgetByCostType (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Notification (Entity)}}} &
+\multicolumn{1}{c|}{\rotatebox{90}{\textbf{Attachment (Entity)}}} \\
+\hline
+\endhead
+% Corrected multicolumn span for the footer
+\hline \multicolumn{9}{r}{{Devamı sonraki sayfada}} \\ \hline 
+\endfoot
+\hline
+\endlastfoot
+
+% --- Birleştirilmiş Gereksinimler (G) - Sadece Entityler için (Employee Dahil, Enumlar ve Paket Sütunu Hariç) ---
+% G1: Kullanıcı Kimlik Doğrulama ve Yetkilendirme
+\textbf{G1.1} Kullanıcı Girişi & & & X & X & & & & \\ \hline
+\textbf{G1.2} Kullanıcı Rolleri & & & X & X & & & & \\ \hline
+% G2: Harcama Talebi (Bilet) Yönetimi
+\textbf{G2.1} Talep Oluşturma & X & & X & X & X & & & X \\ \hline
+\textbf{G2.2} Onay Süreci & X & X & X & X & X & & & \\ \hline
+\textbf{G2.3} Durum Takibi & X & X & X & X & & & & \\ \hline
+\textbf{G2.5} Talep İptali & X & X & X & X & & & & \\ \hline
+% G3: Departman ve Bütçe Yönetimi
+\textbf{G3.1} Departman Bütçesi & & & X & X & X & X & & \\ \hline
+\textbf{G3.2} Maliyet Türü Bütçesi & & & X & X & & X & & \\ \hline
+\textbf{G3.3} Bütçeden Düşme & X & & X & X & X & X & & \\ \hline
+\textbf{G3.4} Bütçe Aşımı Kontrolü & X & & X & X & X & X & & \\ \hline
+% G4: Bildirim Sistemi
+\textbf{G4.1} Talep Bildirimleri & X & X & X & X & & & X & \\ \hline
+\textbf{G4.2} Bütçe Bildirimleri & & & X & X & X & X & X & \\ \hline
+% ...existing code...
+\end{longtable}
+\end{footnotesize}
+
+\end{document}
