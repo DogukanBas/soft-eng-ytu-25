@@ -1,0 +1,36 @@
+Participants:
+User (Team Member / Manager / Accountant)
+UI (User Interface)
+TicketService
+TicketDatabase
+
+Main Scenario:
+User -> UI: Click "Ticket History"
+UI -> TicketService: Request ticket history for User
+TicketService -> TicketDatabase: Fetch tickets (created/approved by User)
+TicketDatabase -> TicketService: Return ticket list
+TicketService -> UI: Send ticket list
+UI -> User: Display ticket list
+
+User -> UI: Click on a ticket
+UI -> TicketService: Request ticket details
+TicketService -> TicketDatabase: Fetch ticket details
+TicketDatabase -> TicketService: Return ticket details
+TicketService -> UI: Send ticket details
+UI -> User: Display ticket details
+
+Alternative Scenario 1-2a (Manager/Accountant):
+User (Manager/Accountant) -> UI: Click "Approved Tickets"
+UI -> TicketService: Request approved tickets by User
+TicketService -> TicketDatabase: Fetch tickets approved by User
+TicketDatabase -> TicketService: Return approved tickets
+TicketService -> UI: Send approved ticket list
+UI -> User: Display approved ticket list
+
+Alternative Scenario 2a (Edit):
+User -> UI: Click on editable ticket
+UI -> TicketService: Check ticket approval status
+TicketService -> TicketDatabase: Check if approved
+TicketDatabase -> TicketService: Return approval status = Not Approved
+TicketService -> UI: Allow editing
+UI -> User: Show editable form
