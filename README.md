@@ -1,2 +1,2 @@
 # Cost Management System 
-Artifacts altında ekran görüntüleri bulunabilir.
+Artifact altında ekran görüntüleri bulunabilir.
