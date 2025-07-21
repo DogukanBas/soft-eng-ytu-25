@@ -15,7 +15,7 @@
   - Manager: Wants to quickly review and approve the created request.  
   - Accountant: Wants to validate the invoice and expense item of the request approved by the Manager, close the ticket, and process the financial transactions.  
 - **Preconditions**: The Team Member must be logged into the system.  
-- **Postconditions**: The ticket is saved into the system and closed, the expense is deducted from the budget.  
+- **Postconditions**: The ticket is saved into the system and closed, if approved the expense is deducted from the budget.  
 
 ### Main Scenario
 1. The Team Member selects the "Create Ticket" option in the system.
@@ -33,9 +33,6 @@
 1-6a. **Ticket created by the Manager**  
   1. The Manager creates the ticket.  
   2. The Manager directly sends it to the Accountant without needing an additional manager approval.
-
-2-7a. **Missing Invoice Information**  
-  1. The Team Member wants to complete the missing invoice details for a previously created ticket that has not yet been sent to the Accountant for approval.
  
 5a. **Manager requests the ticket to be edited.**  
    1. The Manager sends the ticket back to the Team Member with an explanation to correct any missing or incorrect information.  
@@ -57,6 +54,10 @@
   2. The Accountant rejects and closes the ticket.  
   3. The Team Member can view the ticket rejected by the Accountant.
 
+10a. **Not enough cost type budget / department budget**
+  1. Only the available amount of budget is deducted.   
+10b **Enough budget but the amount exceeds the preset maximum affordable amount per cost type / department**
+  1. Maximum affordable amount is deducted from the budget. 
 ---
 
 ## Edit Budget
@@ -117,8 +118,6 @@
 2-3a. **Email Conflict**  
   An error occurs, and the user is not created.
 
-2a. **Adding an Accountant**  
-  The manager/department information is not required.
 
 --
 
@@ -145,20 +144,20 @@
 ### Introduction
 - **Primary Actor**: Team Member  
 - **Stakeholders and Interests**:  
-  - Team Member: Wants to view their previous tickets and details.  
-  - Manager: Wants to view the tickets they have approved in the past.  
-  - Accountant: Wants to view the tickets they have approved in the past.
-- **Preconditions**: The employee must be logged into the system and must have created/approved tickets in the past.
-- **Postconditions**: Past tickets are displayed.
+  - Team Member: Wants to view their previous and active tickets and details.  
+  - Manager: Wants to view the tickets assigned to them and the tickets they have created.
+  - Accountant: Wants to view the tickets assigned to them.
+- **Preconditions**: The employee must be logged into the system and must have tickets.
+- **Postconditions**: Tickets are displayed.
 
 ### Main Scenario
 1. The Team Member clicks the "Ticket History" button.  
-2. Past tickets are listed.
+2. Past tickets and active tickets are listed separately.
 3. The Team Member clicks on the ticket to view the details.
 
 ### Alternative Scenarios
 1-2a. **Other Users**  
   The Accountant/Manager views the tickets they have approved.
 
-2a. **Edit**  
-   If the ticket has not yet been approved by the manager for the Team Member, or if the ticket has not yet been approved by the accountant for the Manager, it can be edited.
+3a. **Edit/Cancel**  
+   If the ticket has not yet been approved by the manager for the Team Member, or if the ticket has not yet been approved by the accountant for the Manager, it can be edited or canceled.
